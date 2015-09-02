@@ -1016,7 +1016,7 @@
   });
 
   $app->get('/rules',function () use($app){
-    $twigParameters = getTwigParameters('Regolamento',$app['siteName'],'rules',$app['userMoney']);
+    $twigParameters = getTwigParameters('Regolamento',$app['siteName'],'rules',$app['userMoney'],array('startMoney'=>$app['startMoney']));
     return $app['twig']->render('index.twig',$twigParameters);    
   });
 ?>
