@@ -1,0 +1,54 @@
+<div class="container-fluid">
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#myNavbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="home">{{siteName}}</a>
+      </div>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          {% for displayedName,options in menu %}
+            {#  options is:
+                  - 0: link to the page
+                  - 1: add active class? yes/no
+                  - 2: display page? yes/no
+                OR another array as options
+            #}
+              {% if options[0] is not defined %} {# It's an associative array! Iterate again! #}
+                {% set elem = options|first %}
+                {% if elem[2] %}
+                  <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{displayedName}} <span class="caret"></span></a>  
+                  <ul class="dropdown-menu">
+                {% endif %}
+                {% for dd_displayedName,dd_options in options %}
+                    {% if dd_options[2] %}{#Display page?#}
+                      <li {% if dd_options[1] %}class="active"{% endif %}><a href="{{dd_options[0]}}">{{dd_displayedName}} <span class="sr-only">{{dd_displayedName}}</span></a></li> 
+                    {% endif %}                    
+                {% endfor %}
+                {% if elem[2] %}
+                  </ul>
+                  </li>
+                {% endif %}
+              {% elseif options[2] %} {#Display page?#}
+                <li {% if options[1] %}class="active"{% endif %}><a href="{{options[0]}}">{{displayedName}} <span class="sr-only">{{displayedName}}</span></a></li>                
+              {% endif %}
+          {% endfor %}
+        </ul>
+        {% if userMoney is defined and username is defined and userMoney >= 0 %}
+          <ul class="nav navbar-nav navbar-right">
+            <li class="navbar-text">Bentornato {{username}}!</b></li>         
+            <li class="navbar-text">Crediti: <span class="badge" id="credits">{{userMoney}}</span></li>
+          </ul>
+        {% endif %}
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+</div>

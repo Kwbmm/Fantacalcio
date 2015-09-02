@@ -1,0 +1,76 @@
+  <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+    {% if parameters.error %}
+      <div class="alert alert-danger text-center">
+        <h3>Errore!</h3>{{parameters.error}}
+      </div>
+    {% elseif parameters.success %}
+      <div class="alert alert-success text-center">
+        <h3>Giocatori venduti!</h3>{{parameters.success}} 
+      </div>
+    {% elseif parameters.warning %}
+      <div class="alert alert-warning text-center">
+        <h3>Attenzione!</h3>{{parameters.warning}} 
+      </div>        
+    {% endif %}
+    {% if parameters.rosterStatus is defined %}
+      <div class="panel panel-default">
+          <div class="panel-heading">Riepilogo rosa</div>
+          <div class="panel-body">
+          <ul>
+            <li><b>Portieri:</b> {{parameters.rosterStatus.POR}}/3</li>
+            <li><b>Difensori:</b> {{parameters.rosterStatus.DIF}}/7</li>
+            <li><b>Centrocampisti:</b> {{parameters.rosterStatus.CEN}}/8</li>
+            <li><b>Attaccanti:</b> {{parameters.rosterStatus.ATT}}/5</li>
+          </ul>
+        </div>
+      </div>
+    {% endif %}
+    {% if parameters.userPlayers is defined and parameters.userPlayers is not empty %}
+    
+    {#Print the table with the players#}
+      <form action="roster" method="POST" role="form">
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th class="text-center">Ruolo</th>
+                <th class="text-center">Nome</th>
+                <th class="text-center">Prezzo</th>
+                <th class="text-center">Cedi</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for player in parameters.userPlayers %}
+              <tr class="text-center">
+                <td>{{player.pos}}</td>
+                {% set name = player.name|split(' ', 2) %}
+                {% if name[1] is defined %}{#Some names don't have surnames, so this may not exist#}
+                  <td><span class="name">{{name[0]|first}}. {{name[1]}}</span><br /><small>{{player.team|raw}}</small></td>
+                {% else %}
+                  <td><span class="name">{{name[0]}}</span><br /><small>{{player.team|raw}}</small></td>                
+                {% endif %}
+                <td class="price">{{player.cost}}</td>
+                <td>
+                  {% if parameters.warning is empty %}{# Print only if market is open #}
+                  <span class="glyphicon glyphicon-trash text-danger" aria-hidden="true" player-id="{{player.SPID}}"></span>
+                  <span class="hidden glyphicon glyphicon-remove" player-id="{{player.SPID}}"></span>
+                  <input type="hidden" value="" name="">
+                  {% endif %}                
+                </td>
+              </tr>              
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% if parameters.warning is empty %}{# Print only if market is open#}
+        <div class="form-group text-center">
+          <button type="submit" class="btn btn-info">Conferma Cessioni</button>
+        </div>
+        {% endif %}
+      </form>
+    {% elseif parameters.error is empty %}{#User has no players in its roster#}
+    <div class="alert alert-warning text-center">
+        <h3>Vuoto!</h3> Non hai nessun giocatore in rosa
+    </div>
+    {% endif %}
+  </div>

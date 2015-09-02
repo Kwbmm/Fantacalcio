@@ -1,0 +1,31 @@
+  <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+    {% if parameters.error %}
+      <div class="alert alert-danger text-center">
+        <h3>Errore!</h3>{{parameters.error}}
+      </div>
+    {% endif %}
+    {% if parameters.success %}
+      <div class="alert alert-success text-center">
+        <h3>Registrazione effettuata</h3><br />{{parameters.success}} 
+      </div>
+    {% else %}
+      <form action="register" method="POST" role="form">
+        <legend>Registrazione</legend>
+        <div class="form-group">
+          <label for="username" class="sr-only">Username</label>
+          <div class="input-group">
+            <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Username" required="required">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password" class="sr-only">Password</label>
+          <div class="input-group">
+            <div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required="required">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Registrati</button>
+      </form>        
+    {% endif %}
+  </div>

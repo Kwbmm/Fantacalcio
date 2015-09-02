@@ -1,0 +1,9 @@
+body {
+  font-size: 1.6em;
+  line-height: 150%;
+  margin-bottom: 200px; /* To avoid overlap of the keyboard on small smartphone screens*/
+  padding-top: 70px; 
+}
+#myNavbar {
+  line-height: 100%;
+}

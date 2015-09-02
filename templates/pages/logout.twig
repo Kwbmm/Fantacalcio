@@ -1,0 +1,12 @@
+  <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+    {% if parameters.error %}
+      <div class="alert alert-danger text-center">
+        <h3>Errore!</h3>{{parameters.error}}
+      </div>
+    {% endif %}
+    {% if parameters.success %}
+      <div class="alert alert-success text-center">
+        <h3>Logout effettuato</h3>{{parameters.success}} 
+      </div>              
+    {% endif %}
+  </div>
