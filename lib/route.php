@@ -294,7 +294,7 @@
       $i++;
     }
 
-    $twigParameters = getTwigParameters('Cerca',$app['siteName'],'buy',$app['userMoney'],array('players'=>$players));
+    $twigParameters = getTwigParameters('Cerca',$app['siteName'],'buy',$app['userMoney'],array('players'=>$players,'closeTime'=>date('d-m-y H:i',$app['closeTime'])));
     return $app['twig']->render('index.twig',$twigParameters);    
   });
 
@@ -429,7 +429,7 @@
 
     foreach ($sanitizedValues as $key) {
       $pk = getLastPrimaryKey($app['conn'],'user_roster')+1;
-      $query = "INSERT INTO user_roster VALUES('$pk','$uid','$key')";
+      $query = "INSERT INTO user_roster VALUES('$pk','$uid','$key','NP')";
       $result = getResult($app['conn'],$query);
       if($result === false){
         rollback($app['conn']);
