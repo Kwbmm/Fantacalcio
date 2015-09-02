@@ -4,6 +4,42 @@
         <h3>Tempo Scaduto!</h3> {{parameters.warning}}
     </div>
     {% else %}
+      {% if parameters.closeTime is defined %}
+        <h5 class="text-center">Prossima chiusura: <span class="label label-danger">{{parameters.closeTime}}</span></h5 class="text-center">
+      {% endif %}
+      {% if parameters.playingPlayers is defined %}
+        <h4>La tua formazione schierata</h4>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th class="text-center">Ruolo</th>
+                <th class="text-center">Nome</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for role,name in parameters.playingPlayers if name %}
+              <tr class="text-center">
+                {% set role_new = role|split('-',3) %}
+                {% if role_new[2] is defined %}
+                  <td>{{role_new[0]}} {{role_new[1]}} {{role_new[2]}}</td>
+                {% elseif role_new[1] is defined %}
+                  <td>{{role_new[0]}} {{role_new[1]}}</td>
+                {% else %}
+                  <td>{{role_new[0]}}</td>
+                {% endif %}
+                {% set name_new = name|split(' ', 2) %}
+                {% if name_new[1] is defined %}
+                  <td>{{name_new[1]}}</td>
+                {% else %}
+                  <td>{{name_new[0]}}</td>                
+                {% endif %}
+              </tr>  
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
     <form action="formation" method="POST" role="form">
       <legend>Scegli il Modulo</legend>
       <div class="radio text-center form-group">

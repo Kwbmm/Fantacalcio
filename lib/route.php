@@ -212,7 +212,7 @@
       $twigParameters = getTwigParameters('Acquista',$app['siteName'],'buy',$app['userMoney'],$extra);
     }
     else
-      $twigParameters = getTwigParameters('Acquista',$app['siteName'],'buy',$app['userMoney']);      
+      $twigParameters = getTwigParameters('Acquista',$app['siteName'],'buy',$app['userMoney'],array('closeTime'=>date('d-m-y H:i',$app['closeTime'])));      
     return $app['twig']->render('index.twig',$twigParameters);
   });
 
@@ -321,7 +321,7 @@
       }
       //Order by Role, Price
       customSort($purchases);
-      $twigParameters = getTwigParameters('Carrello',$app['siteName'],'checkout',$app['userMoney'],array('purchases' => $purchases));      
+      $twigParameters = getTwigParameters('Carrello',$app['siteName'],'checkout',$app['userMoney'],array('purchases' => $purchases,'closeTime'=>date('d-m-y H:i',$app['closeTime'])));      
     }
     return $app['twig']->render('index.twig',$twigParameters);
   });
@@ -631,6 +631,7 @@
   **  Page render order:
   **    1. modulo.twig
   **    2. formation.twig
+  **    3. confirmForm.twig
   */
 
   $app->get('/formation',function () use($app){
@@ -642,8 +643,136 @@
       $closeEnd = date('d-m-y H:i',$app['openTime']);
       $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('warning' => 'Questa pagina è chiusa dal '.$closeStart." al ".$closeEnd));
     }
-    else
-      $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney']);
+    else{
+      //Show the player that play
+      $uid = getUID($app['conn'],$_SESSION['user']);
+      $playingPlayers = array('POR'=>'',
+                              'DIF-1'=>'',
+                              'DIF-2'=>'',
+                              'DIF-3'=>'',
+                              'DIF-4'=>'',
+                              'DIF-5'=>'',
+                              'CEN-1'=>'',
+                              'CEN-2'=>'',
+                              'CEN-3'=>'',
+                              'CEN-4'=>'',
+                              'CEN-5'=>'',
+                              'ATT-1'=>'',
+                              'ATT-2'=>'',
+                              'ATT-3'=>'',
+                              'POR-R'=>'',
+                              'DIF-R-1'=>'',
+                              'DIF-R-2'=>'',
+                              'CEN-R-1'=>'',
+                              'CEN-R-2'=>'',
+                              'ATT-R-1'=>'',
+                              'ATT-R-2'=>'');
+      $query = "SELECT soccer_player.Name as name, disposition as role
+                FROM soccer_player, user_roster
+                WHERE user_roster.UID = '$uid'
+                AND soccer_player.SPID = user_roster.SPID
+                AND disposition <> 'NP'";
+      $result = getResult($app['conn'],$query);
+      if($result === false)
+        $app->abort(452,__FILE__." (".__LINE__.")");
+      
+      $filled = false;
+      while (($row=mysqli_fetch_array($result,MYSQLI_ASSOC))!== null) {
+        switch ($row['role']) {
+          case 'POR':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'DIF-1':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'DIF-2':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'DIF-3':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'DIF-4':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'DIF-5':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'CEN-1':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'CEN-2':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'CEN-3':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'CEN-4':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'CEN-5':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'ATT-1':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'ATT-2':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'ATT-3':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'POR-R':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'DIF-R-1':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'DIF-R-2':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'CEN-R-1':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'CEN-R-2':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'ATT-R-1':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          case 'ATT-R-2':
+            $playingPlayers[$row['role']] = $row['name'];
+            $filled = true;
+            break;
+          default:
+            # Should never happen
+            break;
+        }
+      }
+      if($filled)
+        $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('playingPlayers'=>$playingPlayers,'closeTime'=>date('d-m-y H:i',$app['closeTime'])));
+      else
+        $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('closeTime'=>date('d-m-y H:i',$app['closeTime'])));
+    }
     return $app['twig']->render('index.twig',$twigParameters);
   });
 
@@ -689,6 +818,7 @@
 
   $app->post('/confirmForm',function(Request $req) use($app){
     $reqItems = $req->request->all();
+    $sanitizedArray = array();
     $modulo = array_fill(0,3,null);
     foreach ($reqItems as $role => &$SPID) {
       //Check the roles
@@ -713,19 +843,163 @@
       $SPID = sanitizeInput($app['conn'],$SPID);
       if(preg_match('/\d+/',$SPID) !== 1)
         $app->abort(476,"Si è verificato un errore..");
+      $sanitizedArray[$role] = $SPID;
     }
-    $modulo[0] -= 2;
-    $modulo[1] -= 2;
-    $modulo[2] -= 2;
+    $modulo[0] -= 2;//DIF
+    $modulo[1] -= 2;//CEN
+    $modulo[2] -= 2;//ATT
 
-//    if(($rv = begin($app['conn'])) !== true)
-//      $app->abort($rv->getCode(),$rv->getMessage());
-//    //Set the players as playing
-//    foreach ($reqItems as $role => $SPID) {
-//          # code...
-//        }    
+    if(($rv = begin($app['conn'])) !== true)
+      $app->abort($rv->getCode(),$rv->getMessage());
 
-    myDump($reqItems);
+    $uid = getUID($app['conn'],$_SESSION['user']);
+
+    //First reset the disposition of each player
+    $query = "SELECT disposition FROM user_roster
+              WHERE UID = '$uid'
+              AND disposition <> 'NP'
+              FOR UPDATE";
+    $result = getResult($app['conn'],$query);
+    if($result === false){
+      rollback($app['conn']);
+      $app->abort(452,__FILE__." (".__LINE__.")");
+    }
+    $query = "UPDATE user_roster
+              SET disposition = 'NP'
+              WHERE UID = '$uid'
+              AND disposition <> 'NP'";
+    $result = getResult($app['conn'],$query);
+    if($result === false){
+      rollback($app['conn']);
+      $app->abort(452,__FILE__." (".__LINE__.")");
+    }
+
+    //Set the players as playing
+    foreach ($sanitizedArray as $role => $SPID) {
+      $query = "SELECT disposition FROM user_roster
+                WHERE UID = '$uid'
+                AND SPID = '$SPID'
+                FOR UPDATE";
+      $result = getResult($app['conn'],$query);
+      if($result === false){
+        rollback($app['conn']);
+        $app->abort(452,__FILE__." (".__LINE__.")");
+      }
+      $query = "UPDATE user_roster
+                SET disposition = '$role'
+                WHERE UID = '$uid'
+                AND SPID = '$SPID'";
+      $result = getResult($app['conn'],$query);
+      if($result === false){
+        rollback($app['conn']);
+        $app->abort(452,__FILE__." (".__LINE__.")");
+      }
+    }
+    commit($app['conn']);
+
+    //Show the player that play
+    $playingPlayers = array('POR'=>'',
+                            'DIF-1'=>'',
+                            'DIF-2'=>'',
+                            'DIF-3'=>'',
+                            'DIF-4'=>'',
+                            'DIF-5'=>'',
+                            'CEN-1'=>'',
+                            'CEN-2'=>'',
+                            'CEN-3'=>'',
+                            'CEN-4'=>'',
+                            'CEN-5'=>'',
+                            'ATT-1'=>'',
+                            'ATT-2'=>'',
+                            'ATT-3'=>'',
+                            'POR-R'=>'',
+                            'DIF-R-1'=>'',
+                            'DIF-R-2'=>'',
+                            'CEN-R-1'=>'',
+                            'CEN-R-2'=>'',
+                            'ATT-R-1'=>'',
+                            'ATT-R-2'=>'');
+    $query = "SELECT soccer_player.Name as name, disposition as role
+              FROM soccer_player, user_roster
+              WHERE user_roster.UID = '$uid'
+              AND soccer_player.SPID = user_roster.SPID
+              AND disposition <> 'NP'";
+    $result = getResult($app['conn'],$query);
+    if($result === false)
+      $app->abort(452,__FILE__." (".__LINE__.")");
+    while (($row=mysqli_fetch_array($result,MYSQLI_ASSOC))!== null) {
+      switch ($row['role']) {
+        case 'POR':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'DIF-1':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'DIF-2':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'DIF-3':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'DIF-4':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'DIF-5':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'CEN-1':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'CEN-2':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'CEN-3':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'CEN-4':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'CEN-5':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'ATT-1':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'ATT-2':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'ATT-3':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'POR-R':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'DIF-R-1':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'DIF-R-2':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'CEN-R-1':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'CEN-R-2':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'ATT-R-1':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        case 'ATT-R-2':
+          $playingPlayers[$row['role']] = $row['name'];
+          break;
+        default:
+          # Should never happen
+          break;
+      }
+    }
+
+    $twigParameters = getTwigParameters('Formazione',$app['siteName'],'confirmForm',$app['userMoney'],array('success'=>'La tua formazione è stata schierata!','playingPlayers'=>$playingPlayers));
+    return $app['twig']->render('index.twig',$twigParameters);
   });
 /*
 **   ========================================================================
