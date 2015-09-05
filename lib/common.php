@@ -165,13 +165,14 @@
     //Here fill the array with all the pages
     //Elements can be either direct links or dropdown elements
     //(displayedName => (linkName,activeCSSclass,display))
-    $loggedInPages = array('buy','checkout','roster','formation','logout'); //Pages to display ONLY when logged in
+    $loggedInPages = array('buy','checkout','roster','formation','logout','marks'); //Pages to display ONLY when logged in
     $loggedOutPages = array('register','login'); //Pages to display ONLY when logged out
     if($pages === null){
       $pages = array( 'Home'        => array('home',false,true),
                       'Mercato'     => array('Cerca'=> array('buy',false,true),'Carrello' => array('checkout',false,true)),
                       'Rosa'        => array('roster',false,true),
                       'Formazione'  => array('formation',false,true),
+                      'Voti'        => array('marks',false,true),
                       'Registrati'  => array('register',false,true),
                       'Login'       => array('login',false,true),
                       'Regolamento' => array('rules',false,true),
@@ -233,7 +234,7 @@
     }
   }
 
-  /*
+/*
 ** ===================================================
 **|        Football Data API Functions                |
 ** ===================================================

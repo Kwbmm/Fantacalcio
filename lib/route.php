@@ -1,5 +1,6 @@
 <?php 
   use Symfony\Component\HttpFoundation\Request;
+  include_once '../vendor/phpQuery/phpQuery-onefile.php';
 
   $app->before(function() use($app){
     if(isset($_COOKIE['token'])){
@@ -1001,6 +1002,95 @@
     $twigParameters = getTwigParameters('Formazione',$app['siteName'],'confirmForm',$app['userMoney'],array('success'=>'La tua formazione è stata schierata!','playingPlayers'=>$playingPlayers));
     return $app['twig']->render('index.twig',$twigParameters);
   });
+/*
+**   ========================================================================
+**  |                                 MARKS                                  |
+**   ========================================================================
+*/
+
+
+  $gazzettaMarks = function(Request $req, Silex\Application $app){
+    //Check to see if the marks are already in DB. Fetch only the last marks
+    $now = time();
+    $query = "SELECT * FROM player_mark
+              WHERE player_mark.MID = (
+                SELECT MAX(MID) FROM match_day
+                WHERE match_day.end <= '$now')";
+    $result = getResult($app['conn'],$query);
+    if($result === false)
+      $app->abort(452,__FILE__." (".__LINE__.")");
+
+    if(mysqli_affected_rows($app['conn']) === 0){ //Results are still not out, attempt fetch
+      $marksPage = 'http://www.gazzetta.it/calcio/fantanews/voti/serie-a-2015-16/';
+      ini_set("user_agent", "Descriptive user agent string");
+      $htmlPage = file_get_contents($marksPage);
+      $doc = phpQuery::newDocument($htmlPage);
+      
+      //Get the matchday
+      $mid = pq($doc['ul.menuDaily li.active'])->children('a')->text();
+
+      if(($rv = begin($app['conn'])) !== true)
+        $app->abort($rv->getCode(),$rv->getMessage());
+
+      foreach (pq($doc['ul.magicTeamList li:not(".head")']) as $row) {    
+        //Get the Name and ID
+        $link = pq($row)->find('span.playerNameIn')->children('a')->attr('href');
+        $link = explode('/',$link);
+        //Divide name from ID
+        $name_and_id = explode('_',$link[count($link)-1]);
+        //Save the SPID
+        $SPID = sanitizeInput($app['conn'],$name_and_id[count($name_and_id)-1]);
+        $mark = sanitizeInput($app['conn'],pq($row)->find('div.inParameter.fvParameter')->text());
+
+        $pk = getLastPrimaryKey($app['conn'],'player_mark')+1;
+        $query = "INSERT INTO player_mark VALUES ('$pk','$SPID','$mid','$mark')";
+        $result = getResult($app['conn'],$query);
+        if($result === false){
+          rollback($app['conn']);
+          $app->abort(452,__FILE__." (".__LINE__.")");
+        }
+
+      }
+      commit($app['conn']);
+    }
+  };
+
+  $app->get('/marks',function() use($app){
+    if(!isset($_SESSION['user']))
+      return $app->redirect(dirname($_SERVER['REQUEST_URI']).'/login');
+
+    /*
+      Get the marks of the LAST match day from DB for each soccer player
+      belonging to the user. 
+    */
+    $uid = getUID($app['conn'],$_SESSION['user']);
+    $now = time();
+    $query = "SELECT DISTINCT Position as pos, Name as name, mark
+              FROM soccer_player, user_roster, player_mark
+              WHERE soccer_player.SPID = user_roster.SPID
+              AND soccer_player.SPID = player_mark.SPID
+              AND user_roster.SPID = player_mark.SPID
+              AND user_roster.disposition <> 'NP'
+              AND user_roster.UID = '$uid'
+              AND player_mark.MID = (
+                SELECT MAX(MID) FROM match_day
+                WHERE match_day.end <= '$now')
+              ORDER BY Position DESC";
+
+    $twigParameters = getTwigParameters('Voti',$app['siteName'],'marks',$app['userMoney']);
+    return $app['twig']->render('index.twig',$twigParameters);
+  })->before($gazzettaMarks);
+
+
+
+  $app->get('/marks/{day}', function($day) use($app){
+    if(!isset($_SESSION['user']))
+      return $app->redirect(dirname($_SERVER['REQUEST_URI']).'/login');
+
+    $twigParameters = getTwigParameters('Voti Giornata '.$day,$app['siteName'],'marks',$app['userMoney']);
+    return $app['twig']->render('index.twig',$twigParameters);
+  });
+
 /*
 **   ========================================================================
 **  |                                 LOGOUT                                 |
