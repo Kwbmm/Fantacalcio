@@ -63,8 +63,9 @@
   }
 
   function fetchMarks($app){
-    //Check to see if the marks are already in DB. Fetch only the last marks
     $now = time();
+    $outcome = false; //Indicates if the attempt to fetch the results succeeded
+    //Check if the marks are already in DB. Fetch only the last marks
     $query = "SELECT * FROM player_mark
               WHERE player_mark.MID = (
                 SELECT MAX(MID) FROM match_day
@@ -85,7 +86,7 @@
       if(($rv = begin($app['conn'])) !== true)
         $app->abort($rv->getCode(),$rv->getMessage());
 
-      foreach (pq($doc['ul.magicTeamList li:not(".head")']) as $row) {    
+      foreach (pq($doc['div.magicDayList.matchView.magicDayListChkDay:not(."forceHide") ul.magicTeamList li:not(".head")']) as $row) {    
         //Get the Name and ID
         $link = pq($row)->find('span.playerNameIn')->children('a')->attr('href');
         $link = explode('/',$link);
@@ -94,7 +95,7 @@
         //Save the SPID
         $SPID = sanitizeInput($app['conn'],$name_and_id[count($name_and_id)-1]);
         $mark = sanitizeInput($app['conn'],pq($row)->find('div.inParameter.fvParameter')->text());
-
+        
         $pk = getLastPrimaryKey($app['conn'],'player_mark')+1;
         $query = "INSERT INTO player_mark VALUES ('$pk','$SPID','$mid','$mark')";
         $result = getResult($app['conn'],$query);
@@ -102,16 +103,274 @@
           rollback($app['conn']);
           $app->abort(452,__FILE__." (".__LINE__.")");
         }
+        $outcome = true;
       }
       commit($app['conn']);
     }
+    else
+      $outcome=true; //Marks are out
+    return $outcome;
+  }
+
+  function computeResults($app){
+    //First check if results are already computed for this match day
+    $now = time();
+
+    $query = "SELECT MAX(MID) FROM match_day WHERE match_day.end <= '$now'";
+    $result = getResult($app['conn'],$query);
+    if($result === false)
+      $app->abort(452,__FILE__." (".__LINE__.")");
+    $row = mysqli_fetch_row($result);
+    $mid = $row[0];
+
+    $query = "SELECT * FROM scores
+              WHERE MID = '$mid'";
+    $result = getResult($app['conn'],$query);
+    if($result === false)
+      $app->abort(452,__FILE__." (".__LINE__.")");
+
+    if(mysqli_affected_rows($app['conn']) === 0){ //Compute results
+
+      if(($rv = begin($app['conn'])) !== true)
+        $app->abort($rv->getCode(),$rv->getMessage());
+
+      //Get all the UIDs
+      $query = "SELECT UID FROM user";
+      $result = getResult($app['conn'],$query);
+      if($result === false){
+        rollback($app['conn']);
+        $app->abort(452,__FILE__." (".__LINE__.")");
+      }
+      $i=0;
+      while(($row=mysqli_fetch_array($result,MYSQLI_NUM)) !== null){
+        $UIDs[$i]=$row[0];
+        $i++;
+      }
+      for ($i=0; $i < count($UIDs); $i++) { 
+        $uid = $UIDs[$i];
+        $query = "SELECT player_mark.mark as mark, user_formation.disposition as role
+                  FROM soccer_player
+                    LEFT OUTER JOIN player_mark ON player_mark.SPID=soccer_player.SPID
+                    LEFT OUTER JOIN user_formation ON user_formation.SPID = soccer_player.SPID
+                    LEFT OUTER JOIN match_day ON match_day.MID = player_mark.MID
+                  WHERE user_formation.UID = '$uid'
+                  AND user_formation.MID = (
+                    SELECT MAX(MID) FROM match_day
+                    WHERE match_day.end <= '$now')";
+        $result = getResult($app['conn'],$query);
+        if($result === false){
+          rollback($app['conn']);
+          $app->abort(452,__FILE__." (".__LINE__.")");
+        }
+        while(($row=mysqli_fetch_array($result,MYSQLI_ASSOC)) !== null)
+          $marks[$row['role']] = (float)$row['mark'];
+
+        $total = 0;
+        if($marks['POR'] === (float)0 ){
+          $total += $marks['POR-R'];
+          unset($marks['POR-R']);
+        }
+        else
+          $total += $marks['POR'];
+
+        if($marks['DIF-1'] === (float)0){
+          if(isset($marks['DIF-R-1']) && $marks['DIF-R-1'] !== 0 ){
+            $total += $marks['DIF-R-1'];
+            unset($marks['DIF-R-1']);
+          }
+          elseif(isset($marks['DIF-R-2']) && $marks['DIF-R-2'] !== 0){
+            $total += $marks['DIF-R-2'];
+            unset($marks['DIF-R-2']);
+          }
+        }
+        else
+          $total += $marks['DIF-1'];
+
+        if($marks['DIF-2'] === (float)0){
+          if(isset($marks['DIF-R-1']) && $marks['DIF-R-1'] !== 0 ){
+            $total += $marks['DIF-R-1'];
+            unset($marks['DIF-R-1']);
+          }
+          elseif(isset($marks['DIF-R-2']) && $marks['DIF-R-2'] !== 0){
+            $total += $marks['DIF-R-2'];
+            unset($marks['DIF-R-2']);
+          }
+        }
+        else
+          $total += $marks['DIF-2'];
+
+        if($marks['DIF-3'] === (float)0){
+          if(isset($marks['DIF-R-1']) && $marks['DIF-R-1'] !== 0 ){
+            $total += $marks['DIF-R-1'];
+            unset($marks['DIF-R-1']);
+          }
+          elseif(isset($marks['DIF-R-2']) && $marks['DIF-R-2'] !== 0){
+            $total += $marks['DIF-R-2'];
+            unset($marks['DIF-R-2']);
+          }
+        }
+        else
+          $total += $marks['DIF-3'];
+
+        if(isset($marks['DIF-4'])){
+          if($marks['DIF-4'] === (float)0){
+            if(isset($marks['DIF-R-1']) && $marks['DIF-R-1'] !== 0 ){
+              $total += $marks['DIF-R-1'];
+              unset($marks['DIF-R-1']);
+            }
+            elseif(isset($marks['DIF-R-2']) && $marks['DIF-R-2'] !== 0){
+              $total += $marks['DIF-R-2'];
+              unset($marks['DIF-R-2']);
+            }
+          }
+          else
+            $total += $marks['DIF-4'];
+        }
+
+        if(isset($marks['DIF-5'])){
+          if($marks['DIF-5'] === (float)0){
+            if(isset($marks['DIF-R-1']) && $marks['DIF-R-1'] !== 0 ){
+              $total += $marks['DIF-R-1'];
+              unset($marks['DIF-R-1']);
+            }
+            elseif(isset($marks['DIF-R-2']) && $marks['DIF-R-2'] !== 0){
+              $total += $marks['DIF-R-2'];
+              unset($marks['DIF-R-2']);
+            }
+          }
+          else
+            $total += $marks['DIF-5'];
+        }
+
+        if($marks['CEN-1'] === (float)0){
+          if(isset($marks['CEN-R-1']) && $marks['CEN-R-1'] !== 0 ){
+            $total += $marks['CEN-R-1'];
+            unset($marks['CEN-R-1']);
+          }
+          elseif(isset($marks['CEN-R-2']) && $marks['CEN-R-2'] !== 0){
+            $total += $marks['CEN-R-2'];
+            unset($marks['CEN-R-2']);
+          }
+        }
+        else
+          $total += $marks['CEN-1'];
+
+        if($marks['CEN-2'] === (float)0){
+          if(isset($marks['CEN-R-1']) && $marks['CEN-R-1'] !== 0 ){
+            $total += $marks['CEN-R-1'];
+            unset($marks['CEN-R-1']);
+          }
+          elseif(isset($marks['CEN-R-2']) && $marks['CEN-R-2'] !== 0){
+            $total += $marks['CEN-R-2'];
+            unset($marks['CEN-R-2']);
+          }
+        }
+        else
+          $total += $marks['CEN-2'];
+
+        if($marks['CEN-3'] === (float)0){
+          if(isset($marks['CEN-R-1']) && $marks['CEN-R-1'] !== 0 ){
+            $total += $marks['CEN-R-1'];
+            unset($marks['CEN-R-1']);
+          }
+          elseif(isset($marks['CEN-R-2']) && $marks['CEN-R-2'] !== 0){
+            $total += $marks['CEN-R-2'];
+            unset($marks['CEN-R-2']);
+          }
+        }
+        else
+          $total += $marks['CEN-3'];
+
+        if(isset($marks['CEN-4'])){
+          if($marks['CEN-4'] === (float)0){
+            if(isset($marks['CEN-R-1']) && $marks['CEN-R-1'] !== 0 ){
+              $total += $marks['CEN-R-1'];
+              unset($marks['CEN-R-1']);
+            }
+            elseif(isset($marks['CEN-R-2']) && $marks['CEN-R-2'] !== 0){
+              $total += $marks['CEN-R-2'];
+              unset($marks['CEN-R-2']);
+            }
+          }
+          else
+            $total += $marks['CEN-4'];
+        }
+
+        if(isset($marks['CEN-5'])){
+          if($marks['CEN-5'] === (float)0){
+            if(isset($marks['CEN-R-1']) && $marks['CEN-R-1'] !== 0 ){
+              $total += $marks['CEN-R-1'];
+              unset($marks['CEN-R-1']);
+            }
+            elseif(isset($marks['CEN-R-2']) && $marks['CEN-R-2'] !== 0){
+              $total += $marks['CEN-R-2'];
+              unset($marks['CEN-R-2']);
+            }
+          }
+          else
+            $total += $marks['CEN-5'];
+        }
+
+        if($marks['ATT-1'] === (float)0){
+          if(isset($marks['ATT-R-1']) && $marks['ATT-R-1'] !== 0 ){
+            $total += $marks['ATT-R-1'];
+            unset($marks['ATT-R-1']);
+          }
+          elseif(isset($marks['ATT-R-2']) && $marks['ATT-R-2'] !== 0){
+            $total += $marks['ATT-R-2'];
+            unset($marks['ATT-R-2']);
+          }
+        }
+        else
+          $total += $marks['ATT-1'];
+
+        if(isset($marks['ATT-2'])){
+          if($marks['ATT-2'] === (float)0){
+            if(isset($marks['ATT-R-1']) && $marks['ATT-R-1'] !== 0 ){
+              $total += $marks['ATT-R-1'];
+              unset($marks['ATT-R-1']);
+            }
+            elseif(isset($marks['ATT-R-2']) && $marks['ATT-R-2'] !== 0){
+              $total += $marks['ATT-R-2'];
+              unset($marks['ATT-R-2']);
+            }
+          }
+          else
+            $total += $marks['ATT-2'];
+        }
+
+        if(isset($marks['ATT-3'])){
+          if($marks['ATT-3'] === (float)0){
+            if(isset($marks['ATT-R-1']) && $marks['ATT-R-1'] !== 0 ){
+              $total += $marks['ATT-R-1'];
+              unset($marks['ATT-R-1']);
+            }
+            elseif(isset($marks['ATT-R-2']) && $marks['ATT-R-2'] !== 0){
+              $total += $marks['ATT-R-2'];
+              unset($marks['ATT-R-2']);
+            }
+          }
+          else
+            $total += $marks['ATT-3'];
+        }
+        $pk = getLastPrimaryKey($app['conn'],'scores')+1;
+        $query = "INSERT INTO scores VALUES('$pk','$uid','$mid','$total')";
+        $result = getResult($app['conn'],$query);
+        if($result === false){
+          rollback($app['conn']);
+          $app->abort(452,__FILE__." (".__LINE__.")");
+        }
+      } //End for loop
+      commit($app['conn']);
+    } //End insert scores
   }
 
   $app->before(function() use($app){
     rememberMe($app);
     userMoney($app);
     closingTime($app);
-    fetchMarks($app);
+    if(fetchMarks($app))
+      computeResults($app); //Compute the results for each user only if marks are out
   });
 /*
 **   ========================================================================
@@ -119,7 +378,14 @@
 **   ========================================================================
 */
   $app->get('/home',function() use($app){
-    $query =  "SELECT username, points FROM user, scores WHERE user.UID = scores.UID ORDER BY points DESC";
+    $now = time();
+    $query =  "SELECT username, points FROM user, scores
+              WHERE user.UID = scores.UID
+              AND scores.MID = (
+                SELECT MAX(MID) FROM match_day
+                WHERE match_day.end <= '$now')
+              ORDER BY points DESC";
+
     $result = getResult($app['conn'],$query);
     if($result === false)
       $app->abort(452,__FILE__." (".__LINE__.")");
@@ -180,7 +446,7 @@
     }
 
     $sid = getLastPrimaryKey($app['conn'],'scores')+1;
-    $query = "INSERT INTO scores VALUES('$sid','$uid','0')";
+    $query = "INSERT INTO scores VALUES('$sid','$uid','0','0')";
     $result = getResult($app['conn'],$query);
     if($result === false){
       rollback($app['conn']);
@@ -1097,19 +1363,25 @@
 
     /*
       Get the marks of the LAST match day from DB for each soccer player
-      belonging to the user. 
+      belonging to the user.
+      LEFT OUTER JOINS are needed because the player in player_mark are not the same
+      as the ones in user_formation.
+      In the output table we want also the soccer players that have no mark because
+      either they didn't play enough minutes or they didn't played at all.
+      Players that played less than 15' (or 25' if goalkeeper) will have a 0.
+      Players that didn't play at all will have a NULL value.
     */
     $uid = getUID($app['conn'],$_SESSION['user']);
     $now = time();
-    $query = "SELECT Name as name, disposition as role, mark
-              FROM soccer_player sp, user_formation uf, player_mark pm
-              WHERE sp.SPID = uf.SPID
-              AND pm.MID = uf.MID
-              AND pm.SPID = sp.SPID
-              AND pm.MID = (
+    $query = "SELECT soccer_player.Name as name, player_mark.mark as mark, user_formation.disposition as role
+              FROM soccer_player
+                LEFT OUTER JOIN player_mark ON player_mark.SPID=soccer_player.SPID
+                LEFT OUTER JOIN user_formation ON user_formation.SPID = soccer_player.SPID
+                LEFT OUTER JOIN match_day ON match_day.MID = player_mark.MID
+              WHERE user_formation.UID = '$uid'
+              AND user_formation.MID = (
                 SELECT MAX(MID) FROM match_day
-                WHERE match_day.end <= '$now')
-              AND uf.UID = '$uid'";
+                WHERE match_day.end <= '$now')";
     $result = getResult($app['conn'],$query);
     if($result === false)
       $app->abort(452,__FILE__." (".__LINE__.")");
@@ -1205,7 +1477,6 @@
           break;
       }
     }
-    myDump($playerMarks);
     $twigParameters = getTwigParameters('Voti',$app['siteName'],'marks',$app['userMoney'],array('playerMarks'=>$playerMarks));
     return $app['twig']->render('index.twig',$twigParameters);
   });

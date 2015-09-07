@@ -26,7 +26,7 @@
             {% else %}
               <td>{{name_new[0]}}</td>                
             {% endif %}
-              <td>{{data.mark}}</td>
+              <td>{% if data.mark is null or data.mark == 0 %} S.V {% else %} {{data.mark}} {% endif %}</td>
           </tr>
           {% endfor %}
         </tbody>
