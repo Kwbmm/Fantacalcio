@@ -3,6 +3,10 @@
     <div class="alert alert-warning text-center">
         <h3>Tempo Scaduto!</h3> {{parameters.warning}}
     </div>
+    {% elseif parameters.error %}
+      <div class="alert alert-danger text-center">
+        <h3>Errore!</h3> {{parameters.error}}
+      </div>
     {% else %}
       {% if parameters.closeTime is defined %}
         <h5 class="text-center">Prossima chiusura: <span class="label label-danger">{{parameters.closeTime}}</span></h5 class="text-center">

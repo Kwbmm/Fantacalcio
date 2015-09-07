@@ -2,7 +2,7 @@
   use Symfony\Component\HttpFoundation\Request;
   include_once '../vendor/phpQuery/phpQuery-onefile.php';
 
-  $app->before(function() use($app){
+  function rememberMe($app){
     if(isset($_COOKIE['token'])){
       $current_time = time();
       $sequence = explode(":", $_COOKIE['token']);
@@ -28,6 +28,9 @@
         }
       }
     }
+  }
+
+  function userMoney($app){
     //If we are logged in but the userMoney is not set, set it!
     if(isset($_SESSION['user']) && !isset($app['userMoney'])){
       $user = $_SESSION['user'];
@@ -39,8 +42,10 @@
       $app['userMoney'] = $row[0];
     }
     else
-      $app['userMoney'] = -1;
+      $app['userMoney'] = -1;    
+  }
 
+  function closingTime($app){
     /*
       The time at which to close market and formation.
       Update if not defined or if expired.
@@ -54,7 +59,59 @@
       $row = mysqli_fetch_row($result);
       $app['closeTime'] = $row[0] - (60*5); //Close 5 minutes before
       $app['openTime'] = $row[1] + (60*10); //Open 10 minutes after
+    }    
+  }
+
+  function fetchMarks($app){
+    //Check to see if the marks are already in DB. Fetch only the last marks
+    $now = time();
+    $query = "SELECT * FROM player_mark
+              WHERE player_mark.MID = (
+                SELECT MAX(MID) FROM match_day
+                WHERE match_day.end <= '$now')";
+    $result = getResult($app['conn'],$query);
+    if($result === false)
+      $app->abort(452,__FILE__." (".__LINE__.")");
+
+    if(mysqli_affected_rows($app['conn']) === 0){ //Results are still not out, attempt fetch
+      $marksPage = 'http://www.gazzetta.it/calcio/fantanews/voti/serie-a-2015-16/';
+      ini_set("user_agent", "Descriptive user agent string");
+      $htmlPage = file_get_contents($marksPage);
+      $doc = phpQuery::newDocument($htmlPage);
+      
+      //Get the matchday
+      $mid = pq($doc['ul.menuDaily li.active'])->children('a')->text();
+
+      if(($rv = begin($app['conn'])) !== true)
+        $app->abort($rv->getCode(),$rv->getMessage());
+
+      foreach (pq($doc['ul.magicTeamList li:not(".head")']) as $row) {    
+        //Get the Name and ID
+        $link = pq($row)->find('span.playerNameIn')->children('a')->attr('href');
+        $link = explode('/',$link);
+        //Divide name from ID
+        $name_and_id = explode('_',$link[count($link)-1]);
+        //Save the SPID
+        $SPID = sanitizeInput($app['conn'],$name_and_id[count($name_and_id)-1]);
+        $mark = sanitizeInput($app['conn'],pq($row)->find('div.inParameter.fvParameter')->text());
+
+        $pk = getLastPrimaryKey($app['conn'],'player_mark')+1;
+        $query = "INSERT INTO player_mark VALUES ('$pk','$SPID','$mid','$mark')";
+        $result = getResult($app['conn'],$query);
+        if($result === false){
+          rollback($app['conn']);
+          $app->abort(452,__FILE__." (".__LINE__.")");
+        }
+      }
+      commit($app['conn']);
     }
+  }
+
+  $app->before(function() use($app){
+    rememberMe($app);
+    userMoney($app);
+    closingTime($app);
+    fetchMarks($app);
   });
 /*
 **   ========================================================================
@@ -644,8 +701,17 @@
       $closeEnd = date('d-m-y H:i',$app['openTime']);
       $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('warning' => 'Questa pagina è chiusa dal '.$closeStart." al ".$closeEnd));
     }
+    $uid = getUID($app['conn'],$_SESSION['user']);
+    $query = "SELECT COUNT(*) FROM user_roster WHERE UID = '$uid'";
+    $result = getResult($app['conn'],$query);
+    if($result === false)
+      $app->abort(452,__FILE__." (".__LINE__.")");
+    $row = mysqli_fetch_row($result);
+    if((int)$row[0] !== 23){ //Roster incomplete
+      $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('error' => 'Sembra che la tua rosa sia incompleta'));
+    }
     else{
-      //Show the player that play
+      //Show the soccer players that play
       $uid = getUID($app['conn'],$_SESSION['user']);
       $playingPlayers = array('POR'=>'',
                               'DIF-1'=>'',
@@ -669,10 +735,13 @@
                               'ATT-R-1'=>'',
                               'ATT-R-2'=>'');
       $query = "SELECT soccer_player.Name as name, disposition as role
-                FROM soccer_player, user_roster
-                WHERE user_roster.UID = '$uid'
-                AND soccer_player.SPID = user_roster.SPID
-                AND disposition <> 'NP'";
+                FROM soccer_player, user_formation,match_day
+                WHERE user_formation.UID = '$uid'
+                AND soccer_player.SPID = user_formation.SPID
+                AND user_formation.MID = match_day.MID
+                AND user_formation.MID = (
+                  SELECT MIN(MID) FROM match_day
+                  WHERE match_day.start > '$now')";
       $result = getResult($app['conn'],$query);
       if($result === false)
         $app->abort(452,__FILE__." (".__LINE__.")");
@@ -785,7 +854,7 @@
     $formation['ATT']['mod'] = $modulo[2];
 
     $uid = getUID($app['conn'],$_SESSION['user']);
-
+    //Fetch the players that can be put in the formation
     $query = "SELECT soccer_player.SPID as spid, soccer_player.Name as name, Position as pos
               FROM soccer_player, user_roster
               WHERE user_roster.UID = '$uid'
@@ -855,41 +924,53 @@
 
     $uid = getUID($app['conn'],$_SESSION['user']);
 
-    //First reset the disposition of each player
-    $query = "SELECT disposition FROM user_roster
-              WHERE UID = '$uid'
-              AND disposition <> 'NP'
-              FOR UPDATE";
+    //Check if the formation for this match day is already made, if so reset!
+    $now = time();
+    $query = "SELECT * FROM user_formation, match_day
+              WHERE user_formation.MID = match_day.MID
+              AND user_formation.MID = (
+                SELECT MIN(MID) FROM match_day
+                WHERE match_day.start > '$now')
+              AND UID = '$uid'";
     $result = getResult($app['conn'],$query);
-    if($result === false){
-      rollback($app['conn']);
-      $app->abort(452,__FILE__." (".__LINE__.")");
-    }
-    $query = "UPDATE user_roster
-              SET disposition = 'NP'
-              WHERE UID = '$uid'
-              AND disposition <> 'NP'";
-    $result = getResult($app['conn'],$query);
-    if($result === false){
-      rollback($app['conn']);
-      $app->abort(452,__FILE__." (".__LINE__.")");
-    }
-
-    //Set the players as playing
-    foreach ($sanitizedArray as $role => $SPID) {
-      $query = "SELECT disposition FROM user_roster
+    if(mysqli_affected_rows($app['conn']) !== 0){ //Formation is already done
+      $query = "SELECT * FROM user_formation
                 WHERE UID = '$uid'
-                AND SPID = '$SPID'
+                AND user_formation.MID = (
+                  SELECT MIN(MID) FROM match_day
+                  WHERE match_day.start > '$now')
                 FOR UPDATE";
       $result = getResult($app['conn'],$query);
       if($result === false){
         rollback($app['conn']);
         $app->abort(452,__FILE__." (".__LINE__.")");
       }
-      $query = "UPDATE user_roster
-                SET disposition = '$role'
-                WHERE UID = '$uid'
-                AND SPID = '$SPID'";
+      //Delete the formation to make a new one
+      $query = "DELETE FROM user_formation
+                WHERE user_formation.MID = (
+                  SELECT MIN(MID) FROM match_day
+                  WHERE match_day.start > '$now')
+                AND UID = '$uid'";
+      $result = getResult($app['conn'],$query);
+      if($result === false){
+        rollback($app['conn']);
+        $app->abort(452,__FILE__." (".__LINE__.")");
+      }
+    }
+    //Set the players as playing
+    foreach ($sanitizedArray as $role => $SPID) {
+      $pk = getLastPrimaryKey($app['conn'],'user_formation')+1;
+      //Fetch the matchday
+      $query = "SELECT MIN(MID) FROM match_day
+                WHERE match_day.start > '$now'";
+      $result = getResult($app['conn'],$query);
+      if($result === false){
+        rollback($app['conn']);
+        $app->abort(452,__FILE__." (".__LINE__.")");
+      }
+      $row = mysqli_fetch_row($result);
+      $MID = (int)$row[0];
+      $query = "INSERT INTO user_formation VALUES('$pk','$uid','$SPID','$MID','$role')";
       $result = getResult($app['conn'],$query);
       if($result === false){
         rollback($app['conn']);
@@ -921,10 +1002,12 @@
                             'ATT-R-1'=>'',
                             'ATT-R-2'=>'');
     $query = "SELECT soccer_player.Name as name, disposition as role
-              FROM soccer_player, user_roster
-              WHERE user_roster.UID = '$uid'
-              AND soccer_player.SPID = user_roster.SPID
-              AND disposition <> 'NP'";
+              FROM soccer_player, user_formation
+              WHERE user_formation.UID = '$uid'
+              AND soccer_player.SPID = user_formation.SPID
+              AND user_formation.MID = (
+                SELECT MIN(MID) FROM match_day
+                WHERE match_day.start > '$now')";
     $result = getResult($app['conn'],$query);
     if($result === false)
       $app->abort(452,__FILE__." (".__LINE__.")");
@@ -1008,53 +1091,6 @@
 **   ========================================================================
 */
 
-
-  $gazzettaMarks = function(Request $req, Silex\Application $app){
-    //Check to see if the marks are already in DB. Fetch only the last marks
-    $now = time();
-    $query = "SELECT * FROM player_mark
-              WHERE player_mark.MID = (
-                SELECT MAX(MID) FROM match_day
-                WHERE match_day.end <= '$now')";
-    $result = getResult($app['conn'],$query);
-    if($result === false)
-      $app->abort(452,__FILE__." (".__LINE__.")");
-
-    if(mysqli_affected_rows($app['conn']) === 0){ //Results are still not out, attempt fetch
-      $marksPage = 'http://www.gazzetta.it/calcio/fantanews/voti/serie-a-2015-16/';
-      ini_set("user_agent", "Descriptive user agent string");
-      $htmlPage = file_get_contents($marksPage);
-      $doc = phpQuery::newDocument($htmlPage);
-      
-      //Get the matchday
-      $mid = pq($doc['ul.menuDaily li.active'])->children('a')->text();
-
-      if(($rv = begin($app['conn'])) !== true)
-        $app->abort($rv->getCode(),$rv->getMessage());
-
-      foreach (pq($doc['ul.magicTeamList li:not(".head")']) as $row) {    
-        //Get the Name and ID
-        $link = pq($row)->find('span.playerNameIn')->children('a')->attr('href');
-        $link = explode('/',$link);
-        //Divide name from ID
-        $name_and_id = explode('_',$link[count($link)-1]);
-        //Save the SPID
-        $SPID = sanitizeInput($app['conn'],$name_and_id[count($name_and_id)-1]);
-        $mark = sanitizeInput($app['conn'],pq($row)->find('div.inParameter.fvParameter')->text());
-
-        $pk = getLastPrimaryKey($app['conn'],'player_mark')+1;
-        $query = "INSERT INTO player_mark VALUES ('$pk','$SPID','$mid','$mark')";
-        $result = getResult($app['conn'],$query);
-        if($result === false){
-          rollback($app['conn']);
-          $app->abort(452,__FILE__." (".__LINE__.")");
-        }
-
-      }
-      commit($app['conn']);
-    }
-  };
-
   $app->get('/marks',function() use($app){
     if(!isset($_SESSION['user']))
       return $app->redirect(dirname($_SERVER['REQUEST_URI']).'/login');
@@ -1065,21 +1101,114 @@
     */
     $uid = getUID($app['conn'],$_SESSION['user']);
     $now = time();
-    $query = "SELECT DISTINCT Position as pos, Name as name, mark
-              FROM soccer_player, user_roster, player_mark
-              WHERE soccer_player.SPID = user_roster.SPID
-              AND soccer_player.SPID = player_mark.SPID
-              AND user_roster.SPID = player_mark.SPID
-              AND user_roster.disposition <> 'NP'
-              AND user_roster.UID = '$uid'
-              AND player_mark.MID = (
+    $query = "SELECT Name as name, disposition as role, mark
+              FROM soccer_player sp, user_formation uf, player_mark pm
+              WHERE sp.SPID = uf.SPID
+              AND pm.MID = uf.MID
+              AND pm.SPID = sp.SPID
+              AND pm.MID = (
                 SELECT MAX(MID) FROM match_day
                 WHERE match_day.end <= '$now')
-              ORDER BY Position DESC";
-
-    $twigParameters = getTwigParameters('Voti',$app['siteName'],'marks',$app['userMoney']);
+              AND uf.UID = '$uid'";
+    $result = getResult($app['conn'],$query);
+    if($result === false)
+      $app->abort(452,__FILE__." (".__LINE__.")");
+    //This is done just to enforce the order when the output is shown
+    $playerMarks = array( 'POR'=>'',
+                          'DIF-1'=>'',
+                          'DIF-2'=>'',
+                          'DIF-3'=>'',
+                          'DIF-4'=>'',
+                          'DIF-5'=>'',
+                          'CEN-1'=>'',
+                          'CEN-2'=>'',
+                          'CEN-3'=>'',
+                          'CEN-4'=>'',
+                          'CEN-5'=>'',
+                          'ATT-1'=>'',
+                          'ATT-2'=>'',
+                          'ATT-3'=>'',
+                          'POR-R'=>'',
+                          'DIF-R-1'=>'',
+                          'DIF-R-2'=>'',
+                          'CEN-R-1'=>'',
+                          'CEN-R-2'=>'',
+                          'ATT-R-1'=>'',
+                          'ATT-R-2'=>'');
+    while(($row=mysqli_fetch_array($result,MYSQLI_ASSOC)) !== null){
+      switch ($row['role']) {
+        case 'POR':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'DIF-1':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'DIF-2':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'DIF-3':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'DIF-4':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'DIF-5':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'CEN-1':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'CEN-2':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'CEN-3':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'CEN-4':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'CEN-5':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'ATT-1':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'ATT-2':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'ATT-3':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'POR-R':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'DIF-R-1':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'DIF-R-2':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'CEN-R-1':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'CEN-R-2':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'ATT-R-1':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        case 'ATT-R-2':
+          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          break;
+        default:
+          # Should never happen
+          break;
+      }
+    }
+    myDump($playerMarks);
+    $twigParameters = getTwigParameters('Voti',$app['siteName'],'marks',$app['userMoney'],array('playerMarks'=>$playerMarks));
     return $app['twig']->render('index.twig',$twigParameters);
-  })->before($gazzettaMarks);
+  });
 
 
 
