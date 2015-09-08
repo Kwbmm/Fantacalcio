@@ -17,7 +17,7 @@
             <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
             <input type="text" class="form-control" id="username" name="username" placeholder="Username" required="required">
           </div>
-          <small class="help-block">Minimo 3 caratteri, lettere e numeri, primo carattere una lettera</small>
+          <small class="help-block">Compreso tra 3 e 15 caratteri, lettere e numeri, primo carattere una lettera. No spazi.</small>
         </div>
         <div class="form-group">
           <label for="password" class="sr-only">Password</label>
@@ -25,9 +25,9 @@
             <div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
             <input type="password" class="form-control" id="password" name="password" placeholder="Password" required="required">
           </div>
-          <small class="help-block">Minimo 6 caratteri</small>
+          <small class="help-block">Minimo 6 caratteri. No spazi.</small>
         </div>
-        <button type="submit" class="btn btn-primary">Registrati</button>
+        <button type="submit" class="btn btn-primary" id="registerBtn">Registrati</button>
       </form>        
     {% endif %}
   </div>

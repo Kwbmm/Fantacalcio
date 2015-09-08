@@ -30,7 +30,11 @@
         return $app['twig']->render('index.twig',$twigParameters);
       case 462: //User/psw wrong (Login/register)
         return $app['twig']->render('index.twig',$twigParameters);
-      
+      case 463: //User/psw too short/long
+        return $app['twig']->render('index.twig',$twigParameters);
+      case 464: //User not starting with letter
+        return $app['twig']->render('index.twig',$twigParameters);
+        
       case 465: //Buy failed, not enough money
         return $app['twig']->render('index.twig',$twigParameters);
       case 466: //Amounts of POR/DIF/CEN/ATT exceeded

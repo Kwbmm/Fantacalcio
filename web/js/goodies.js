@@ -1,3 +1,32 @@
+function registerPage(){
+  $('button#registerBtn').click(function(){
+    $('input#username').parent('div.input-group').removeClass('has-error');
+    $('input#password').parent('div.input-group').removeClass('has-error');
+    var name = $('input#username').val();
+    var psw = $('input#password').val();
+    name = name.trim();
+    psw = psw.trim();
+    if((name.length < 3 || name.length > 15) && psw.length < 6){
+      $('input#username').parent('div.input-group').addClass('has-error');
+      $('input#password').parent('div.input-group').addClass('has-error');
+      return false;
+    }
+    if(name.length < 3 || name.length > 15){
+      $('input#username').parent('div.input-group').addClass('has-error');
+      return false;
+    }
+    if(psw.length < 6){
+      $('input#password').parent('div.input-group').addClass('has-error');
+      return false;
+    }
+    var matcher = new RegExp('^[a-zA-Z]');
+    if(!matcher.test(name)){//Doesn't start with a letter 
+      $('input#username').parent('div.input-group').addClass('has-error');
+      return false;
+    }
+  });
+}
+
 function buyPage(){
   
   //Iterate over all cookies and look for players ID that you selected to buy.
@@ -208,6 +237,9 @@ function formationPage(){
 $(document).ready(function(){
   var page = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
   switch(page){
+    case 'register':
+      registerPage();
+      break;
     case 'buy':
       buyPage();
       break;

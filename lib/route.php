@@ -424,6 +424,15 @@
     if($username === '' || $password === '')
       $app->abort(460,"Sembra che qualche campo sia vuoto");
 
+    if(strlen($username) < 3 || strlen($username) > 15 || strlen($password) < 6)
+      $app->abort(463,"Sembra che qualche campo non rispetti la lunghezza richiesta");
+    if(($test=preg_match('/^[A-Za-z]/', $username)) === false){
+      $app->abort(452,"Registration FAILED");
+    }
+    elseif ($test === 0) {
+      $app->abort(464,"Sembra che il nome utente non inizi con una lettera");
+    }
+    
     if(($rv = begin($app['conn'])) !== true)
       $app->abort($rv->getCode(),$rv->getMessage());
 
