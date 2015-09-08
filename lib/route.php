@@ -58,7 +58,7 @@
         $app->abort(452,__FILE__." (".__LINE__.")");
       $row = mysqli_fetch_row($result);
       $app['closeTime'] = $row[0] - (60*5); //Close 5 minutes before
-      $app['openTime'] = $row[1] + (60*10); //Open 10 minutes after
+      $app['openTime'] = $row[1] + (60*15); //Open 15 minutes after
     }    
   }
 
@@ -1373,7 +1373,7 @@
     */
     $uid = getUID($app['conn'],$_SESSION['user']);
     $now = time();
-    $query = "SELECT soccer_player.Name as name, player_mark.mark as mark, user_formation.disposition as role
+    $query = "SELECT user_formation.MID as mid, soccer_player.Name as name, player_mark.mark as mark, user_formation.disposition as role
               FROM soccer_player
                 LEFT OUTER JOIN player_mark ON player_mark.SPID=soccer_player.SPID
                 LEFT OUTER JOIN user_formation ON user_formation.SPID = soccer_player.SPID
@@ -1408,6 +1408,7 @@
                           'ATT-R-1'=>'',
                           'ATT-R-2'=>'');
     while(($row=mysqli_fetch_array($result,MYSQLI_ASSOC)) !== null){
+      $matchDay = $row['mid'];
       switch ($row['role']) {
         case 'POR':
           $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
@@ -1477,7 +1478,7 @@
           break;
       }
     }
-    $twigParameters = getTwigParameters('Voti',$app['siteName'],'marks',$app['userMoney'],array('playerMarks'=>$playerMarks));
+    $twigParameters = getTwigParameters('Voti',$app['siteName'],'marks',$app['userMoney'],array('playerMarks'=>$playerMarks,'matchDay'=>$matchDay));
     return $app['twig']->render('index.twig',$twigParameters);
   });
 
