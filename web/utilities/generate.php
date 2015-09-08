@@ -3,17 +3,17 @@
   require '../../vendor/autoload.php';
   use GuzzleHttp\Client;
 
-  $dbhost = 'localhost'; //Name of the db host
-  $dbname = 'fantacalcio'; //Name of the db
-  $dbusername = 'root'; //Name of the db username
-  $dbpsw = ''; //Password of the db
+  $dbhost = 'db591003352.db.1and1.com'; //Name of the db host
+  $dbname = 'db591003352'; //Name of the db
+  $dbusername = 'dbo591003352'; //Name of the db username
+  $dbpsw = 'FArdzmrc90IO'; //Password of the db
   $conn = mysqli_connect($dbhost, $dbusername, $dbpsw, $dbname) or die(mysqli_error());
   /*
     Deprecated for now
     getTransfermarktData($conn);
   */
-  //getGazzettaData($conn);
-  //getFootballData($conn);
+  getGazzettaData($conn);
+  getFootballData($conn);
 
 /*
 **   ====================================================================

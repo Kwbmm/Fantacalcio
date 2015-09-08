@@ -4,8 +4,12 @@
   $app->error(function (\Exception $e, $code) use($app) {
     $page = basename($_SERVER['REQUEST_URI']);
     $extra = array('error' => $e->getMessage());
-    $extra['error'] .= " (".$e->getCode().")";
-    $twigParameters = getTwigParameters(ucfirst($page),$app['siteName'],$page,$app['userMoney'],$extra);
+    $extra['error'] .= " (".$code.")";
+    if(isset($app['userMoney'])){
+      $twigParameters = getTwigParameters(ucfirst($page),$app['siteName'],$page,$app['userMoney'],$extra);
+    }
+    else
+      $twigParameters = getTwigParameters(ucfirst($page),$app['siteName'],$page,$app['startMoney'],$extra);      
     switch ($code) {
       //Custom error codes can start from 452 (https://it.wikipedia.org/wiki/Codici_di_stato_HTTP#4xx_Client_Error)
       /*

@@ -21,7 +21,7 @@
   **  config.json maybe will be used in the future for storing other start data
   **  which do not fit inside the DB.
   */
-  $app['configFilePath'] = $_SERVER['DOCUMENT_ROOT'].'/Fantacalcio/lib/config.json';
+  $app['configFilePath'] = __DIR__.'/config.json';
   if(file_exists($app['configFilePath'])){
     updateConfig($app);
   }
