@@ -168,10 +168,19 @@
     $loggedInPages = array('buy','checkout','roster','formation','logout','marks'); //Pages to display ONLY when logged in
     $loggedOutPages = array('register','login'); //Pages to display ONLY when logged out
     if($pages === null){
+      // $pages = array( 'Home'        => array('home',false,true),
+      //                 'Mercato'     => array('Cerca'=> array('buy',false,true),'Carrello' => array('checkout',false,true)),
+      //                 'Rosa'        => array('roster',false,true),
+      //                 'Formazione'  => array('formation',false,true),
+      //                 'Voti'        => array('marks',false,true),
+      //                 'Registrati'  => array('register',false,true),
+      //                 'Login'       => array('login',false,true),
+      //                 'Regolamento' => array('rules',false,true),
+      //                 'Logout'      => array('logout',false,true)
+      //             );
       $pages = array( 'Home'        => array('home',false,true),
-                      'Mercato'     => array('Cerca'=> array('buy',false,true),'Carrello' => array('checkout',false,true)),
-                      'Rosa'        => array('roster',false,true),
-                      'Formazione'  => array('formation',false,true),
+                      'Profilo'     => array('Rosa' => array('roster',false,true), 'Formazione' => array('formation',false,true)),
+                      'Mercato'     => array('Cerca'=> array('buy',false,true),'Carrello' => array('checkout',false,true)),                      
                       'Voti'        => array('marks',false,true),
                       'Registrati'  => array('register',false,true),
                       'Login'       => array('login',false,true),
