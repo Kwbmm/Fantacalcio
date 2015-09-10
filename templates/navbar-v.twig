@@ -25,7 +25,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{displayedName}} <span class="caret"></span></a>  
             <ul class="dropdown-menu">
               {% if displayedName == 'Profilo' and userMoney is defined and username is defined and userMoney >= 0 %}
-                <li class="navbar-text center-elem"><span class="glyphicon glyphicon-user"></span> {{username}} || <span class="glyphicon glyphicon-piggy-bank"></span> {{userMoney}}</li>         
+                <li class="navbar-text"><span class="glyphicon glyphicon-user"></span> {{username}}  <span class="glyphicon glyphicon-piggy-bank"></span> {{userMoney}}</li>
               {% endif %}
           {% endif %}
           {% for dd_displayedName,dd_options in options %}

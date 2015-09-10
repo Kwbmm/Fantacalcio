@@ -104,6 +104,7 @@ body.slide-active {
   }
   #slide-nav #slidemenu .navbar-nav .dropdown-menu li.navbar-text{
     padding: 0px 15px 0px 25px;
+    white-space: nowrap;
   }
 
   #slide-nav {
