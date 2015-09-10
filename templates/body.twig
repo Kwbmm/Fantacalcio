@@ -1,10 +1,18 @@
   <body>
-    {% include 'navbar-v.twig' %}
-    <div id="page-content">{#For vertical navbar#}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="page-header text-center ">
+            <h1>{{siteName}}</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'navbar-v2.twig' %}
       <div class="container-fluid">
         <div class="row">
           {% include "pages/" ~ twigTemplate ~ ".twig" %}      
         </div>     
       </div>
-    </div>
+  {% include 'footer.twig' %}
   </body>
