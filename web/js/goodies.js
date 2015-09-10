@@ -1,14 +1,23 @@
 function registerPage(){
   $('button#registerBtn').click(function(){
     $('input#username').parent('div.input-group').removeClass('has-error');
-    $('input#password').parent('div.input-group').removeClass('has-error');
+    $('input#password').parent('div.input-group').removeClass('has-error').removeClass('has-success');
+    $('input#repeat-password').parent('div.input-group').removeClass('has-error').removeClass('has-success');
+    $('input#invite-code').parent('div.input-group').removeClass('has-error');
     var name = $('input#username').val();
     var psw = $('input#password').val();
+    var repeatPsw = $('input#repeat-password').val();
+    var invite = $('input#invite-code').val();
     name = name.trim();
     psw = psw.trim();
-    if((name.length < 3 || name.length > 15) && psw.length < 6){
+    repeatPsw = repeatPsw.trim();
+    invite = invite.trim();
+
+    if((name.length < 3 || name.length > 15) && psw.length < 6 && repeatPsw.length < 6 && invite.length < 1){
       $('input#username').parent('div.input-group').addClass('has-error');
       $('input#password').parent('div.input-group').addClass('has-error');
+      $('input#repeat-password').parent('div.input-group').addClass('has-error');
+      $('input#invite-code').parent('div.input-group').addClass('has-error');
       return false;
     }
     if(name.length < 3 || name.length > 15){
@@ -17,6 +26,19 @@ function registerPage(){
     }
     if(psw.length < 6){
       $('input#password').parent('div.input-group').addClass('has-error');
+      return false;
+    }
+    if(repeatPsw.length < 6){
+      $('input#repeat-password').parent('div.input-group').addClass('has-error');
+      return false;      
+    }
+    if(psw !== repeatPsw){
+      $('input#password').parent('div.input-group').addClass('has-error');
+      $('input#repeat-password').parent('div.input-group').addClass('has-error');
+      return false;
+    }
+    if(invite.length < 1){
+      $('input#invite-code').parent('div.input-group').addClass('has-error');
       return false;
     }
     var matcher = new RegExp('^[a-zA-Z]');

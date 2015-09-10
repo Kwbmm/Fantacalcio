@@ -417,15 +417,26 @@
   $app->post('/register',function(Request $req) use($app){
     $username = $req->get('username');
     $password = $req->get('password');
+    $repeatPsw = $req->get('repeat-password');
+    $invite = $req->get('invite-code');
     $username = sanitizeInput($app['conn'],$username);
     $username = trim($username);
     $password = sanitizeInput($app['conn'],$password);
     $password = trim($password);
-    if($username === '' || $password === '')
+    $repeatPsw = sanitizeInput($app['conn'],$repeatPsw);
+    $repeatPsw = trim($repeatPsw);
+    $invite = sanitizeInput($app['conn'],$invite);
+    $invite = trim($invite);
+    
+    if($username === '' || $password === '' || $invite === '')
       $app->abort(460,"Sembra che qualche campo sia vuoto");
-
+    
+    if($password !== $repeatPsw)
+      $app->abort(452,"La password non coincide!");
+    
     if(strlen($username) < 3 || strlen($username) > 15 || strlen($password) < 6)
       $app->abort(463,"Sembra che qualche campo non rispetti la lunghezza richiesta");
+    
     if(($test=preg_match('/^[A-Za-z]/', $username)) === false){
       $app->abort(452,"Registration FAILED");
     }
@@ -444,6 +455,16 @@
       rollback($app['conn']);
       $app->abort(461,"Username già in uso");
     }
+
+    $query = "SELECT * FROM invite_code WHERE code = '$invite' FOR UPDATE";
+    $result = getResult($app['conn'],$query);
+    if(mysqli_affected_rows($app['conn']) !== 1){
+      rollback($app['conn']);
+      $app->abort(452,"Codice invito errato");
+    }
+    $query = "DELETE FROM invite_code WHERE code='$invite'";
+    $result= getResult($app['conn'],$query);
+
     $password = password_hash($password,PASSWORD_BCRYPT);
     $uid = getLastPrimaryKey($app['conn'],'user')+1;
     $money = $app['startMoney'];

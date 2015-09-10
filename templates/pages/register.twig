@@ -27,6 +27,21 @@
           </div>
           <small class="help-block">Minimo 6 caratteri. No spazi.</small>
         </div>
+        <div class="form-group">
+          <label for="repeat-password" class="sr-only">Ripeti Password</label>
+          <div class="input-group">
+            <span class="input-group-addon">Ripeti Password</span>
+            <input type="password" class="form-control" id="repeat-password" name="repeat-password" placeholder="Ripeti Password" required="required">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="invite-code" class="sr-only">Codice invito</label>
+          <div class="input-group">
+            <span class="input-group-addon">Codice Invito</span>
+            <input type="text" class="form-control" id="invite-code" name="invite-code" placeholder="Inserisci il tuo invito" required="required">
+          </div>
+          <small class="help-block">Inserisci qui sopra il codice invito che ti è stato fornito.</small>
+        </div>
         <button type="submit" class="btn btn-primary" id="registerBtn">Registrati</button>
       </form>        
     {% endif %}
