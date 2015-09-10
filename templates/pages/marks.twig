@@ -1,8 +1,12 @@
   <div class="col-xs-12 col-sm-6 col-sm-offset-3">
   {% if parameters.matchDay %}
     <h1 class="text-center">Voti giornata {{parameters.matchDay}}</h1>
+  {% else %}
+      <div class="alert alert-warning text-center">
+          <h3>Voti non disponibili!</h3>I voti non sono ancora pronti.. 
+      </div>
   {% endif %}
-  {% if parameters.playerMarks %}
+  {% if parameters.playerMarks.POR %} {#Check the first player, but could have also checked the last..#}
     <div class="table-responsive">
       <table class="table table-hover table-bordered table-condensed">
         <thead>
