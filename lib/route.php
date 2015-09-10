@@ -762,7 +762,7 @@
 
     foreach ($sanitizedValues as $key) {
       $pk = getLastPrimaryKey($app['conn'],'user_roster')+1;
-      $query = "INSERT INTO user_roster VALUES('$pk','$uid','$key','NP')";
+      $query = "INSERT INTO user_roster VALUES('$pk','$uid','$key')";
       $result = getResult($app['conn'],$query);
       if($result === false){
         rollback($app['conn']);
@@ -889,6 +889,14 @@
       if(mysqli_affected_rows($app['conn']) !== 1 ){ //The deletion failed
         rollback($app['conn']);
         $app->abort(470,"Si è verificato un errore durante l'operazione DELETE");        
+      }
+      //Delete all the data in user_formation of the user
+      $query = "DELETE FROM user_formation
+                WHERE UID = '$uid'";
+      $result = getResult($app['conn'],$query);
+      if($result === false){
+        rollback($app['conn']);
+        $app->abort(452,__FILE__." (".__LINE__.")");
       }
 
       $query = "UPDATE user, soccer_player
