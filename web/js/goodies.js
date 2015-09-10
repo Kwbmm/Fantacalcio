@@ -47,6 +47,23 @@ function registerPage(){
       return false;
     }
   });
+  $('input#repeat-password').change(function(){
+    var psw = $('input#password').val();
+    var repeatPsw = $('input#repeat-password').val();
+    psw = psw.trim();
+    repeatPsw = repeatPsw.trim();
+    $('input#password').parent('div.input-group').removeClass('has-error').removeClass('has-success');
+    $('input#repeat-password').parent('div.input-group').removeClass('has-error').removeClass('has-success');
+    if(psw !== repeatPsw){
+      $('input#password').parent('div.input-group').addClass('has-error');
+      $('input#repeat-password').parent('div.input-group').addClass('has-error');
+    }
+    else{
+      $('input#password').parent('div.input-group').addClass('has-success');
+      $('input#repeat-password').parent('div.input-group').addClass('has-success');      
+    }
+
+  });
 }
 
 function buyPage(){
