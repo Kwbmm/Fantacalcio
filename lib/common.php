@@ -109,8 +109,10 @@
   }
 
   //Generates a random string, used as selector for auth_token
-  function getRandomString($length = 12) {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ|!£$%&/()=?^-_<>';
+  function getRandomString($length = 12,$specials=true) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if($specials)
+      $characters.='|!£$%&/()=?^-_<>';
     $string = '';
 
     for($i = 0; $i < $length; $i++)
