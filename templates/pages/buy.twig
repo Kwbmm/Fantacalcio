@@ -1,138 +1,111 @@
-  <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+  <div class="small-12 medium-8 medium-offset-2 columns">
     <h1 class="text-center">Acquista Giocatori</h1>
     {% if parameters.error %}
-      <div class="alert alert-danger text-center">
+      <div data-alert class="alert-box alert radius text-center">
         <h3>Errore!</h3>{{parameters.error}}
       </div>
     {% endif %}
     {% if parameters.warning %}
-      <div class="alert alert-warning text-center">
+      <div data-alert class="alert-box warning radius text-center">
           <h3>Attenzione!</h3> {{parameters.warning}}
       </div>
     {% else %}
-    <h5 class="text-center">Prossima chiusura: <span class="label label-danger">{{parameters.closeTime}}</span></h5 class="text-center">
-    <div class="panel-group" id="accordionGroup" role="tablist" aria-multiselectable="true">
-      <div class="panel panel-info">
-        <div class="panel-heading" role="tab" id="guideHeading">
-          <h4 class="panel-title">
-            {% if parameters.players is defined %}{#Keep the searchbox closed if we already did a search#}
-            <a role="button" data-toggle="collapse" data-parent="#accordionGroup" href="#collapseGuide" aria-expanded="false" aria-controls="collapseGuide">
-              Guida
-            </a>
-            {% else %}
-            <a role="button" data-toggle="collapse" data-parent="#accordionGroup" href="#collapseGuide" aria-expanded="true" aria-controls="collapseGuide">
-              Guida
-            </a>
-            {% endif %}          
-          </h4>
-        </div>
-        {% if parameters.players is defined %}
-        <div id="collapseGuide" class="panel-collapse collapse" role="tabpanel" aria-labelledby="guideHeading">
-        {% else %}
-        <div id="collapseGuide" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="guideHeading">
-        {% endif %}
-          <div class="panel-body">
-            <ol>
-              <li>Cerca il giocatore tramite il box di ricerca qua sotto cliccando su "Cerca Giocatore".<br />Puoi inserire anche solo parte del nome</li>
-              <li>Se hai abbastanza soldi vedrai un'icona sotto la colonna "Compra" per effettuare l'acquisto. Cliccaci sopra!</li>
-              <li>Puoi effettuare altre ricerche prima di terminare gli acquisti: quando clicchi sull'icona "Compra" i giocatori vengono messi nel carrello della spesa.</li>
-              <li>Una volta comperati tutti i giocatori che vuoi, vai alla pagina del carrello per confermare gli acquisti!</li>
-            </ol>
-            <p>Ricordati che ti vengono mostrati solo i giocatori che non sono ancora nella tua rosa</p>
-            <p><small>P.S: Puoi vedere la lista completa dei giocatori lasciando i campi vuoti e premendo su "Cerca"</small></p>
+    <h5 class="text-center">Prossima chiusura: <span class="label alert radius">{{parameters.closeTime}}</span></h5 class="text-center">
+    <ul class="tabs" data-tab role="tablist">
+      {% if parameters.players is defined %}
+        <li class="tab-title" role="presentation"><a href="#panel2-1" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-1">Guida</a></li>
+      {% else %}
+        <li class="tab-title active" role="presentation"><a href="#panel2-1" role="tab" tabindex="0" aria-selected="true" aria-controls="panel2-1">Guida</a></li>
+      {% endif %}
+      {% if parameters.players is defined %}
+        <li class="tab-title active" role="presentation"><a href="#panel2-2" role="tab" tabindex="0" aria-selected="true" aria-controls="panel2-2">Cerca Giocatore</a></li>
+      {% else %}
+        <li class="tab-title" role="presentation"><a href="#panel2-2" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-2">Cerca Giocatore</a></li>
+      {% endif %}
+    </ul>
+    <div class="tabs-content">
+      <section role="tabpanel" {% if parameters.players is defined %} aria-hidden="true" class="content"{% else %} aria-hidden="false" class="content active"{% endif %} id="panel2-1">
+        <ol>
+          <li>Cliccando su "Cerca Giocatore" ti si aprirà la scheda per la ricerca<br />Nel campo "Nome" puoi anche inserire solo parte del nome.</li>
+          <li>Se hai abbastanza crediti vedrai un'icona sotto la colonna "Compra" per effettuare l'acquisto. Cliccaci sopra!</li>
+          <li>Puoi effettuare altre ricerche prima di terminare gli acquisti: quando clicchi sull'icona "Compra" i giocatori vengono messi nel carrello della spesa.</li>
+          <li>Una volta comperati tutti i giocatori che vuoi, vai alla pagina del carrello per confermare gli acquisti!</li>
+        </ol>
+        <p>Ricordati che ti vengono mostrati solo i giocatori che non sono ancora nella tua rosa</p>
+        <p><small>P.S: Puoi vedere la lista completa dei giocatori lasciando i campi vuoti e premendo su "Cerca"</small></p>
+      </section>
+      <section role="tabpanel" {% if parameters.players is defined %} aria-hidden="false" class="content active"{% else %} aria-hidden="true" class="content"{% endif %} id="panel2-2">
+        <form action="buy" method="POST" role="form">
+          <div class="row">
+            <div class="small-12 columns">
+              <label for="form-name">Nome
+                <input type="text" id="form-name" name="form-name" placeholder="Nome Giocatore">
+              </label>
+            </div>
           </div>
-        </div>
-      </div>{#END panel panel-info#}
-      <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="findHeading">
-          <h4 class="panel-title">
-            <a role="button" data-toggle="collapse" data-parent="#accordionGroup" href="#collapseSearch" aria-expanded="false" aria-controls="collapseSearch">
-              Cerca Giocatore
-            </a>
-          </h4>
-        </div>
-        <div id="collapseSearch" class="panel-collapse collapse" role="tabpanel" aria-labelledby="findHeading">
-          <div class="panel-body">
-            <form action="buy" method="POST" role="form">
-              <div class="form-group">
-                <label for="form-name">Nome</label>
-                <input type="text" class="form-control" id="form-name" name="form-name" placeholder="Nome Giocatore">
-              </div>
-              <div class="form-group">
-                <label for="form-price">Prezzo</label>
-                <input type="number" min="0" class="form-control" id="form-price" name="form-price" placeholder="Prezzo minore o uguale di..">
-              </div>
-              <div class="form-group text-center">
-                <label>Ruolo</label>
-                <div class="checkbox">
-                  <label class="checkbox-inline">
-                    <input type="checkbox" name="form-por" value="POR">
-                    Portiere
-                  </label>
-                  <label class="checkbox-inline">
-                    <input type="checkbox" name="form-dif" value="DIF">
-                    Difensore
-                  </label>
-                  <label class="checkbox-inline">
-                    <input type="checkbox" name="form-cen" value="CEN">
-                    Centrocampista
-                  </label>
-                  <label class="checkbox-inline">
-                    <input type="checkbox" name="form-att" value="ATT">
-                    Attaccante
-                  </label>
-                </div>
-              </div>
-              <div class="text-center form-group">
-                <button type="submit" class="btn btn-primary" id="searchBtn">Cerca</button>
-              </div>
-            </form>
+          <div class="row">
+            <div class="small-12 columns">
+              <label for="form-price">Prezzo</label>
+              <input type="number" min="0" id="form-price" name="form-price" placeholder="Prezzo minore o uguale di..">
+            </div>
           </div>
-        </div>
-      </div>{#END panel panel-default#}
-    </div>{#END panel-group#}        
+          <div class="row text-center">
+            <div class="small-12 columns">
+              <label>Ruolo</label>
+              <input type="checkbox" id="form-por" name="form-por" value="POR"><label for="form-por">Portiere</label>
+              <input type="checkbox" id="form-dif" name="form-dif" value="DIF"><label for="form-dif">Difensore</label>
+              <input type="checkbox" id="form-cen" name="form-cen" value="CEN"><label for="form-cen">Centrocampista</label>
+              <input type="checkbox" id="form-att" name="form-att" value="ATT"><label for="form-att">Attaccante</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="small-12 columns text-center">
+              <button type="submit" class="button radius" id="searchBtn">Cerca</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
     {% endif %}
     {% if parameters.players is defined %}
       {% if parameters.players is not empty %}
         <p class="text-center">
-          <a class="btn btn-info" href="checkout" role="button">Vai al carrello</a>
+          <a class="button tiny info radius" href="checkout" role="button">Vai al carrello</a>
         </p>
-        <div class="table-responsive">
-          <table class="table table-hover table-bordered table-condensed">
-            <thead class="header">
-              <tr>
-                <th class="text-center">Ruolo</th>
-                <th class="text-center">Nome</th>
-                <th class="text-center">Prezzo</th>
-                <th class="text-center">Compra</th>
-              </tr>
-            </thead>
-            <tbody>
-            {% for data in parameters.players %}
-              <tr class="text-center">
-                <td>{{data.Position}}</td>
-                {% set name = data.Name|split(' ', 2) %}
-                {% if name[1] is defined %}{#Some names don't have surnames, so this may not exist#}
-                  <td><span class="name">{{name[0]|first}}. {{name[1]}}</span><br /><small>{{data.Team|raw}}</small></td>
-                {% else %}
-                  <td><span class="name">{{name[0]}}</span><br /><small>{{data.Team|raw}}</small></td>                
+        <table>
+          <thead>
+            <tr>
+              <th class="text-center">Ruolo</th>
+              <th class="text-center">Nome</th>
+              <th class="text-center">Prezzo</th>
+              <th class="text-center">Compra</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for data in parameters.players %}
+            <tr>
+              <td class="text-center">{{data.Position}}</td>
+              {% set name = data.Name|split(' ', 2) %}
+              {% if name[1] is defined %}{#Some names don't have surnames, so this may not exist#}
+                <td class="text-center"><span class="name">{{name[0]|first}}. {{name[1]}}</span><br /><small>{{data.Team|raw}}</small></td>
+              {% else %}
+                <td class="text-center"><span class="name">{{name[0]}}</span><br /><small>{{data.Team|raw}}</small></td>                
+              {% endif %}
+              <td class="text-center price">{{data.Cost}}</td>
+              <td class="text-center">
+                {% if userMoney >= data.Cost %}
+                  <a><i class="fi-shopping-cart" player-id="{{data.SPID}}"></i></a>
+                  <a><i class="fi-x hide" player-id="{{data.SPID}}"></i></a>
                 {% endif %}
-                <td class="price">{{data.Cost}}</td>
-                <td>
-                  {% if userMoney >= data.Cost %}
-                    <span class="glyphicon glyphicon-shopping-cart text-primary" player-id="{{data.SPID}}"></span>
-                    <span class="hidden glyphicon glyphicon-remove text-danger" player-id="{{data.SPID}}"></span>
-                  {% endif %}
-                </td>
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-        </div>{#END table-responsive#}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
       {% else %}{#parameters.players is empty#}
-        <div class="alert alert-warning text-center">
+        <div data-alert class="alert-box warning radius text-center">
           <h3>Nessun risultato!</h3> Il giocatore che stai cercando non esiste o &egrave; gi&agrave; nella tua rosa.
         </div>
       {% endif %}
     {% endif %}
-  </div>{#END col-xs-12 col-sm-6 col-sm-offset-3#}
+  </div>{#END small-12 medium-6 medium-offset-3 columns#}
