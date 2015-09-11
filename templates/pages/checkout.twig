@@ -10,49 +10,47 @@
       <h3>Errore!</h3>{{parameters.error}}
     </div>
   {% elseif parameters.success %}
-    <div class="alert alert-success text-center">
+    <div data-alert class="alert-box success radius">
       <h3>Acquisti effettuati</h3>{{parameters.success}} 
     </div>
   {% else %}
-    <h5 class="text-center">Prossima chiusura: <span class="label alert radius">{{parameters.closeTime}}</span></h5 class="text-center">
+    <h5 class="text-center">Prossima chiusura: <span class="label alert radius">{{parameters.closeTime}}</span></h5>
     {% if parameters.purchases is defined and parameters.purchases is empty %}
       <div data-alert class="alert-box warning radius text-center">
         <h3>Vuoto!</h3> Non ci sono acquisti nel tuo carrello..
       </div>
     {% else %}
-    <h4>I tuoi crediti: <span class="label label-default">{{userMoney}}</span></h4>
+    <h4>I tuoi crediti: <span class="label radius secondary">{{userMoney}}</span></h4>
     <form action="checkout" method="POST" role="form">        
-      <div class="table-responsive">
-        <table class="table table-hover table-bordered table-condensed">
-          <thead>
-            <tr>
-              <th class="text-center">Ruolo</th>
-              <th class="text-center">Nome</th>
-              <th class="text-center">Prezzo</th>
-              <th class="text-center">Rimuovi</th>
-            </tr>
-          </thead>
-          <tbody>
-          {% for purchase in parameters.purchases %}
-            <tr class="text-center">
-              <td>{{purchase.role}}</td>
-              <td>{{purchase.name}}</td>
-              <td>{{purchase.price|number_format(0,',',' ')}}</td>
-              <td>
-                <span class="glyphicon glyphicon-trash text-danger" aria-hidden="true" player-id="{{purchase.id}}"></span>
-                <input type="hidden" value="" name="{{purchase.id}}">
-              </td>
-            </tr>
-            {% set total = total + purchase.price %}            
-          {% endfor %}
-          <tr class="active text-center">
-            <td colspan="4"><b>Totale</b>: <span id="totale">{{total}}</span></td>
+      <table>
+        <thead>
+          <tr>
+            <th class="text-center">Ruolo</th>
+            <th class="text-center">Nome</th>
+            <th class="text-center">Prezzo</th>
+            <th class="text-center">Compra</th>
           </tr>
-          </tbody>
-        </table>
-      </div>
+        </thead>
+        <tbody>
+        {% for purchase in parameters.purchases %}
+          <tr>
+            <td class="text-center">{{purchase.role}}</td>
+            <td class="text-center">{{purchase.name}}</td>
+            <td class="text-center">{{purchase.price|number_format(0,',',' ')}}</td>
+            <td class="text-center">
+              <a><i class="fi-trash" player-id="{{purchase.id}}"></i></a>
+              <input type="hidden" value="" name="{{purchase.id}}">
+            </td>
+          </tr>
+          {% set total = total + purchase.price %}            
+        {% endfor %}
+        <tr class="active text-center">
+          <td colspan="4" class="text-center"><b>Totale</b>: <span id="totale">{{total}}</span></td>
+        </tr>
+        </tbody>
+      </table>
       <div class="text-center">    
-        <button type="submit" {{ (total <= userMoney) ? 'class="btn btn-success"' : 'class="btn btn-success hidden"' }} id="confirmPurchases">Conferma Acquisti</button>
+        <button type="submit" {{ (total <= userMoney) ? 'class="button radius success"' : 'class="button radius success hide"' }} id="confirmPurchases">Conferma Acquisti</button>
       </div>
     </form>
     {% endif %}
