@@ -1,6 +1,6 @@
-  <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+  <div class="small-12 medium-8 medium-offset-2 columns">
     {% if parameters.error %}
-      <div class="alert alert-danger text-center">
+      <div data-alert class="alert-box alert radius text-center">
         <h3>Errore!</h3>{{parameters.error}}
       </div>
     {% elseif parameters.success %}
@@ -8,7 +8,7 @@
         <h3>Giocatori venduti!</h3>{{parameters.success}} 
       </div>
     {% elseif parameters.warning %}
-      <div class="alert alert-warning text-center">
+      <div data-alert class="alert-box warning radius text-center">
         <h3>Attenzione!</h3>{{parameters.warning}} 
       </div>        
     {% endif %}
@@ -69,7 +69,7 @@
         {% endif %}
       </form>
     {% elseif parameters.error is empty %}{#User has no players in its roster#}
-    <div class="alert alert-warning text-center">
+    <div data-alert class="alert-box warning radius text-center">
         <h3>Vuoto!</h3> Non hai nessun giocatore in rosa
     </div>
     {% endif %}

@@ -1,7 +1,7 @@
-  <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+  <div class="small-12 medium-8 medium-offset-2 columns">
     <h1 class="text-center">Voti giornata {{parameters.matchDay}}</h1>
   {% if parameters.warning %} {# Player has no formation, so no scores #}
-    <div class="alert alert-warning text-center">
+    <div data-alert class="alert-box warning radius text-center">
       <h3>Voti non disponibili!</h3> {{parameters.warning}}
     </div>      
   {% else %}
@@ -39,7 +39,7 @@
         </table>
       </div>
     {% else %}
-      <div class="alert alert-warning text-center">
+      <div data-alert class="alert-box warning radius text-center">
         <h3>Voti non disponibili</h3> I voti per la giornata {{parameters.matchDay}} non sono ancora usciti!
       </div>
     {% endif %}

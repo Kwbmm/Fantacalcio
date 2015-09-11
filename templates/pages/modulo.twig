@@ -1,15 +1,15 @@
-  <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+  <div class="small-12 medium-8 medium-offset-2 columns">
     {% if parameters.warning %}{#Time's up! Matchday already started#}
-    <div class="alert alert-warning text-center">
+    <div data-alert class="alert-box warning radius text-center">
         <h3>Tempo Scaduto!</h3> {{parameters.warning}}
     </div>
     {% elseif parameters.error %}
-      <div class="alert alert-danger text-center">
+      <div data-alert class="alert-box alert radius text-center">
         <h3>Errore!</h3> {{parameters.error}}
       </div>
     {% else %}
       {% if parameters.closeTime is defined %}
-        <h5 class="text-center">Prossima chiusura: <span class="label label-danger">{{parameters.closeTime}}</span></h5 class="text-center">
+        <h5 class="text-center">Prossima chiusura: <span class="label alert radius">{{parameters.closeTime}}</span></h5 class="text-center">
       {% endif %}
       {% if parameters.playingPlayers is defined %}
         <h4>La tua formazione schierata</h4>

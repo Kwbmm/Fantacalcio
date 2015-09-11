@@ -1,3 +1,6 @@
+table {
+  width: 100%;
+}
 .top-bar-section ul li > span {
   color: #FFFFFF;
   display: block;
