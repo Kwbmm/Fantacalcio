@@ -74,12 +74,12 @@ function buyPage(){
   var myBiscuit = Cookies.getJSON();
   for(id in myBiscuit){
     if(matcher.test(id)){ //true if is an ID of a player
-      $('span[player-id="'+id+'"].glyphicon.glyphicon-shopping-cart').addClass('hidden');
-      $('span[player-id="'+id+'"].glyphicon.glyphicon-remove').removeClass('hidden');
+      $('i[player-id="'+id+'"].fi-shopping-cart').addClass('hide');
+      $('i[player-id="'+id+'"].fi-x').removeClass('hide');
     }
   }
 
-  $('span.glyphicon.glyphicon-shopping-cart').click(function(){
+  $('i.fi-shopping-cart').click(function(){
     var id = $(this).attr('player-id');
     var name = $(this).parent().prev().prev().children('span.name').text();
     var price = $(this).parent().prev().text();
@@ -101,20 +101,20 @@ function buyPage(){
     
     var value = {'name':name, 'price':parseInt(price,10),'role':role};
     Cookies.set(id,value);
-    $(this).addClass('hidden');
+    $(this).addClass('hide');
   
-    $(this).siblings('span.glyphicon.glyphicon-remove').removeClass('hidden');
+    $(this).parent('a').children('i.fi-trash').removeClass('hide');
   })
-  $('span.glyphicon.glyphicon-remove').click(function(){
+  $('a i.fi-x').click(function(){
     var id = $(this).attr('player-id');
     Cookies.remove(id);
-    $(this).addClass('hidden');
-    $(this).siblings('span.glyphicon.glyphicon-shopping-cart').removeClass('hidden');    
+    $(this).addClass('hide');
+    $(this).parent('a').children('i.fi-shopping-cart').removeClass('hide');    
   })
 }
 
 function checkoutPage(){
-  $('span.glyphicon.glyphicon-trash').click(function(){
+  $('i.fi-trash').click(function(){
     //Get the id of the player
     var id = $(this).attr('player-id');
 
@@ -132,13 +132,13 @@ function checkoutPage(){
     //Remove from the DOM tree the hidden input element 
     $(this).siblings('input').remove();
     //Hide the whole row
-    $(this).parents('tr').addClass('hidden');
+    $(this).parents('tr').addClass('hide');
     //Remove the cookie also
     Cookies.remove(id);
     if(total === 0){
       //If the total is equal 0 hide the table and display a message.
-      $('div.table-responsive').addClass('hidden');
-      $('button#confirmPurchases').addClass('hidden');
+      $('div.table-responsive').addClass('hide');
+      $('button#confirmPurchases').addClass('hide');
       $('<div class="alert alert-warning text-center"><h3>Vuoto!</h3> Non ci sono acquisti nel tuo carrello..</div>').insertBefore('div.table-responsive');
     }
   });
@@ -154,20 +154,20 @@ function checkoutPage(){
 }
 
 function rosterPage(){
-  $('span.glyphicon.glyphicon-trash').click(function(){
+  $('i.fi-trash').click(function(){
     //Get the ID of the player and put it in the input box
     var id = $(this).attr('player-id');
     var price = $(this).parent().prev('td.price').text();
     $(this).siblings('input').attr('name',id);
     $(this).siblings('input').attr('value',price);
-    $(this).addClass('hidden');
-    $(this).siblings('span.glyphicon.glyphicon-remove').removeClass('hidden');
+    $(this).addClass('hide');
+    $(this).siblings('i.fi-trash').removeClass('hide');
   });
-  $('span.glyphicon.glyphicon-remove').click(function(){
+  $('i.fi-trash').click(function(){
     $(this).siblings('input').attr('name','');
     $(this).siblings('input').attr('value','');
-    $(this).addClass('hidden');
-    $(this).siblings('span.glyphicon.glyphicon-trash').removeClass('hidden');    
+    $(this).addClass('hide');
+    $(this).siblings('i.fi-trash').removeClass('hide');    
   });
 }
 
@@ -274,12 +274,6 @@ function formationPage(){
 }
 
 $(document).ready(function(){
-  $('#responsive-menu-button').sidr({
-    name: 'sidr-main',
-    source: '#mobile-only',
-    renaming: false
-  });
-
   var page = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
   switch(page){
     case 'register':
