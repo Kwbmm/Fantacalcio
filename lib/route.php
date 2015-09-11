@@ -1422,13 +1422,16 @@
     */
     $uid = getUID($app['conn'],$_SESSION['user']);
     $now = time();
-    $query = "SELECT user_formation.MID as mid, soccer_player.Name as name, player_mark.mark as mark, user_formation.disposition as role
+    $query = "SELECT soccer_player.Name as name, player_mark.mark as mark, user_formation.disposition as role
               FROM soccer_player
                 LEFT OUTER JOIN player_mark ON player_mark.SPID=soccer_player.SPID
                 LEFT OUTER JOIN user_formation ON user_formation.SPID = soccer_player.SPID
                 LEFT OUTER JOIN match_day ON match_day.MID = player_mark.MID
               WHERE user_formation.UID = '$uid'
               AND user_formation.MID = (
+                SELECT MAX(MID) FROM match_day
+                WHERE match_day.end <= '$now')
+              AND player_mark.MID = (
                 SELECT MAX(MID) FROM match_day
                 WHERE match_day.end <= '$now')";
     $result = getResult($app['conn'],$query);
@@ -1457,7 +1460,6 @@
                           'ATT-R-1'=>'',
                           'ATT-R-2'=>'');
     while(($row=mysqli_fetch_array($result,MYSQLI_ASSOC)) !== null){
-      $matchDay = $row['mid'];
       switch ($row['role']) {
         case 'POR':
           $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
@@ -1527,7 +1529,27 @@
           break;
       }
     }
-    $twigParameters = getTwigParameters('Voti',$app['siteName'],'marks',$app['userMoney'],array('playerMarks'=>$playerMarks,'matchDay'=>$matchDay));
+    $query = "SELECT MAX(MID) FROM match_day WHERE match_day.end <= '$now'";
+    $result = getResult($app['conn'],$query);
+    if($result === false)
+      $app->abort(452,__FILE__." (".__LINE__.")");
+    $mid = mysqli_fetch_row($result);
+    $mid = $mid[0];
+
+    /*
+      Check if the player has any formation for the last passed MID.
+      This is done to understand if the marks are not out but the user made his
+      formation (and so we tell him marks are not out yet), or if the user
+      didn't have any formation (and so we tell him there will be no marks to show).
+    */
+    $query = "SELECT * FROM user_formation WHERE MID = '$mid' AND UID = '$uid'";
+    $result = getResult($app['conn'],$query);
+    if($result === false)
+      $app->abort(452,__FILE__." (".__LINE__.")"); 
+    if(mysqli_affected_rows($app['conn']) === 0 ) //If 0 user has no formation
+      $twigParameters = getTwigParameters('Voti',$app['siteName'],'marks',$app['userMoney'],array('warning'=>'Non hai schierato la formazione, non ci sono voti da mostrare..','matchDay'=>$mid));
+    else
+      $twigParameters = getTwigParameters('Voti',$app['siteName'],'marks',$app['userMoney'],array('playerMarks'=>$playerMarks,'matchDay'=>$mid));
     return $app['twig']->render('index.twig',$twigParameters);
   });
 
