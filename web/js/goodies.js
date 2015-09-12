@@ -143,6 +143,7 @@ function checkoutPage(){
     }
   });
   $('#confirmPurchases').click(function(){
+    $(this).attr('disabled','disabled');
     var total = parseInt($('#totale').text(),10);
     var credits = parseInt($('#credits').text(),10);
     if(total > credits){
