@@ -67,9 +67,7 @@ function registerPage(){
 }
 
 function buyPage(){
-  
   //Iterate over all cookies and look for players ID that you selected to buy.
-  
   var matcher = new RegExp('\\d+');
   var myBiscuit = Cookies.getJSON();
   for(id in myBiscuit){
@@ -81,9 +79,9 @@ function buyPage(){
 
   $('i.fi-shopping-cart').click(function(){
     var id = $(this).attr('player-id');
-    var name = $(this).parent().prev().prev().children('span.name').text();
-    var price = $(this).parent().prev().text();
-    var role = $(this).parent().prev().prev().prev().text();
+    var name = $(this).parent().parent().prev().prev().children('span.name').text();
+    var price = $(this).parent().parent().prev().text();
+    var role = $(this).parent().parent().prev().prev().prev().text();
     switch(role){
       case 'POR':
         role = '0';
@@ -103,13 +101,13 @@ function buyPage(){
     Cookies.set(id,value);
     $(this).addClass('hide');
   
-    $(this).parent('a').children('i.fi-trash').removeClass('hide');
+    $(this).parent('a').siblings('a').children('i.fi-x').removeClass('hide');
   })
   $('a i.fi-x').click(function(){
     var id = $(this).attr('player-id');
     Cookies.remove(id);
     $(this).addClass('hide');
-    $(this).parent('a').children('i.fi-shopping-cart').removeClass('hide');    
+    $(this).parent('a').siblings('a').children('i.fi-shopping-cart').removeClass('hide');    
   })
 }
 
@@ -130,16 +128,16 @@ function checkoutPage(){
     //Also update the DOM element
     $('#totale').text(total);
     //Remove from the DOM tree the hidden input element 
-    $(this).siblings('input').remove();
+    $(this).parent('a').siblings('input').remove();
     //Hide the whole row
     $(this).parents('tr').addClass('hide');
     //Remove the cookie also
     Cookies.remove(id);
     if(total === 0){
       //If the total is equal 0 hide the table and display a message.
-      $('div.table-responsive').addClass('hide');
+      $('table#checkout-table').addClass('hide');
       $('button#confirmPurchases').addClass('hide');
-      $('<div class="alert alert-warning text-center"><h3>Vuoto!</h3> Non ci sono acquisti nel tuo carrello..</div>').insertBefore('div.table-responsive');
+      $('<div data-alert class="alert-box warning radius text-center"><h3>Vuoto!</h3> Non ci sono acquisti nel tuo carrello..</div>').insertBefore('table#checkout-table');
     }
   });
   $('#confirmPurchases').click(function(){
@@ -148,7 +146,7 @@ function checkoutPage(){
     if(total > credits){
       $('#totale').parent('td').addClass('bg-danger');
       $('#totale').parents('tr').removeClass('active');
-      return false;      
+      return false;
     }
   });  
 }
@@ -157,17 +155,17 @@ function rosterPage(){
   $('i.fi-trash').click(function(){
     //Get the ID of the player and put it in the input box
     var id = $(this).attr('player-id');
-    var price = $(this).parent().prev('td.price').text();
-    $(this).siblings('input').attr('name',id);
-    $(this).siblings('input').attr('value',price);
+    var price = $(this).parent().parent().prev('td.price').text();
+    $(this).parent('a').siblings('input').attr('name',id);
+    $(this).parent('a').siblings('input').attr('value',price);
     $(this).addClass('hide');
-    $(this).siblings('i.fi-trash').removeClass('hide');
+    $(this).parent('a').siblings('a').children('i.fi-x').removeClass('hide');
   });
-  $('i.fi-trash').click(function(){
-    $(this).siblings('input').attr('name','');
-    $(this).siblings('input').attr('value','');
+  $('i.fi-x').click(function(){
+    $(this).parent('a').siblings('input').attr('name','');
+    $(this).parent('a').siblings('input').attr('value','');
     $(this).addClass('hide');
-    $(this).siblings('i.fi-trash').removeClass('hide');    
+    $(this).parent('a').siblings('a').children('i.fi-trash').removeClass('hide');    
   });
 }
 

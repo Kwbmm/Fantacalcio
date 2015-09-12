@@ -41,19 +41,19 @@
             </thead>
             <tbody>
             {% for player in parameters.userPlayers %}
-              <tr class="text-center">
-                <td>{{player.pos}}</td>
+              <tr>
+                <td class="text-center">{{player.pos}}</td>
                 {% set name = player.name|split(' ', 2) %}
                 {% if name[1] is defined %}{#Some names don't have surnames, so this may not exist#}
-                  <td><span class="name">{{name[0]|first}}. {{name[1]}}</span><br /><small>{{player.team|raw}}</small></td>
+                  <td class="text-center"><span class="name">{{name[0]|first}}. {{name[1]}}</span><br /><small>{{player.team|raw}}</small></td>
                 {% else %}
-                  <td><span class="name">{{name[0]}}</span><br /><small>{{player.team|raw}}</small></td>                
+                  <td class="text-center"><span class="name">{{name[0]}}</span><br /><small>{{player.team|raw}}</small></td>                
                 {% endif %}
-                <td class="price">{{player.cost}}</td>
-                <td>
+                <td class="price text-center">{{player.cost}}</td>
+                <td class="text-center">
                   {% if parameters.warning is empty %}{# Print only if market is open #}
-                  <span class="glyphicon glyphicon-trash text-danger" aria-hidden="true" player-id="{{player.SPID}}"></span>
-                  <span class="hidden glyphicon glyphicon-remove" player-id="{{player.SPID}}"></span>
+                  <a><i class="fi-trash" aria-hidden="true" player-id="{{player.SPID}}"></i></a>
+                  <a><i class="fi-x hide" player-id="{{player.SPID}}"></i></a>
                   <input type="hidden" value="" name="">
                   {% endif %}                
                 </td>

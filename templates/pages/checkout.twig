@@ -10,7 +10,7 @@
       <h3>Errore!</h3>{{parameters.error}}
     </div>
   {% elseif parameters.success %}
-    <div data-alert class="alert-box success radius">
+    <div data-alert class="alert-box success radius text-center">
       <h3>Acquisti effettuati</h3>{{parameters.success}} 
     </div>
   {% else %}
@@ -22,7 +22,7 @@
     {% else %}
     <h4>I tuoi crediti: <span class="label radius secondary">{{userMoney}}</span></h4>
     <form action="checkout" method="POST" role="form">        
-      <table>
+      <table id="checkout-table">
         <thead>
           <tr>
             <th class="text-center">Ruolo</th>
