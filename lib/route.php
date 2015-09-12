@@ -52,7 +52,7 @@
     */ 
     if((!isset($app['closeTime']) && !isset($app['openTime'])) || $app['openTime'] <= time()){
       $now = time();
-      $query = "SELECT start, end FROM match_day WHERE start >= '$now' LIMIT 1";
+      $query = "SELECT start, end FROM match_day WHERE start <= '$now' AND end >= '$now'";
       $result = getResult($app['conn'],$query);
       if($result === false)
         $app->abort(452,__FILE__." (".__LINE__.")");
@@ -1014,7 +1014,6 @@
     if($now >= $app['closeTime'] && $now < $app['openTime']){ //Market is closed!
       $closeStart = date('d-m-y H:i',$app['closeTime']);
       $closeEnd = date('d-m-y H:i',$app['openTime']);
-      $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('warning' => 'Questa pagina è chiusa dal '.$closeStart." al ".$closeEnd));
     }
     $uid = getUID($app['conn'],$_SESSION['user']);
     $query = "SELECT COUNT(*) FROM user_roster WHERE UID = '$uid'";
@@ -1055,12 +1054,11 @@
                 AND soccer_player.SPID = user_formation.SPID
                 AND user_formation.MID = match_day.MID
                 AND user_formation.MID = (
-                  SELECT MIN(MID) FROM match_day
-                  WHERE match_day.start > '$now')";
+                  SELECT MID FROM match_day
+                  WHERE match_day.start < '$now' AND match_day.end > '$now')";
       $result = getResult($app['conn'],$query);
       if($result === false)
         $app->abort(452,__FILE__." (".__LINE__.")");
-      
       $filled = false;
       while (($row=mysqli_fetch_array($result,MYSQLI_ASSOC))!== null) {
         switch ($row['role']) {
@@ -1153,10 +1151,18 @@
             break;
         }
       }
-      if($filled)
-        $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('playingPlayers'=>$playingPlayers,'closeTime'=>date('d-m-y H:i',$app['closeTime'])));
-      else
-        $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('closeTime'=>date('d-m-y H:i',$app['closeTime'])));
+      if($filled){
+        if(isset($closeStart) && isset($closeEnd)) //If market is closed
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('playingPlayers'=>$playingPlayers,'warning' => 'Questa pagina è bloccata dal '.$closeStart.' al '.$closeEnd));        
+        else
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('playingPlayers'=>$playingPlayers,'closeTime'=>date('d-m-y H:i',$app['closeTime'])));
+      }
+      else{
+        if(isset($closeStart) && isset($closeEnd)) //If market is closed
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('warning' => 'Questa pagina è bloccata dal '.$closeStart.' al '.$closeEnd));
+        else
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('closeTime'=>date('d-m-y H:i',$app['closeTime'])));
+      }
     }
     return $app['twig']->render('index.twig',$twigParameters);
   });
