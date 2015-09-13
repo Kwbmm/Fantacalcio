@@ -35,7 +35,12 @@ table tr td{
   text-transform: none;
   width: 100%;
 }
-
+.help-block {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  color: #737373;
+}
 /*=================================================================================**
 **                                                                                 **
 **                                TYPOGRAPHY                                       **

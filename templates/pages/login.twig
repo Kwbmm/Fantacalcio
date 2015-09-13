@@ -5,33 +5,39 @@
       </div>
     {% endif %}
     {% if parameters.success %}
-      <div class="alert alert-success text-center">
+      <div data-alert class="alert-box success radius text-center">
         <h3>Accesso Effettuato</h3>{{parameters.success}} 
       </div>
     {% else %}
       <form action="login" method="POST" role="form">
         <legend>Login</legend>
-        <div class="form-group">
-          <label for="username" class="sr-only">Username</label>
-          <div class="input-group">
-            <div class="input-group-addon"><span class="glyphicon glyphicon-user"></span></div>
-            <input type="text" class="form-control" id="username" name="username" placeholder="Username" required="required">
+          <div class="row">
+            <div class="small-12 columns">
+              <div class="row collapse">
+                <div class="small-1 columns"><span class="prefix fi-torso"></span></div>
+                <div class="small-11 columns"><input type="text" id="username" name="username" placeholder="Username" required="required"></div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="small-12 columns">
+              <div class="row collapse">
+                <div class="small-1 columns"><span class="prefix fi-lock"></span></div>
+                <div class="small-11 columns"><input type="password" id="password" name="password" placeholder="Password" required="required"></div>
+              </div>              
+            </div>
+          </div>
+        <div class="row">
+          <div class="small-12 columns">
+            <input type="checkbox" value="true" name="remember" id="remember">
+            <label for="remember">Ricordati di me</label>
           </div>
         </div>
-        <div class="form-group">
-          <label for="password" class="sr-only">Password</label>
-          <div class="input-group">
-            <div class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></div>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required="required">
+        <div class="row">
+          <div class="small-12 columns text-center">
+            <button type="submit" class="button radius">Accedi</button>        
           </div>
         </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" value="true" name="remember">
-            Ricordati di me
-          </label>
-        </div>
-        <button type="submit" class="btn btn-primary">Accedi</button>
       </form>        
     {% endif %}
   </div>
