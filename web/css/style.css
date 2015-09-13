@@ -1,4 +1,20 @@
-table.center{
+/*=================================================================================**
+**                                                                                 **
+**                              CORE STRUCTURE                                     **
+**                                                                                 **
+**=================================================================================*/
+
+/*
+  Add the padding top and bottom only to the column(s) that wraps the whole structure
+  of the page.
+*/
+.main-section > .row:first-child > .column:first-child,
+.main-section > .row:first-child > .columns:first-child {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.center{
   margin-left: auto;
   margin-right: auto;
 }
@@ -19,10 +35,20 @@ table tr td{
   width: 100%;
 }
 
-/* Text info classes */
+/*=================================================================================**
+**                                                                                 **
+**                                TYPOGRAPHY                                       **
+**                                                                                 **
+**=================================================================================*/
+/* Text color classes */
 .text-muted {
   color: #777777;
 }
+a.text-muted:hover,
+a.text-muted:focus {
+  color: #4f4f4f;
+}
+
 .text-primary {
   color: #337ab7;
 }
@@ -58,8 +84,51 @@ a.text-danger:hover,
 a.text-danger:focus {
   color: #843534;
 }
+/* Label */
+.label {
+  display: inline;
+  font-size: 70%;
+  vertical-align: baseline;
+}
 
-/* Background info classes */
+/* Heading in alerts */
+.alert-box.success h1,
+.alert-box.success h2,
+.alert-box.success h3,
+.alert-box.success h4,
+.alert-box.success h5,
+.alert-box.success h6 {
+  color: #FFFFFF; }
+.alert-box.alert h1,
+.alert-box.alert h2,
+.alert-box.alert h3,
+.alert-box.alert h4,
+.alert-box.alert h5,
+.alert-box.alert h6 {
+  color: #FFFFFF; }
+.alert-box.secondary h1,
+.alert-box.secondary h2,
+.alert-box.secondary h3,
+.alert-box.secondary h4,
+.alert-box.secondary h5,
+.alert-box.secondary h6 {
+  color: #4f4f4f; }
+.alert-box.warning h1,
+.alert-box.warning h2,
+.alert-box.warning h3,
+.alert-box.warning h4,
+.alert-box.warning h5,
+.alert-box.warning h6 {
+  color: #FFFFFF; }
+.alert-box.info h1,
+.alert-box.info h2,
+.alert-box.info h3,
+.alert-box.info h4,
+.alert-box.info h5,
+.alert-box.info h6 {
+  color: #4f4f4f; }
+
+/* Background color classes */
 .bg-primary {
   color: #fff;
   background-color: #337ab7;
