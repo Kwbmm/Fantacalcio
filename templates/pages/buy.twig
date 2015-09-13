@@ -13,28 +13,33 @@
     <h5 class="text-center">Prossima chiusura: <span class="label alert radius">{{parameters.closeTime}}</span></h5>
     <ul class="tabs" data-tab role="tablist">
       {% if parameters.players is defined %}
-        <li class="tab-title" role="presentation"><a href="#panel2-1" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-1">Guida</a></li>
+        <li class="tab-title" role="presentation"><a href="#panel2-1" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-1">1. Guida</a></li>
       {% else %}
-        <li class="tab-title active" role="presentation"><a href="#panel2-1" role="tab" tabindex="0" aria-selected="true" aria-controls="panel2-1">Guida</a></li>
+        <li class="tab-title active" role="presentation"><a href="#panel2-1" role="tab" tabindex="0" aria-selected="true" aria-controls="panel2-1">1. Guida</a></li>
       {% endif %}
+        <li class="tab-title" role="presentation"><a href="#panel2-2" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-2">2. Cerca Giocatore</a></li>
       {% if parameters.players is defined %}
-        <li class="tab-title active" role="presentation"><a href="#panel2-2" role="tab" tabindex="0" aria-selected="true" aria-controls="panel2-2">Cerca Giocatore</a></li>
+        <li class="tab-title active" role="presentation"><a href="#panel2-3" role="tab" tabindex="0" aria-selected="true" aria-controls="panel2-3">3. Risultato Ricerca</a></li>
       {% else %}
-        <li class="tab-title" role="presentation"><a href="#panel2-2" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-2">Cerca Giocatore</a></li>
+        <li class="tab-title hide" role="presentation"><a href="#panel2-3" role="tab" tabindex="0" aria-selected="false" aria-controls="panel2-3">3. Risultato Ricerca</a></li>
       {% endif %}
     </ul>
     <div class="tabs-content">
       <section role="tabpanel" {% if parameters.players is defined %} aria-hidden="true" class="content"{% else %} aria-hidden="false" class="content active"{% endif %} id="panel2-1">
         <ol>
-          <li>Cliccando su "Cerca Giocatore" ti si aprirà la scheda per la ricerca<br />Nel campo "Nome" puoi anche inserire solo parte del nome.</li>
-          <li>Se hai abbastanza crediti vedrai un'icona sotto la colonna "Compra" per effettuare l'acquisto. Cliccaci sopra!</li>
-          <li>Puoi effettuare altre ricerche prima di terminare gli acquisti: quando clicchi sull'icona "Compra" i giocatori vengono messi nel carrello della spesa.</li>
-          <li>Una volta comperati tutti i giocatori che vuoi, vai alla pagina del carrello per confermare gli acquisti!</li>
+          <li><p>Cliccando su "Cerca Giocatore" ti si aprirà la scheda per la ricerca.</p>
+            <p>Puoi personalizzare la ricerca come meglio credi: scegli se cercare per nome (puoi anche inserire solo parte del nome!), ruolo o prezzo.</p>
+            <p>Puoi combinare i parametri di ricerca, cercando ad esempio calciatori che si chiamano "Alberto", sono "Portiere" e costano <u>al massimo</u> 10 crediti.</p>
+            <p>Se non hai esigenze particolari, puoi lasciare i campi vuoti per visualizzare tutti i giocatori!</p></li>
+          <li><p>Una volta impostati i parametri di ricerca, premi sul tasto "Cerca". Verrai automaticamente portato nella scheda dei risultati di ricerca.</p></li>
+          <li><p>Se hai abbastanza crediti vedrai un'icona sotto la colonna "Compra" per effettuare l'acquisto. Cliccaci sopra!</p></li>
+          <li><p>Prima di terminare gli acquisti, cliccando di nuovo su "Cerca Giocatore", puoi effettuare altre ricerche: quando clicchi sull'icona "Compra" i giocatori vengono messi nel carrello della spesa.</p></li>
+          <li><p>Una volta comperati tutti i giocatori che vuoi, vai alla pagina del carrello per confermare gli acquisti (accessibile o dalla scheda 3. o dal menù)!</p></li>
         </ol>
         <p>Ricordati che ti vengono mostrati solo i giocatori che non sono ancora nella tua rosa</p>
         <p><small>P.S: Puoi vedere la lista completa dei giocatori lasciando i campi vuoti e premendo su "Cerca"</small></p>
       </section>
-      <section role="tabpanel" {% if parameters.players is defined %} aria-hidden="false" class="content active"{% else %} aria-hidden="true" class="content"{% endif %} id="panel2-2">
+      <section role="tabpanel" aria-hidden="true" class="content" id="panel2-2">
         <form action="buy" method="POST" role="form">
           <div class="row">
             <div class="small-12 columns">
@@ -65,47 +70,49 @@
           </div>
         </form>
       </section>
-    </div>
-    {% endif %}
-    {% if parameters.players is defined %}
-      {% if parameters.players is not empty %}
-        <p class="text-center">
-          <a class="button tiny info radius" href="checkout" role="button">Vai al carrello</a>
-        </p>
-        <table class="center">
-          <thead>
-            <tr>
-              <th class="text-center">Ruolo</th>
-              <th class="text-center">Nome</th>
-              <th class="text-center">Prezzo</th>
-              <th class="text-center">Compra</th>
-            </tr>
-          </thead>
-          <tbody>
-          {% for data in parameters.players %}
-            <tr>
-              <td class="text-center">{{data.Position}}</td>
-              {% set name = data.Name|split(' ', 2) %}
-              {% if name[1] is defined %}{#Some names don't have surnames, so this may not exist#}
-                <td class="text-center"><span class="name">{{name[0]|first}}. {{name[1]}}</span><br /><small>{{data.Team|raw}}</small></td>
-              {% else %}
-                <td class="text-center"><span class="name">{{name[0]}}</span><br /><small>{{data.Team|raw}}</small></td>                
-              {% endif %}
-              <td class="text-center price">{{data.Cost}}</td>
-              <td class="text-center">
-                {% if userMoney >= data.Cost %}
-                  <a><i class="fi-shopping-cart" player-id="{{data.SPID}}"></i></a>
-                  <a><i class="fi-x hide" player-id="{{data.SPID}}"></i></a>
-                {% endif %}
-              </td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
-      {% else %}{#parameters.players is empty#}
-        <div data-alert class="alert-box warning radius text-center">
-          <h3>Nessun risultato!</h3> Il giocatore che stai cercando non esiste o &egrave; gi&agrave; nella tua rosa.
-        </div>
-      {% endif %}
+      <section role="tabpanel" {% if parameters.players is defined %} aria-hidden="false" class="content active"{% else %} aria-hidden="true" class="content hide"{% endif %} id="panel2-3">
+        {% if parameters.players is defined %}
+          {% if parameters.players is not empty %}
+            <p class="text-center">
+              <a class="button small info round" href="checkout" role="button">Vai al carrello</a>
+            </p>
+            <table class="center">
+              <thead>
+                <tr>
+                  <th class="text-center">Ruolo</th>
+                  <th class="text-center">Nome</th>
+                  <th class="text-center">Prezzo</th>
+                  <th class="text-center">Compra</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for data in parameters.players %}
+                <tr>
+                  <td class="text-center">{{data.Position}}</td>
+                  {% set name = data.Name|split(' ', 2) %}
+                  {% if name[1] is defined %}{#Some names don't have surnames, so this may not exist#}
+                    <td class="text-center"><span class="name">{{name[0]|first}}. {{name[1]}}</span><br /><small>{{data.Team|raw}}</small></td>
+                  {% else %}
+                    <td class="text-center"><span class="name">{{name[0]}}</span><br /><small>{{data.Team|raw}}</small></td>                
+                  {% endif %}
+                  <td class="text-center price">{{data.Cost}}</td>
+                  <td class="text-center">
+                    {% if userMoney >= data.Cost %}
+                      <a><i class="fi-shopping-cart" player-id="{{data.SPID}}"></i></a>
+                      <a class="text-danger"><i class="fi-x hide" player-id="{{data.SPID}}"></i></a>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          {% else %}{#parameters.players is empty#}
+            <div data-alert class="alert-box warning radius text-center">
+              <h3>Nessun risultato!</h3> Il giocatore che stai cercando non esiste o &egrave; gi&agrave; nella tua rosa.
+            </div>
+          {% endif %}
+        {% endif %}
+      </section>
+    </div> {# EOF tab-content#}
     {% endif %}
   </div>{#END small-12 medium-6 medium-offset-3 columns#}
