@@ -1,8 +1,7 @@
   <div class="small-12 medium-8 medium-offset-2 columns">
     {% if parameters.sequence %}
       <h1 class="text-center">Classifica Fantacalcio</h1>
-      <div class="table-responsive">
-        <table class="table table-hover table-bordered table-condensed">
+        <table class="center">
           <thead>
             <tr>
               <th class="text-center">#</th>
@@ -12,15 +11,14 @@
           </thead>
           <tbody>
           {% for data in parameters.sequence %}
-            <tr class="text-center">
-              <td>{{loop.index}}</td>
-              <td>{{data.username}}</td>
-              <td>{{data.points}}</td>
+            <tr>
+              <td class="text-center">{{loop.index}}</td>
+              <td class="text-center">{{data.username}}</td>
+              <td class="text-center">{{data.points}}</td>
             </tr>
           {% endfor %}
           </tbody>
         </table>
-      </div>
     {% else %}
         <div data-alert class="alert-box warning radius text-center">
             <h3>Attenzione</h3> Nessun utente è registrato :(
