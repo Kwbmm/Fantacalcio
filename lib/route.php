@@ -52,7 +52,12 @@
     */ 
     if((!isset($app['closeTime']) && !isset($app['openTime'])) || $app['openTime'] <= time()){
       $now = time();
-      $query = "SELECT start, end FROM match_day WHERE start <= '$now' AND end >= '$now'";
+      $query = "SELECT start, end 
+                FROM match_day
+                WHERE MID = (
+                  SELECT MIN(MID)
+                  FROM match_day 
+                  WHERE end >= '$now')";
       $result = getResult($app['conn'],$query);
       if($result === false)
         $app->abort(452,__FILE__." (".__LINE__.")");
@@ -82,30 +87,41 @@
       
       //Get the matchday
       $mid = pq($doc['ul.menuDaily li.active'])->children('a')->text();
+      //Check if it's the right match day
+      $query = "SELECT MAX(MID) FROM match_day
+                WHERE match_day.end <= '$now'";
+      $result = getResult($app['conn'],$query);
+      if($result === false)
+        $app->abort(452,__FILE__." (".__LINE__.")");
+      $sqlMid = mysqli_fetch_row($result);
+      $sqlMid = $sqlMid[0];
 
-      if(($rv = begin($app['conn'])) !== true)
-        $app->abort($rv->getCode(),$rv->getMessage());
+      //If the matchDay from gazzetta is the same we want, fetch!
+      if($mid === $sqlMid){
+        if(($rv = begin($app['conn'])) !== true)
+          $app->abort($rv->getCode(),$rv->getMessage());
 
-      foreach (pq($doc['div.magicDayList.matchView.magicDayListChkDay:not(."forceHide") ul.magicTeamList li:not(".head")']) as $row) {    
-        //Get the Name and ID
-        $link = pq($row)->find('span.playerNameIn')->children('a')->attr('href');
-        $link = explode('/',$link);
-        //Divide name from ID
-        $name_and_id = explode('_',$link[count($link)-1]);
-        //Save the SPID
-        $SPID = sanitizeInput($app['conn'],$name_and_id[count($name_and_id)-1]);
-        $mark = sanitizeInput($app['conn'],pq($row)->find('div.inParameter.fvParameter')->text());
-        
-        $pk = getLastPrimaryKey($app['conn'],'player_mark')+1;
-        $query = "INSERT INTO player_mark VALUES ('$pk','$SPID','$mid','$mark')";
-        $result = getResult($app['conn'],$query);
-        if($result === false){
-          rollback($app['conn']);
-          $app->abort(452,__FILE__." (".__LINE__.")");
+        foreach (pq($doc['div.magicDayList.matchView.magicDayListChkDay:not(."forceHide") ul.magicTeamList li:not(".head")']) as $row) {    
+          //Get the Name and ID
+          $link = pq($row)->find('span.playerNameIn')->children('a')->attr('href');
+          $link = explode('/',$link);
+          //Divide name from ID
+          $name_and_id = explode('_',$link[count($link)-1]);
+          //Save the SPID
+          $SPID = sanitizeInput($app['conn'],$name_and_id[count($name_and_id)-1]);
+          $mark = sanitizeInput($app['conn'],pq($row)->find('div.inParameter.fvParameter')->text());
+          
+          $pk = getLastPrimaryKey($app['conn'],'player_mark')+1;
+          $query = "INSERT INTO player_mark VALUES ('$pk','$SPID','$mid','$mark')";
+          $result = getResult($app['conn'],$query);
+          if($result === false){
+            rollback($app['conn']);
+            $app->abort(452,__FILE__." (".__LINE__.")");
+          }
+          $outcome = true;
         }
-        $outcome = true;
+        commit($app['conn']);
       }
-      commit($app['conn']);
     }
     else
       $outcome=true; //Marks are out
