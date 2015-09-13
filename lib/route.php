@@ -938,6 +938,7 @@
         rollback($app['conn']);
         $app->abort(470,"Si è verificato un errore durante l'operazione DELETE");        
       }
+      $now = time();
       //Delete the formation of the user of the coming MID in user_formation
       $query = "DELETE FROM user_formation
                 WHERE UID = '$uid'
@@ -1073,8 +1074,8 @@
                 AND soccer_player.SPID = user_formation.SPID
                 AND user_formation.MID = match_day.MID
                 AND user_formation.MID = (
-                  SELECT MID FROM match_day
-                  WHERE match_day.start < '$now' AND match_day.end > '$now')";
+                  SELECT MIN(MID) FROM match_day
+                  WHERE '$now' <= match_day.end)";
       $result = getResult($app['conn'],$query);
       if($result === false)
         $app->abort(452,__FILE__." (".__LINE__.")");
