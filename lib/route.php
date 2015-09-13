@@ -938,9 +938,12 @@
         rollback($app['conn']);
         $app->abort(470,"Si è verificato un errore durante l'operazione DELETE");        
       }
-      //Delete all the data in user_formation of the user
+      //Delete the formation of the user of the coming MID in user_formation
       $query = "DELETE FROM user_formation
-                WHERE UID = '$uid'";
+                WHERE UID = '$uid'
+                AND MID = (
+                  SELECT MIN(MID) FROM match_day
+                  WHERE '$now' < start)";
       $result = getResult($app['conn'],$query);
       if($result === false){
         rollback($app['conn']);
