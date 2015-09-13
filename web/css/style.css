@@ -8,6 +8,10 @@
   Add the padding top and bottom only to the column(s) that wraps the whole structure
   of the page.
 */
+table tr td{
+  font-size: 1rem;
+}
+
 .main-section > .row:first-child > .column:first-child,
 .main-section > .row:first-child > .columns:first-child {
   padding-top: 30px;
@@ -20,9 +24,6 @@
 }
 .fullsize {
   width: 100%;
-}
-table tr td{
-  font-size: 1rem;
 }
 .top-bar-section ul li > span {
   color: #FFFFFF;
@@ -40,6 +41,21 @@ table tr td{
 **                                TYPOGRAPHY                                       **
 **                                                                                 **
 **=================================================================================*/
+legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 20px;
+  font-size: 21px;
+  line-height: inherit;
+  color: #333333;
+  border: 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+small{
+  font-size: 80%;
+}
 /* Text color classes */
 .text-muted {
   color: #777777;

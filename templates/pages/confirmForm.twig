@@ -4,13 +4,12 @@
       <h3>Errore!</h3> {{parameters.error}}
     </div>
     {% elseif parameters.success %}
-      <div class="alert alert-success text-center">
+      <div class="alert-box success radius text-center">
         <h3>Fatto!</h3> {{parameters.success}}
       </div>
     {% endif %}
     {% if parameters.success and parameters.playingPlayers %}
-    <div class="table-responsive">
-      <table class="table table-hover table-bordered table-condensed">
+      <table class="center">
         <thead>
           <tr>
             <th class="text-center">Ruolo</th>
@@ -19,25 +18,24 @@
         </thead>
         <tbody>
           {% for role,name in parameters.playingPlayers if name %}
-          <tr class="text-center">
+          <tr>
             {% set role_new = role|split('-',3) %}
             {% if role_new[2] is defined %}
-              <td>{{role_new[0]}} {{role_new[1]}} {{role_new[2]}}</td>
+              <td class="text-center">{{role_new[0]}} {{role_new[1]}} {{role_new[2]}}</td>
             {% elseif role_new[1] is defined %}
-              <td>{{role_new[0]}} {{role_new[1]}}</td>
+              <td class="text-center">{{role_new[0]}} {{role_new[1]}}</td>
             {% else %}
-              <td>{{role_new[0]}}</td>
+              <td class="text-center">{{role_new[0]}}</td>
             {% endif %}
             {% set name_new = name|split(' ', 2) %}
             {% if name_new[1] is defined %}
-              <td>{{name_new[1]}}</td>
+              <td class="text-center">{{name_new[1]}}</td>
             {% else %}
-              <td>{{name_new[0]}}</td>                
+              <td class="text-center">{{name_new[0]}}</td>                
             {% endif %}
           </tr>  
           {% endfor %}
         </tbody>
       </table>
-    </div>
     {% endif %}
   </div>

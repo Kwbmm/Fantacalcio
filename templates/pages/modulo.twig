@@ -13,8 +13,7 @@
       {% endif %}
       {% if parameters.playingPlayers is defined %}
         <h4>La tua formazione schierata</h4>
-        <div class="table-responsive">
-          <table class="table table-hover table-bordered table-condensed">
+          <table class="center">
             <thead>
               <tr>
                 <th class="text-center">Ruolo</th>
@@ -23,61 +22,51 @@
             </thead>
             <tbody>
               {% for role,name in parameters.playingPlayers if name %}
-              <tr class="text-center">
+              <tr>
                 {% set role_new = role|split('-',3) %}
                 {% if role_new[2] is defined %}
-                  <td>{{role_new[0]}} {{role_new[1]}} {{role_new[2]}}</td>
+                  <td class="text-center">{{role_new[0]}} {{role_new[1]}} {{role_new[2]}}</td>
                 {% elseif role_new[1] is defined %}
-                  <td>{{role_new[0]}} {{role_new[1]}}</td>
+                  <td class="text-center">{{role_new[0]}} {{role_new[1]}}</td>
                 {% else %}
-                  <td>{{role_new[0]}}</td>
+                  <td class="text-center">{{role_new[0]}}</td>
                 {% endif %}
                 {% set name_new = name|split(' ', 2) %}
                 {% if name_new[1] is defined %}
-                  <td>{{name_new[1]}}</td>
+                  <td class="text-center">{{name_new[1]}}</td>
                 {% else %}
-                  <td>{{name_new[0]}}</td>                
+                  <td class="text-center">{{name_new[0]}}</td>                
                 {% endif %}
               </tr>  
               {% endfor %}
             </tbody>
           </table>
-        </div>
       {% endif %}
     <form action="formation" method="POST" role="form">
-      <legend>Scegli il Modulo</legend>
-      <div class="radio text-center form-group">
-        <label class="radio-inline">
+      
+      <div class="row">
+        <div class="small-12 columns text-center">
+          <legend>Scegli il Modulo</legend>
           <input type="radio" name="mod" id="mod" value="3-4-3" required="required">
-          3-4-3
-        </label>
-        <label class="radio-inline">
+          <label>3-4-3</label>
           <input type="radio" name="mod" id="mod" value="3-5-2" required="required">
-          3-5-2
-        </label>
-        <label class="radio-inline">
+          <label>3-5-2</label>
           <input type="radio" name="mod" id="mod" value="4-5-1" required="required">
-          4-5-1
-        </label>
-        <label class="radio-inline">
+          <label>4-5-1</label>
           <input type="radio" name="mod" id="mod" value="4-4-2" required="required">
-          4-4-2
-        </label>
-        <label class="radio-inline">
+          <label>4-4-2</label>
           <input type="radio" name="mod" id="mod" value="4-3-3" required="required">
-          4-3-3
-        </label>
-        <label class="radio-inline">
+          <label>4-3-3</label>
           <input type="radio" name="mod" id="mod" value="5-4-1" required="required">
-          5-4-1
-        </label>
-        <label class="radio-inline">
+          <label>5-4-1</label>
           <input type="radio" name="mod" id="mod" value="5-3-2" required="required">
-          5-3-2
-        </label>
+          <label>5-3-2</label>
+        </div>
       </div>
-      <div class="text-center">
-        <button type="submit" class="btn btn-info">Avanti</button>        
+      <div class="row">
+        <div class="small-12 columns text-center">
+          <button type="submit" class="button radius info">Avanti</button>
+        </div>        
       </div>
     </form>        
     {% endif %}
