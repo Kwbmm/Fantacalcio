@@ -141,7 +141,6 @@ function checkoutPage(){
     }
   });
   $('#confirmPurchases').click(function(){
-    $(this).attr('disabled','disabled');
     var total = parseInt($('#totale').text(),10);
     var credits = parseInt($('#credits').text(),10);
     if(total > credits){
@@ -149,7 +148,10 @@ function checkoutPage(){
       $('#totale').parents('tr').removeClass('active');
       return false;
     }
-  });  
+  });
+  $('form').submit(function() {
+    $(this).find("button#confirmPurchases").prop('disabled',true);
+  });
 }
 
 function rosterPage(){
