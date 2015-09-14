@@ -52,7 +52,12 @@
     */ 
     if((!isset($app['closeTime']) && !isset($app['openTime'])) || $app['openTime'] <= time()){
       $now = time();
-      $query = "SELECT start, end FROM match_day WHERE start >= '$now' LIMIT 1";
+      $query = "SELECT start, end 
+                FROM match_day
+                WHERE MID = (
+                  SELECT MIN(MID)
+                  FROM match_day 
+                  WHERE end >= '$now')";
       $result = getResult($app['conn'],$query);
       if($result === false)
         $app->abort(452,__FILE__." (".__LINE__.")");
@@ -82,30 +87,41 @@
       
       //Get the matchday
       $mid = pq($doc['ul.menuDaily li.active'])->children('a')->text();
+      //Check if it's the right match day
+      $query = "SELECT MAX(MID) FROM match_day
+                WHERE match_day.end <= '$now'";
+      $result = getResult($app['conn'],$query);
+      if($result === false)
+        $app->abort(452,__FILE__." (".__LINE__.")");
+      $sqlMid = mysqli_fetch_row($result);
+      $sqlMid = $sqlMid[0];
 
-      if(($rv = begin($app['conn'])) !== true)
-        $app->abort($rv->getCode(),$rv->getMessage());
+      //If the matchDay from gazzetta is the same we want, fetch!
+      if($mid === $sqlMid){
+        if(($rv = begin($app['conn'])) !== true)
+          $app->abort($rv->getCode(),$rv->getMessage());
 
-      foreach (pq($doc['div.magicDayList.matchView.magicDayListChkDay:not(."forceHide") ul.magicTeamList li:not(".head")']) as $row) {    
-        //Get the Name and ID
-        $link = pq($row)->find('span.playerNameIn')->children('a')->attr('href');
-        $link = explode('/',$link);
-        //Divide name from ID
-        $name_and_id = explode('_',$link[count($link)-1]);
-        //Save the SPID
-        $SPID = sanitizeInput($app['conn'],$name_and_id[count($name_and_id)-1]);
-        $mark = sanitizeInput($app['conn'],pq($row)->find('div.inParameter.fvParameter')->text());
-        
-        $pk = getLastPrimaryKey($app['conn'],'player_mark')+1;
-        $query = "INSERT INTO player_mark VALUES ('$pk','$SPID','$mid','$mark')";
-        $result = getResult($app['conn'],$query);
-        if($result === false){
-          rollback($app['conn']);
-          $app->abort(452,__FILE__." (".__LINE__.")");
+        foreach (pq($doc['div.magicDayList.matchView.magicDayListChkDay:not(."forceHide") ul.magicTeamList li:not(".head")']) as $row) {    
+          //Get the Name and ID
+          $link = pq($row)->find('span.playerNameIn')->children('a')->attr('href');
+          $link = explode('/',$link);
+          //Divide name from ID
+          $name_and_id = explode('_',$link[count($link)-1]);
+          //Save the SPID
+          $SPID = sanitizeInput($app['conn'],$name_and_id[count($name_and_id)-1]);
+          $mark = sanitizeInput($app['conn'],pq($row)->find('div.inParameter.fvParameter')->text());
+          
+          $pk = getLastPrimaryKey($app['conn'],'player_mark')+1;
+          $query = "INSERT INTO player_mark VALUES ('$pk','$SPID','$mid','$mark')";
+          $result = getResult($app['conn'],$query);
+          if($result === false){
+            rollback($app['conn']);
+            $app->abort(452,__FILE__." (".__LINE__.")");
+          }
+          $outcome = true;
         }
-        $outcome = true;
+        commit($app['conn']);
       }
-      commit($app['conn']);
     }
     else
       $outcome=true; //Marks are out
@@ -922,9 +938,13 @@
         rollback($app['conn']);
         $app->abort(470,"Si è verificato un errore durante l'operazione DELETE");        
       }
-      //Delete all the data in user_formation of the user
+      $now = time();
+      //Delete the formation of the user of the coming MID in user_formation
       $query = "DELETE FROM user_formation
-                WHERE UID = '$uid'";
+                WHERE UID = '$uid'
+                AND MID = (
+                  SELECT MIN(MID) FROM match_day
+                  WHERE '$now' < start)";
       $result = getResult($app['conn'],$query);
       if($result === false){
         rollback($app['conn']);
@@ -1014,7 +1034,6 @@
     if($now >= $app['closeTime'] && $now < $app['openTime']){ //Market is closed!
       $closeStart = date('d-m-y H:i',$app['closeTime']);
       $closeEnd = date('d-m-y H:i',$app['openTime']);
-      $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('warning' => 'Questa pagina è chiusa dal '.$closeStart." al ".$closeEnd));
     }
     $uid = getUID($app['conn'],$_SESSION['user']);
     $query = "SELECT COUNT(*) FROM user_roster WHERE UID = '$uid'";
@@ -1056,11 +1075,10 @@
                 AND user_formation.MID = match_day.MID
                 AND user_formation.MID = (
                   SELECT MIN(MID) FROM match_day
-                  WHERE match_day.start > '$now')";
+                  WHERE '$now' <= match_day.end)";
       $result = getResult($app['conn'],$query);
       if($result === false)
         $app->abort(452,__FILE__." (".__LINE__.")");
-      
       $filled = false;
       while (($row=mysqli_fetch_array($result,MYSQLI_ASSOC))!== null) {
         switch ($row['role']) {
@@ -1153,10 +1171,18 @@
             break;
         }
       }
-      if($filled)
-        $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('playingPlayers'=>$playingPlayers,'closeTime'=>date('d-m-y H:i',$app['closeTime'])));
-      else
-        $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('closeTime'=>date('d-m-y H:i',$app['closeTime'])));
+      if($filled){
+        if(isset($closeStart) && isset($closeEnd)) //If market is closed
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('playingPlayers'=>$playingPlayers,'warning' => 'Questa pagina è bloccata dal '.$closeStart.' al '.$closeEnd));        
+        else
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('playingPlayers'=>$playingPlayers,'closeTime'=>date('d-m-y H:i',$app['closeTime'])));
+      }
+      else{
+        if(isset($closeStart) && isset($closeEnd)) //If market is closed
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('warning' => 'Questa pagina è bloccata dal '.$closeStart.' al '.$closeEnd));
+        else
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('closeTime'=>date('d-m-y H:i',$app['closeTime'])));
+      }
     }
     return $app['twig']->render('index.twig',$twigParameters);
   });
