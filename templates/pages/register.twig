@@ -18,7 +18,7 @@
                 <span class="prefix fi-torso"></span>            
               </div>
               <div class="small-11 columns">
-                <input type="text" id="username" name="username" placeholder="Username" required="required">
+                <input type="text" class="has-help" id="username" name="username" placeholder="Username" required="required">
               </div>
               <small class="help-block">Compreso tra 3 e 15 caratteri, lettere e numeri, primo carattere una lettera. No spazi.</small>
             </div>
@@ -31,8 +31,9 @@
                 <div class="input-group-addon"><span class="prefix fi-lock"></span></div>            
               </div>
               <div class="small-11 columns">
-                <input data-tooltip aria-haspopup="true" class="has-tip tip-top" title="Minimo 6 caratteri. No spazi." type="password" id="password" name="password" placeholder="Password" required="required">
+                <input type="password" class="has-help" id="password" name="password" placeholder="Password" required="required">
               </div>
+              <small class="help-block">Minimo 6 caratteri. No spazi.</small>
             </div>
           </div>
         </div>
@@ -45,11 +46,12 @@
         <div class="row">
           <div class="small-12 columns">
             <label for="invite-code">Codice Invito</label>
-            <input data-tooltip aria-haspopup="true" class="has-tip tip-top" title="Inserisci il codice invito che ti è stato fornito." type="text" id="invite-code" name="invite-code" placeholder="Inserisci il tuo invito" required="required">
+            <input class="has-help" type="text" id="invite-code" name="invite-code" placeholder="Inserisci il tuo invito" required="required">
+            <small class="help-block">Inserisci il codice invito che ti è stato fornito.</small>
           </div>
         </div>
         <div class="row">
-          <div class="small-12 columns">
+          <div class="small-12 columns text-center">
             <button type="submit" class="button radius" id="registerBtn">Registrati</button>        
           </div>
         </div>

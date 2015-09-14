@@ -37,9 +37,12 @@ table tr td{
 }
 .help-block {
   display: block;
-  margin-top: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
   color: #737373;
+}
+
+input.has-help{
+  margin-bottom: 0;
 }
 /*=================================================================================**
 **                                                                                 **
