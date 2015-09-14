@@ -65,6 +65,30 @@ input.has-error{
 input.has-success{
   background-color: #dff0d8;
 }
+
+/*=================================================================================**
+**                                                                                 **
+**                                     ICONS                                       **
+**                                                                                 **
+**=================================================================================*/
+
+/*
+  These are fixes needed to properly trigger click() event on these elemnts
+  with older mobile browsers (like stock android browser)
+*/
+i[class^="fi-"],
+i[class*=" fi-"],
+span[class^="fi-"],
+span[class*=" fi-"]{
+  display: inline-block;
+}
+
+i[class^="fi-"].hide,
+i[class*=" fi-"].hide,
+span[class^="fi-"].hide,
+span[class*=" fi-"].hide{
+  display: none;
+}
 /*=================================================================================**
 **                                                                                 **
 **                                TYPOGRAPHY                                       **
@@ -209,6 +233,30 @@ a.bg-warning:focus {
 a.bg-danger:hover,
 a.bg-danger:focus {
   background-color: #e4b9b9;
+}
+
+/*=================================================================================**
+**                                                                                 **
+**                                     ICONS                                       **
+**                                                                                 **
+**=================================================================================*/
+
+/*
+  These are fixes needed to properly trigger click() event on these elemnts
+  with older mobile browsers (like stock android browser)
+*/
+i[class^="fi-"],
+i[class*=" fi-"],
+span[class^="fi-"],
+span[class*=" fi-"]{
+  display: inline-block;
+}
+
+i[class^="fi-"].hide,
+i[class*=" fi-"].hide,
+span[class^="fi-"].hide,
+span[class*=" fi-"].hide{
+  display: none;
 }
 
 @media only screen and (max-width: 40em) { 

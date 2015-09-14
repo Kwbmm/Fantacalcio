@@ -50,7 +50,7 @@
                 <td class="text-center">
                   {% if parameters.warning is empty %}{# Print only if market is open #}
                   <a class="text-danger"><i class="fi-trash" aria-hidden="true" player-id="{{player.SPID}}"></i></a>
-                  <a class="text-muted"><i class="fi-x hide" player-id="{{player.SPID}}"></i></a>
+                  <a class="text-muted"><i class="fi-x hide" aria-hidden="true" player-id="{{player.SPID}}"></i></a>
                   <input type="hidden" value="" name="">
                   {% endif %}                
                 </td>

@@ -143,8 +143,6 @@ function checkoutPage(){
   $('#confirmPurchases').click(function(){
     var total = parseInt($('#totale').text(),10);
     var credits = parseInt($('#credits').text(),10);
-    console.log('total: '+total);
-    console.log('credits: '+credits);
     if(total > credits){
       $('#totale').parent('td').addClass('bg-danger');
       $('#totale').parents('tr').removeClass('active');
