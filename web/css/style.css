@@ -11,6 +11,20 @@
 table tr td{
   font-size: 1rem;
 }
+table > thead > tr > td.active,
+table > tbody > tr > td.active,
+table > tfoot > tr > td.active,
+table > thead > tr > th.active,
+table > tbody > tr > th.active,
+table > tfoot > tr > th.active,
+table > thead > tr.active > td,
+table > tbody > tr.active > td,
+table > tfoot > tr.active > td,
+table > thead > tr.active > th,
+table > tbody > tr.active > th,
+table > tfoot > tr.active > th {
+  background-color: #f5f5f5;
+}
 
 .main-section > .row:first-child > .column:first-child,
 .main-section > .row:first-child > .columns:first-child {
@@ -43,6 +57,13 @@ table tr td{
 
 input.has-help{
   margin-bottom: 0;
+}
+input.has-error{
+  background-color: #f2dede;
+}
+
+input.has-success{
+  background-color: #dff0d8;
 }
 /*=================================================================================**
 **                                                                                 **

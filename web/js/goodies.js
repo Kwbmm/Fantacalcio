@@ -1,9 +1,9 @@
 function registerPage(){
   $('button#registerBtn').click(function(){
-    $('input#username').parent('div.input-group').removeClass('has-error');
-    $('input#password').parent('div.input-group').removeClass('has-error').removeClass('has-success');
-    $('input#repeat-password').parent('div.input-group').removeClass('has-error').removeClass('has-success');
-    $('input#invite-code').parent('div.input-group').removeClass('has-error');
+    $('input#username').removeClass('has-error');
+    $('input#password').removeClass('has-error').removeClass('has-success');
+    $('input#repeat-password').removeClass('has-error').removeClass('has-success');
+    $('input#invite-code').removeClass('has-error');
     var name = $('input#username').val();
     var psw = $('input#password').val();
     var repeatPsw = $('input#repeat-password').val();
@@ -14,36 +14,36 @@ function registerPage(){
     invite = invite.trim();
 
     if((name.length < 3 || name.length > 15) && psw.length < 6 && repeatPsw.length < 6 && invite.length < 1){
-      $('input#username').parent('div.input-group').addClass('has-error');
-      $('input#password').parent('div.input-group').addClass('has-error');
-      $('input#repeat-password').parent('div.input-group').addClass('has-error');
-      $('input#invite-code').parent('div.input-group').addClass('has-error');
+      $('input#username').addClass('has-error');
+      $('input#password').addClass('has-error');
+      $('input#repeat-password').addClass('has-error');
+      $('input#invite-code').addClass('has-error');
       return false;
     }
     if(name.length < 3 || name.length > 15){
-      $('input#username').parent('div.input-group').addClass('has-error');
+      $('input#username').addClass('has-error');
       return false;
     }
     if(psw.length < 6){
-      $('input#password').parent('div.input-group').addClass('has-error');
+      $('input#password').addClass('has-error');
       return false;
     }
     if(repeatPsw.length < 6){
-      $('input#repeat-password').parent('div.input-group').addClass('has-error');
+      $('input#repeat-password').addClass('has-error');
       return false;      
     }
     if(psw !== repeatPsw){
-      $('input#password').parent('div.input-group').addClass('has-error');
-      $('input#repeat-password').parent('div.input-group').addClass('has-error');
+      $('input#password').addClass('has-error');
+      $('input#repeat-password').addClass('has-error');
       return false;
     }
     if(invite.length < 1){
-      $('input#invite-code').parent('div.input-group').addClass('has-error');
+      $('input#invite-code').addClass('has-error');
       return false;
     }
     var matcher = new RegExp('^[a-zA-Z]');
     if(!matcher.test(name)){//Doesn't start with a letter 
-      $('input#username').parent('div.input-group').addClass('has-error');
+      $('input#username').addClass('has-error');
       return false;
     }
   });
@@ -52,15 +52,15 @@ function registerPage(){
     var repeatPsw = $('input#repeat-password').val();
     psw = psw.trim();
     repeatPsw = repeatPsw.trim();
-    $('input#password').parent('div.input-group').removeClass('has-error').removeClass('has-success');
-    $('input#repeat-password').parent('div.input-group').removeClass('has-error').removeClass('has-success');
+    $('input#password').removeClass('has-error').removeClass('has-success');
+    $('input#repeat-password').removeClass('has-error').removeClass('has-success');
     if(psw !== repeatPsw){
-      $('input#password').parent('div.input-group').addClass('has-error');
-      $('input#repeat-password').parent('div.input-group').addClass('has-error');
+      $('input#password').addClass('has-error');
+      $('input#repeat-password').addClass('has-error');
     }
     else{
-      $('input#password').parent('div.input-group').addClass('has-success');
-      $('input#repeat-password').parent('div.input-group').addClass('has-success');      
+      $('input#password').addClass('has-success');
+      $('input#repeat-password').addClass('has-success');      
     }
 
   });
@@ -136,13 +136,15 @@ function checkoutPage(){
     if(total === 0){
       //If the total is equal 0 hide the table and display a message.
       $('table#checkout-table').addClass('hide');
-      $('button#confirmPurchases').addClass('hide');
+      $('button#confirmPurchases').parent('div').addClass('hide');
       $('<div data-alert class="alert-box warning radius text-center"><h3>Vuoto!</h3> Non ci sono acquisti nel tuo carrello..</div>').insertBefore('table#checkout-table');
     }
   });
   $('#confirmPurchases').click(function(){
     var total = parseInt($('#totale').text(),10);
     var credits = parseInt($('#credits').text(),10);
+    console.log('total: '+total);
+    console.log('credits: '+credits);
     if(total > credits){
       $('#totale').parent('td').addClass('bg-danger');
       $('#totale').parents('tr').removeClass('active');

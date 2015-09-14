@@ -20,7 +20,7 @@
         <h3>Vuoto!</h3> Non ci sono acquisti nel tuo carrello..
       </div>
     {% else %}
-    <h4 class="text-center">Hai <span class="label radius secondary">{{userMoney}}</span> crediti</h4>
+    <h4 class="text-center">Hai <span class="label radius secondary" id="credits">{{userMoney}}</span> crediti</h4>
     <form action="checkout" method="POST" role="form">        
       <table class="center" id="checkout-table">
         <thead>
