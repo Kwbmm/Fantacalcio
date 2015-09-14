@@ -3,6 +3,10 @@
   <script src="js/foundation.min.js"></script>
   <script>
     $(document).foundation();
+    $('a.left-off-canvas-toggle').click(function() {
+      //This is to allow side menu to extend to the whole page even if content is shorter
+      $('.inner-wrap').css('min-height', $(window).height() + 'px');
+    });
   </script>
   <script src="js/js.cookie.js"></script>
   <script src="js/goodies.js"></script>
