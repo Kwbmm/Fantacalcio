@@ -65,9 +65,9 @@
     <aside class="left-off-canvas-menu" aria-hidden="true">
       <ul class="off-canvas-list">
       {% if userMoney is defined and username is defined and userMoney >= 0 %}
-        <li><label>{{username}}|{{userMoney}}</label></li>
+        <li class="text-center"><label>{{username}} | {{userMoney}}</label></li>
       {% else %}
-        <li><label>Menu Principale</label></li>
+        <li class="text-center"><label>Menu Principale</label></li>
       {% endif %}
         {% for displayedName,options in menu %}
           {#  options is:
