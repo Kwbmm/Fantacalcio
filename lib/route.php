@@ -136,7 +136,7 @@
     */
     $now = time();
     $query = "SELECT UID FROM scores
-              WHERE MID < (
+              WHERE MID <= (
                 SELECT MAX(MID)
                 FROM match_day
                 WHERE match_day.end <= '$now')";
