@@ -193,7 +193,7 @@
         foreach ($notPlayed as $role => $mark)
           $marks[$role] = (float)0;
 
-        $total = 0;
+        $total = (float)0;
         if(isset($marks)){ //$marks is set only if user made a formation
           if($marks['POR'] === (float)0 ){
             $total += $marks['POR-R'];
