@@ -258,6 +258,21 @@ span[class^="fi-"].hide,
 span[class*=" fi-"].hide{
   display: none;
 }
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  /* 
+                              IE10+ CSS styles go here 
+    This rule is needed because the #main-section in IE10+ starts from the top of the
+    page and not after the top bar (as with Firefox, Chrome and Safari); so we have
+    to adjust the padding based on the line height of the 'a' elements in the top bar.
+    Same rule will be applied for IE 9 (which suffers from the same issue) in a 
+    custom inline CSS.
+  */
+  .main-section > .row:first-child > .column:first-child,
+  .main-section > .row:first-child > .columns:first-child {
+    padding-top: 4.69rem;
+    padding-bottom: 30px;
+  }   
+}
 
 @media only screen and (max-width: 40em) { 
   section.main-section{
