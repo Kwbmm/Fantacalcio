@@ -136,7 +136,7 @@
     */
     $now = time();
     $query = "SELECT UID FROM scores
-              WHERE MID <= (
+              WHERE MID < (
                 SELECT MAX(MID)
                 FROM match_day
                 WHERE match_day.end <= '$now')";
@@ -155,27 +155,43 @@
       //For every UID that need scores to be computed
       for ($i=0; $i < count($UIDs); $i++) { 
         $uid = $UIDs[$i];
-        /*
-          Select the list of the soccer players the user put in his formation.
-          LEFT OUTER JOINs are needed because not all soccer players in the formation
-          actually played in real life, so they may not have a mark 
-        */
-        $query = "SELECT player_mark.mark as mark, user_formation.disposition as role
-                  FROM soccer_player
-                    LEFT OUTER JOIN player_mark ON player_mark.SPID=soccer_player.SPID
-                    LEFT OUTER JOIN user_formation ON user_formation.SPID = soccer_player.SPID
-                    LEFT OUTER JOIN match_day ON match_day.MID = player_mark.MID
+        //Select all the players in the user formation for the last played MID
+        $query = "SELECT disposition as role
+                  FROM user_formation
                   WHERE user_formation.UID = '$uid'
                   AND user_formation.MID = (
-                    SELECT MAX(MID) FROM match_day
+                    SELECT MAX(MID)
+                    FROM match_day
                     WHERE match_day.end <= '$now')";
         $result = getResult($app['conn'],$query);
         if($result === false){
           rollback($app['conn']);
           $app->abort(452,__FILE__." (".__LINE__.")");
         }
-        while(($row=mysqli_fetch_array($result,MYSQLI_ASSOC)) !== null)
+        while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) !== null)
+          $formation[$row['role']] = 0;
+
+        //Select the player marks of the last played MID, for the user
+        $query = "SELECT disposition as role, mark
+                  FROM player_mark, user_formation
+                  WHERE player_mark.SPID = user_formation.SPID
+                  AND user_formation.UID = '$uid'
+                  AND player_mark.MID = (
+                    SELECT MAX(MID)
+                    FROM match_day
+                    WHERE match_day.end <= '$now')";
+        $result = getResult($app['conn'],$query);
+        if($result === false){
+          rollback($app['conn']);
+          $app->abort(452,__FILE__." (".__LINE__.")");
+        }
+        while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) !== null)
           $marks[$row['role']] = (float)$row['mark'];
+
+        $notPlayed = array_diff_key($formation,$marks);
+
+        foreach ($notPlayed as $role => $mark)
+          $marks[$role] = (float)0;
 
         $total = 0;
         if(isset($marks)){ //$marks is set only if user made a formation
@@ -370,7 +386,9 @@
 
         //Update scores, also if the user has no formation ($total will be 0)
         $query = "UPDATE scores
-                  SET points = points + '$total', MID = MID + 1
+                  SET points = points + '$total', MID = (
+                    SELECT MAX(MID) FROM match_day
+                    WHERE match_day.end <= '$now')
                   WHERE UID = '$uid'";
         $result = getResult($app['conn'],$query);
         if($result === false){
@@ -378,6 +396,8 @@
           $app->abort(452,__FILE__." (".__LINE__.")");
         }
         unset($marks);
+        unset($notPlayed);
+        unset($formation);
       } //End for loop
       commit($app['conn']);
     } //End insert scores
@@ -410,7 +430,6 @@
     $sequence = array();
     while(($row=mysqli_fetch_array($result,MYSQLI_ASSOC))!== null)
       array_push($sequence, $row);
-
     $twigParameters = getTwigParameters('Home',$app['siteName'],'home',$app['userMoney'],array('sequence'=>$sequence));
     return $app['twig']->render('index.twig',$twigParameters);
   });
@@ -1436,33 +1455,47 @@
     if(!isset($_SESSION['user']))
       return $app->redirect(dirname($_SERVER['REQUEST_URI']).'/login');
 
-    /*
-      Get the marks of the LAST match day from DB for each soccer player
-      belonging to the user.
-      LEFT OUTER JOINS are needed because the player in player_mark are not the same
-      as the ones in user_formation.
-      In the output table we want also the soccer players that have no mark because
-      either they didn't play enough minutes or they didn't played at all.
-      Players that played less than 15' (or 25' if goalkeeper) will have a 0.
-      Players that didn't play at all will have a NULL value.
-    */
     $uid = getUID($app['conn'],$_SESSION['user']);
     $now = time();
-    $query = "SELECT soccer_player.Name as name, player_mark.mark as mark, user_formation.disposition as role
-              FROM soccer_player
-                LEFT OUTER JOIN player_mark ON player_mark.SPID=soccer_player.SPID
-                LEFT OUTER JOIN user_formation ON user_formation.SPID = soccer_player.SPID
-                LEFT OUTER JOIN match_day ON match_day.MID = player_mark.MID
-              WHERE user_formation.UID = '$uid'
+
+    //Select the formation of the user from the last MID
+    $query = "SELECT disposition as role, Name as name
+              FROM user_formation, soccer_player
+              WHERE user_formation.SPID = soccer_player.SPID 
+              AND user_formation.UID = '$uid'
               AND user_formation.MID = (
-                SELECT MAX(MID) FROM match_day
-                WHERE match_day.end <= '$now')
-              AND player_mark.MID = (
-                SELECT MAX(MID) FROM match_day
+                SELECT MAX(MID)
+                FROM match_day
                 WHERE match_day.end <= '$now')";
     $result = getResult($app['conn'],$query);
-    if($result === false)
+    if($result === false){
+      rollback($app['conn']);
       $app->abort(452,__FILE__." (".__LINE__.")");
+    }
+    while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) !== null)
+      $formation[$row['role']] = array($row['name'],0);
+    
+    //Select the player marks of the last played MID, for the user
+    $query = "SELECT disposition as role, Name as name, mark
+              FROM player_mark, user_formation, soccer_player
+              WHERE player_mark.SPID = user_formation.SPID
+              AND player_mark.SPID = soccer_player.SPID
+              AND user_formation.SPID = soccer_player.SPID
+              AND user_formation.UID = '$uid'
+              AND player_mark.MID = (
+                SELECT MAX(MID)
+                FROM match_day
+                WHERE match_day.end <= '$now')";
+    $result = getResult($app['conn'],$query);
+    if($result === false){
+      rollback($app['conn']);
+      $app->abort(452,__FILE__." (".__LINE__.")");
+    }
+    while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) !== null)
+      $marks[$row['role']] = array($row['name'],(float)$row['mark']);
+
+    $notPlayed = array_diff_key($formation,$marks);
+
     //This is done just to enforce the order when the output is shown
     $playerMarks = array( 'POR'=>'',
                           'DIF-1'=>'',
@@ -1485,73 +1518,142 @@
                           'CEN-R-2'=>'',
                           'ATT-R-1'=>'',
                           'ATT-R-2'=>'');
-    while(($row=mysqli_fetch_array($result,MYSQLI_ASSOC)) !== null){
-      switch ($row['role']) {
+    foreach($marks as $role => $name_mark){
+      switch ($role) {
         case 'POR':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'DIF-1':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'DIF-2':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'DIF-3':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'DIF-4':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'DIF-5':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'CEN-1':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'CEN-2':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'CEN-3':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'CEN-4':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'CEN-5':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'ATT-1':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'ATT-2':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'ATT-3':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'POR-R':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'DIF-R-1':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'DIF-R-2':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'CEN-R-1':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'CEN-R-2':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'ATT-R-1':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
         case 'ATT-R-2':
-          $playerMarks[$row['role']] = array('name'=>$row['name'],'mark'=>$row['mark']);
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
           break;
-        default:
-          # Should never happen
+        default: //Should never happen
+          break;
+      }
+    }
+
+    foreach($notPlayed as $role => $name_mark){
+      switch ($role) {
+        case 'POR':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'DIF-1':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'DIF-2':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'DIF-3':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'DIF-4':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'DIF-5':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'CEN-1':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'CEN-2':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'CEN-3':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'CEN-4':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'CEN-5':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'ATT-1':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'ATT-2':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'ATT-3':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'POR-R':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'DIF-R-1':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'DIF-R-2':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'CEN-R-1':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'CEN-R-2':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'ATT-R-1':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        case 'ATT-R-2':
+          $playerMarks[$role] = array('name'=>$name_mark[0],'mark'=>$name_mark[1]);
+          break;
+        default: //Should never happen
           break;
       }
     }

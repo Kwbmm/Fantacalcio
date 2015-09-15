@@ -6,38 +6,36 @@
     </div>      
   {% else %}
     {% if parameters.playerMarks.POR %} {#Check the first player, but could have also checked the last..#}
-      <div class="table-responsive">
-        <table class="table table-hover table-bordered table-condensed">
-          <thead>
-            <tr>
-              <th class="text-center">Ruolo</th>
-              <th class="text-center">Nome</th>
-              <th class="text-center">Voto</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for role,data in parameters.playerMarks if data %}
-            <tr class="text-center">
-              {% set role_new = role|split('-',3) %}
-              {% if role_new[2] is defined %}
-                <td>{{role_new[0]}} {{role_new[1]}} {{role_new[2]}}</td>
-              {% elseif role_new[1] is defined %}
-                <td>{{role_new[0]}} {{role_new[1]}}</td>
-              {% else %}
-                <td>{{role_new[0]}}</td>
-              {% endif %}
-              {% set name_new = data.name|split(' ', 2) %}
-              {% if name_new[1] is defined %}
-                <td>{{name_new[1]}}</td>
-              {% else %}
-                <td>{{name_new[0]}}</td>                
-              {% endif %}
-                <td>{% if data.mark is null or data.mark == 0 %} S.V {% else %} {{data.mark}} {% endif %}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+      <table class="center">
+        <thead>
+          <tr>
+            <th class="text-center">Ruolo</th>
+            <th class="text-center">Nome</th>
+            <th class="text-center">Voto</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for role,data in parameters.playerMarks if data %}
+          <tr>
+            {% set role_new = role|split('-',3) %}
+            {% if role_new[2] is defined %}
+              <td class="text-center">{{role_new[0]}} {{role_new[1]}} {{role_new[2]}}</td>
+            {% elseif role_new[1] is defined %}
+              <td class="text-center">{{role_new[0]}} {{role_new[1]}}</td>
+            {% else %}
+              <td class="text-center">{{role_new[0]}}</td>
+            {% endif %}
+            {% set name_new = data.name|split(' ', 2) %}
+            {% if name_new[1] is defined %}
+              <td class="text-center">{{name_new[1]}}</td>
+            {% else %}
+              <td class="text-center">{{name_new[0]}}</td>                
+            {% endif %}
+              <td class="text-center">{% if data.mark is null or data.mark == 0 %} S.V {% else %} {{data.mark}} {% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     {% else %}
       <div data-alert class="alert-box warning radius text-center">
         <h3>Voti non disponibili</h3> I voti per la giornata {{parameters.matchDay}} non sono ancora usciti!
