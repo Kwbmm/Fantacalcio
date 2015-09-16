@@ -1,7 +1,5 @@
 <?php 
-  require_once '../vendor/phpQuery/phpQuery-onefile.php';
-  
-  require_once 'common.php';
+  require_once '../vendor/phpQuery/phpQuery-onefile.php';  
 
   require_once 'routes/before.php'; //Before functions
   require_once 'routes/home.php'; //Home routes
