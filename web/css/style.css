@@ -235,29 +235,6 @@ a.bg-danger:focus {
   background-color: #e4b9b9;
 }
 
-/*=================================================================================**
-**                                                                                 **
-**                                     ICONS                                       **
-**                                                                                 **
-**=================================================================================*/
-
-/*
-  These are fixes needed to properly trigger click() event on these elemnts
-  with older mobile browsers (like stock android browser)
-*/
-i[class^="fi-"],
-i[class*=" fi-"],
-span[class^="fi-"],
-span[class*=" fi-"]{
-  display: inline-block;
-}
-
-i[class^="fi-"].hide,
-i[class*=" fi-"].hide,
-span[class^="fi-"].hide,
-span[class*=" fi-"].hide{
-  display: none;
-}
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
   /* 
                               IE10+ CSS styles go here 
