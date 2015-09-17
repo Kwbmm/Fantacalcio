@@ -13,32 +13,18 @@
         <legend>Registrazione</legend>
         <div class="row">
           <div class="small-12 columns">
-            <div class="row collapse">
-              <div class="small-1 columns">
-                <span class="prefix fi-torso"></span>            
-              </div>
-              <div class="small-11 columns">
-                <input type="text" class="has-help" id="username" name="username" placeholder="Username" required="required">
-              </div>
+              <label for="username">Nome Utente</label>
+              <input type="text" class="has-help" id="username" name="username" placeholder="Username" required="required">
               <small class="help-block">Compreso tra 3 e 15 caratteri, lettere e numeri, primo carattere una lettera. No spazi.</small>
-            </div>
           </div>
         </div>
         <div class="row">
-          <div class="small-12 columns">
-            <div class="row collapse">
-              <div class="small-1 columns">
-                <div class="input-group-addon"><span class="prefix fi-lock"></span></div>            
-              </div>
-              <div class="small-11 columns">
-                <input type="password" class="has-help" id="password" name="password" placeholder="Password" required="required">
-              </div>
+          <div class="small-6 columns">
+              <label for="password">Password</label>
+              <input type="password" class="has-help" id="password" name="password" placeholder="Password" required="required">
               <small class="help-block">Minimo 6 caratteri. No spazi.</small>
-            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="small-12 columns">
+          <div class="small-6 columns">
             <label for="repeat-password">Ripeti Password</label>
             <input type="password" id="repeat-password" name="repeat-password" placeholder="Ripeti Password" required="required">
           </div>
