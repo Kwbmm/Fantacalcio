@@ -32,6 +32,7 @@
               AND player_mark.SPID = soccer_player.SPID
               AND user_formation.SPID = soccer_player.SPID
               AND user_formation.UID = '$uid'
+              AND user_formation.MID = player_mark.MID
               AND player_mark.MID = (
                 SELECT MAX(MID)
                 FROM match_day
