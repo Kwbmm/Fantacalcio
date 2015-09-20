@@ -1,6 +1,25 @@
 Changelog
 =========
 
+1.3.4 (2015-09-15)
+------------------
+
+* fixed some new deprecations
+* fixed translation registration for the validators
+
+1.3.3 (2015-09-08)
+------------------
+
+* added support for Symfony 3.0 and Twig 2.0
+* fixed some Form deprecations
+* removed deprecated method call in the exception handler
+* fixed Swiftmailer spool flushing when spool is not enabled
+
+1.3.2 (2015-08-24)
+------------------
+
+* no changes
+
 1.3.1 (2015-08-04)
 ------------------
 
