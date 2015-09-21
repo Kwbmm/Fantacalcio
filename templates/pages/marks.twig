@@ -1,6 +1,7 @@
   <div class="small-12 medium-8 medium-offset-2 columns">
   {#Pager#}
   <div class="pagination-centered">
+    <legend>Giornate</legend>
     <ul class="pagination">
       {#Prev arrow, enable only if index != 1#}
       <li {{parameters.currentMid == 1 ? 'class="arrow unavailable"' : 'class="arrow"'}}><a href="//{{app.request.getHttpHost()}}/marks/day-1">&laquo;</a></li>
