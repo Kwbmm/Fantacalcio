@@ -208,8 +208,10 @@
   function generateConfig($app){
     updateAuth_tokenTable($app);
     $configFile['last-update'] = date('Y-m-d H:i:s',time());
-    $configFile['start-money'] = getStartMoney($app);
+    $configFile['start-money'] = 260;
+    $configFile['maintenance'] = false;
     $app['startMoney'] = $configFile['start-money'];
+    $app['maintenance'] = $configFile['maintenance'];
     $fp = fopen($app['configFilePath'],"w");
     fwrite($fp,json_encode($configFile));
     fclose($fp);
@@ -221,7 +223,8 @@
     $configFile = file_get_contents($app['configFilePath']);
     $configFile = json_decode($configFile,true);
     
-    $app['startMoney'] = preg_replace('/(\d+)000/','${1}',$configFile['start-money']);
+    $app['startMoney'] = $configFile['start-money'];
+    $app['maintenance'] = $configFile['maintenance'];
     $lastUpdate = date_create($configFile['last-update']);
     $lastUpdate = date_format($lastUpdate,'U');
     $fiveDays = (5*24*60*60);
@@ -245,22 +248,6 @@
     $header = array('headers' => array('X-Auth-Token' => $app['apiKey']));
     $response = $app['guzzle']->get($uri, $header);          
     return json_decode($response->getBody(),true);  
-  }
-
-  function getStartMoney($app){
-    $result = getSoccerData($app,'soccerseasons/401/teams');
-    $sum = 0;
-    $count = 0;
-    for ($i=0; $i < count($result['teams']); $i++){
-      //Remove commas and return the integer value
-      $rv = (int)implode('',explode(',', $result['teams'][$i]['squadMarketValue']));
-      //Some squads do not have squadMarketValue set, so exclude them
-      if($rv !== 0){
-        $sum += $rv;
-        $count++;
-      }
-    }
-    return ceil($sum/$count);
   }
 
   function myDump($var){

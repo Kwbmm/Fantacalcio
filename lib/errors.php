@@ -14,6 +14,7 @@
       //Custom error codes can start from 452 (https://it.wikipedia.org/wiki/Codici_di_stato_HTTP#4xx_Client_Error)
       /*
         452 -> Generic error
+        453 -> Maintenance
         460 - 464 -> Errors on Login and Register pages
         465 - 469 -> Error on Buy and Checkout pages
         470 - 474 -> Error on Roster page
@@ -23,7 +24,8 @@
         return $app['twig']->render('404.twig',array('pageName'=>'Errore','siteName'=>$app['siteName']));
       case 452: //Generic result === false
         return $app['twig']->render('index.twig',$twigParameters);
-      
+      case 453: //Maintenance
+        return $app['twig']->render('maintenance.twig',$twigParameters);
       case 460: //User/psw empty (Login/register)
         return $app['twig']->render('index.twig',$twigParameters);
       case 461: //User already in use (Login/register)
