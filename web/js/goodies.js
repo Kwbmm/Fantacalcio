@@ -274,8 +274,18 @@ function formationPage(){
   });
 }
 
+function marksPage(){
+  //Add to any '.unavailable' a 'return false;' on click
+  $('.unavailable').click(function(){
+    return false;
+  });
+}
+
 $(document).ready(function(){
   var page = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
+  //Check if the page is one coming from marks/day-{n}
+  if(page.indexOf('day-') !== -1)
+    page = 'marks'; //It's a marks page, replace the content with 'marks'
   switch(page){
     case 'register':
       registerPage();
@@ -291,6 +301,10 @@ $(document).ready(function(){
       break;
     case 'formation':
       formationPage();
+      break;
+    case 'marks':
+      marksPage();
+      break;
     default:
     break;
   }
