@@ -47,7 +47,7 @@
                   {% endif %}
                   {% for dd_displayedName,dd_options in options %}
                       {% if dd_options[2] %}{#Display page?#}
-                        <li {% if dd_options[1] %}class="active"{% endif %}><a href="{{dd_options[0]}}">{{dd_displayedName}}</a></li> 
+                        <li {% if dd_options[1] %}class="active"{% endif %}><a href="//{{app.request.getHttpHost()}}/{{dd_options[0]}}">{{dd_displayedName}}</a></li> 
                       {% endif %}                    
                   {% endfor %}
                   {% if elem[2] %}
@@ -55,7 +55,7 @@
                     </li>
                   {% endif %}
                 {% elseif options[2] %} {#Display page?#}
-                  <li {% if options[1] %}class="active"{% endif %}><a href="{{options[0]}}">{{displayedName}}</a></li>                
+                  <li {% if options[1] %}class="active"{% endif %}><a href="//{{app.request.getHttpHost()}}/{{options[0]}}">{{displayedName}}</a></li>                
                 {% endif %}
             {% endfor %}
           </ul>
@@ -86,7 +86,7 @@
               {% endif %}
               {% for dd_displayedName,dd_options in options %}
                   {% if dd_options[2] %}{#Display page?#}
-                    <li {% if dd_options[1] %}class="active"{% endif %}><a href="{{dd_options[0]}}">{{dd_displayedName}}</a></li> 
+                    <li {% if dd_options[1] %}class="active"{% endif %}><a href="//{{app.request.getHttpHost()}}/{{dd_options[0]}}">{{dd_displayedName}}</a></li> 
                   {% endif %}                    
               {% endfor %}
               {% if elem[2] %}
@@ -94,7 +94,7 @@
                 </li>
               {% endif %}
             {% elseif options[2] %} {#Display page?#}
-              <li {% if options[1] %}class="active"{% endif %}><a href="{{options[0]}}">{{displayedName}}</a></li>                
+              <li {% if options[1] %}class="active"{% endif %}><a href="//{{app.request.getHttpHost()}}/{{options[0]}}">{{displayedName}}</a></li>                
             {% endif %}
         {% endfor %}
       </ul>

@@ -3,15 +3,15 @@
   <div class="pagination-centered">
     <ul class="pagination">
       {#Prev arrow, enable only if index != 1#}
-      <li {{parameters.currentMid == 1 ? 'class="arrow unavailable"' : 'class="arrow"'}}><a href="{{app.request.getSchemeAndHttpHost()}}/marks/1">&laquo;</a></li>
+      <li {{parameters.currentMid == 1 ? 'class="arrow unavailable"' : 'class="arrow"'}}><a href="//{{app.request.getHttpHost()}}/marks/day-1">&laquo;</a></li>
       {% for day in range(parameters.currentMid-5,parameters.currentMid-1,-1) if day > 0 %} {#Print the 5 previous currentMids#}
-        <li><a href="{{app.request.getSchemeAndHttpHost()}}/marks/{{day}}">{{day}}</a></li>
+        <li><a href="//{{app.request.getHttpHost()}}/marks/day-{{day}}">{{day}}</a></li>
       {% endfor %}
       <li class="current"><a href="#">{{parameters.currentMid}}</a></li>
       {% for day in range(parameters.currentMid+1,parameters.currentMid+5,1) if day <= parameters.playedDays %} {#Print the 5 next currentMids#}
-        <li><a href="{{app.request.getSchemeAndHttpHost()}}/marks/{{day}}">{{day}}</a></li>
+        <li><a href="//{{app.request.getHttpHost()}}/marks/day-{{day}}">{{day}}</a></li>
       {% endfor %}
-      <li {{parameters.currentMid == parameters.playedDays ? 'class="arrow unavailable"' : 'class="arrow"'}}><a href="{{app.request.getSchemeAndHttpHost()}}/marks/{{parameters.playedDays}}">&raquo;</a></li>
+      <li {{parameters.currentMid == parameters.playedDays ? 'class="arrow unavailable"' : 'class="arrow"'}}><a href="//{{app.request.getHttpHost()}}/marks/day-{{parameters.playedDays}}">&raquo;</a></li>
     </ul>
   </div>
     <h1 class="text-center">Voti giornata {{parameters.currentMid}}</h1>

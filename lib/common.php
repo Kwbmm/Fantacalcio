@@ -194,7 +194,6 @@
         elseif (in_array($options[0],$loggedOutPages) && isset($_SESSION['user']) && !empty($_SESSION['user'])){
           $options[2] = false;
         }
-        $options[0] = '//'.$_SERVER['HTTP_HOST'].'/'.$options[0];
       }
     }
     return $pages;
