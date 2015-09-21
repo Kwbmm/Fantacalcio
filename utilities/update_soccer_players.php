@@ -1,3 +1,4 @@
+#!/usr/bin/php5.5-cli
 <?php
   require_once '../vendor/phpQuery/phpQuery-onefile.php';
 
@@ -82,95 +83,101 @@
   $notInDB = array_diff_key($updatedPlayers, $dbPlayers);
   $toUpdate = array_intersect_key($updatedPlayers, $dbPlayers);
   $toRemoveFromDB = array_diff_key($dbPlayers, $updatedPlayers);
+  echo "notInDB\n";
+  print_r($notInDB);
+  echo "toUpdate\n";
+  print_r($toUpdate);
+  echo "toRemoveFromDB\n";
+  print_r($toRemoveFromDB);
 
-  mysqli_query($conn,"START TRANSACTION");
-  //First remove the players that are not present anymore
-  foreach ($toRemoveFromDB as $key => $name) {
-    $query = "SELECT Cost as cost, user_roster.UID as UID
-              FROM user_roster, soccer_player
-              WHERE user_roster.SPID = '$key'
-              AND user_roster.SPID = soccer_player.SPID
-              FOR UPDATE";
-    $result = mysqli_query($conn,$query);
-    if($result === false){
-      mysqli_rollback($conn);
-      echo mysqli_error($conn);
-      return -1;
-    }
-    $row = mysqli_fetch_assoc($result);
-    if(!empty($row)){
-      $uid = $row['UID'];
-      $add = $row['cost'];
-      $query = "UPDATE user SET money = money + '$add' WHERE UID = '$uid'";
-      $result = mysqli_query($conn,$query);
-      if($result === false){
-        mysqli_rollback($conn);
-        echo mysqli_error($conn);
-        return -1;
-      }
-      //Delete from user_roster
-      $query = "DELETE FROM user_roster
-                WHERE user_roster.SPID = '$key'";
-      $result = mysqli_query($conn,$query);
-      if($result === false){
-        mysqli_rollback($conn);
-        echo mysqli_error($conn);
-        return -1;
-      }              
-    }
-    //Delete from soccer_player
-    $query = "DELETE FROM soccer_player
-              WHERE soccer_player.SPID = '$key'";
-    $result = mysqli_query($conn,$query);
-    if($result === false){
-      mysqli_rollback($conn);
-      echo mysqli_error($conn);
-      return -1;
-    }
-  }
-  //Update the players in DB
-  foreach ($toUpdate as $key => $value) {
-    $name = $value['name'];
-    $team = $value['team'];
-    $role = $value['role'];
-    $price = $value['price'];
-
-    $query = "SELECT * FROM soccer_player
-              WHERE SPID = '$key'
-              FOR UPDATE";
-    $result = mysqli_query($conn,$query);
-    if($result === false){
-      mysqli_rollback($conn);
-      echo mysqli_error($conn);
-      return -1;
-    }
-    $query = "UPDATE soccer_player
-              SET Name = '$name', Position = '$role', Team='$team', Cost = '$price'
-              WHERE SPID = '$key'";
-    $result = mysqli_query($conn,$query);
-    if($result === false){
-      mysqli_rollback($conn);
-      echo mysqli_error($conn);
-      return -1;
-    }      
-  }
-
-  //Insert the new ones
-  foreach ($notInDB as $key => $value) {
-    $name = $value['name'];
-    $team = $value['team'];
-    $role = $value['role'];
-    $price = $value['price'];
-    
-    $query = "INSERT INTO soccer_player VALUES('$key','$name','$role','$team','$price')";
-    $result = mysqli_query($conn,$query);
-    if($result === false){
-      mysqli_rollback($conn);
-      echo mysqli_error($conn);
-      return -1;
-    }      
-  }
-  mysqli_commit($conn);
+//  mysqli_query($conn,"START TRANSACTION");
+//  //First remove the players that are not present anymore
+//  foreach ($toRemoveFromDB as $key => $name) {
+//    $query = "SELECT Cost as cost, user_roster.UID as UID
+//              FROM user_roster, soccer_player
+//              WHERE user_roster.SPID = '$key'
+//              AND user_roster.SPID = soccer_player.SPID
+//              FOR UPDATE";
+//    $result = mysqli_query($conn,$query);
+//    if($result === false){
+//      mysqli_rollback($conn);
+//      echo mysqli_error($conn);
+//      return -1;
+//    }
+//    $row = mysqli_fetch_assoc($result);
+//    if(!empty($row)){
+//      $uid = $row['UID'];
+//      $add = $row['cost'];
+//      $query = "UPDATE user SET money = money + '$add' WHERE UID = '$uid'";
+//      $result = mysqli_query($conn,$query);
+//      if($result === false){
+//        mysqli_rollback($conn);
+//        echo mysqli_error($conn);
+//        return -1;
+//      }
+//      //Delete from user_roster
+//      $query = "DELETE FROM user_roster
+//                WHERE user_roster.SPID = '$key'";
+//      $result = mysqli_query($conn,$query);
+//      if($result === false){
+//        mysqli_rollback($conn);
+//        echo mysqli_error($conn);
+//        return -1;
+//      }              
+//    }
+//    //Delete from soccer_player
+//    $query = "DELETE FROM soccer_player
+//              WHERE soccer_player.SPID = '$key'";
+//    $result = mysqli_query($conn,$query);
+//    if($result === false){
+//      mysqli_rollback($conn);
+//      echo mysqli_error($conn);
+//      return -1;
+//    }
+//  }
+//  //Update the players in DB
+//  foreach ($toUpdate as $key => $value) {
+//    $name = $value['name'];
+//    $team = $value['team'];
+//    $role = $value['role'];
+//    $price = $value['price'];
+//
+//    $query = "SELECT * FROM soccer_player
+//              WHERE SPID = '$key'
+//              FOR UPDATE";
+//    $result = mysqli_query($conn,$query);
+//    if($result === false){
+//      mysqli_rollback($conn);
+//      echo mysqli_error($conn);
+//      return -1;
+//    }
+//    $query = "UPDATE soccer_player
+//              SET Name = '$name', Position = '$role', Team='$team', Cost = '$price'
+//              WHERE SPID = '$key'";
+//    $result = mysqli_query($conn,$query);
+//    if($result === false){
+//      mysqli_rollback($conn);
+//      echo mysqli_error($conn);
+//      return -1;
+//    }      
+//  }
+//
+//  //Insert the new ones
+//  foreach ($notInDB as $key => $value) {
+//    $name = $value['name'];
+//    $team = $value['team'];
+//    $role = $value['role'];
+//    $price = $value['price'];
+//    
+//    $query = "INSERT INTO soccer_player VALUES('$key','$name','$role','$team','$price')";
+//    $result = mysqli_query($conn,$query);
+//    if($result === false){
+//      mysqli_rollback($conn);
+//      echo mysqli_error($conn);
+//      return -1;
+//    }      
+//  }
+//  mysqli_commit($conn);
   echo "Market updated!";
 
   function myDump($var){
