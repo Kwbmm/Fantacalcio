@@ -3,7 +3,7 @@
 
   $app->get('/checkout',function () use($app){
     if(!isset($_SESSION['user']))
-      return $app->redirect(dirname($_SERVER['REQUEST_URI']).'/login');
+      return $app->redirect('//'.$app['request']->getHttpHost().'/login');
     $now = time();
     if($now >= $app['closeTime'] && $now < $app['openTime']){ //Market is closed!
       $closeStart = date('d-m-y H:i',$app['closeTime']);

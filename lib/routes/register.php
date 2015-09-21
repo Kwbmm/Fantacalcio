@@ -3,7 +3,7 @@
 
   $app->get('/register',function () use($app){
     if(isset($_SESSION['user']) && !empty($_SESSION['user']))
-      return $app->redirect(dirname($_SERVER['REQUEST_URI']).'/home');
+      return $app->redirect('//'.$app['request']->getHttpHost().'/login');
 
     $twigParameters = getTwigParameters('Registrati',$app['siteName'],'register',$app['userMoney']);
     return $app['twig']->render('index.twig',$twigParameters);

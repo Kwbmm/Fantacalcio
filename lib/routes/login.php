@@ -3,7 +3,7 @@
 
   $app->get('/login',function () use($app){
     if(isset($_SESSION['user']) && !empty($_SESSION['user']))
-      return $app->redirect(dirname($_SERVER['REQUEST_URI']).'/home');
+      return $app->redirect('//'.$app['request']->getHttpHost().'/home');
 
     $twigParameters = getTwigParameters('Login',$app['siteName'],'login',$app['userMoney']);
     return $app['twig']->render('index.twig',$twigParameters);

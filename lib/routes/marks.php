@@ -13,12 +13,12 @@
       $app->abort(452, __FILE__." (".__LINE__.")");
     $row = mysqli_fetch_row($result);
     $mid = $row[0];
-    return $app->redirect($app['request']->getSchemeAndHttpHost().'/marks/day-'.$mid);
+    return $app->redirect('//'.$app['request']->getHttpHost().'/marks/day-'.$mid);
   });
 
   $app->get('/marks/day-{day}', function($day) use($app){
     if(!isset($_SESSION['user']))
-      return $app->redirect($app['request']->getSchemeAndHttpHost().'/login');
+      return $app->redirect('//'.$app['request']->getHttpHost().'/login');
     
     $uid = getUID($app['conn'],$_SESSION['user']);
     $now = time();

@@ -26,7 +26,7 @@
   });
 
   $app->get('/',function() use($app){
-    return $app->redirect($app['request']->getSchemeAndHttpHost().'/home');
+    return $app->redirect('//'.$app['request']->getHttpHost().'/home');
   });
 
 ?>

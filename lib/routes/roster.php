@@ -3,7 +3,7 @@
 
   $app->get('/roster',function () use($app){
     if(!isset($_SESSION['user']))
-      return $app->redirect(dirname($_SERVER['REQUEST_URI']).'/login');
+      return $app->redirect('//'.$app['request']->getHttpHost().'/login');
 
     //Get UID
     $user = $_SESSION['user'];
