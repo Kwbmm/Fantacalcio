@@ -50,6 +50,9 @@
               <td class="text-center">{% if data.mark is null or data.mark == 0 %} S.V {% else %} {{data.mark}} {% endif %}</td>
           </tr>
           {% endfor %}
+          <tr class="active">
+            <td colspan="3" class="text-center"><b>Totale:</b> {{parameters.total}}</td>
+          </tr>
         </tbody>
       </table>
     {% else %}

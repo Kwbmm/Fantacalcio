@@ -215,6 +215,167 @@
               break;
           }
         }
+        $total = (float)0;
+        if($playerMarks['POR']['mark'] === (float)0 ){
+          $total += $playerMarks['POR-R']['mark'];
+        }
+        else
+          $total += $playerMarks['POR']['mark'];
+
+        if($playerMarks['DIF-1']['mark'] === (float)0){
+          if(isset($playerMarks['DIF-R-1']['mark']) && $playerMarks['DIF-R-1']['mark'] !== (float)0 ){
+            $total += $playerMarks['DIF-R-1']['mark'];
+          }
+          elseif(isset($playerMarks['DIF-R-2']['mark']) && $playerMarks['DIF-R-2']['mark'] !== (float)0){
+            $total += $playerMarks['DIF-R-2']['mark'];
+          }
+        }
+        else
+          $total += $playerMarks['DIF-1']['mark'];
+
+        if($playerMarks['DIF-2']['mark'] === (float)0){
+          if(isset($playerMarks['DIF-R-1']['mark']) && $playerMarks['DIF-R-1']['mark'] !== (float)0 ){
+            $total += $playerMarks['DIF-R-1']['mark'];
+          }
+          elseif(isset($playerMarks['DIF-R-2']['mark']) && $playerMarks['DIF-R-2']['mark'] !== (float)0){
+            $total += $playerMarks['DIF-R-2']['mark'];
+          }
+        }
+        else
+          $total += $playerMarks['DIF-2']['mark'];
+
+        if($playerMarks['DIF-3']['mark'] === (float)0){
+          if(isset($playerMarks['DIF-R-1']['mark']) && $playerMarks['DIF-R-1']['mark'] !== (float)0 ){
+            $total += $playerMarks['DIF-R-1']['mark'];
+          }
+          elseif(isset($playerMarks['DIF-R-2']['mark']) && $playerMarks['DIF-R-2']['mark'] !== (float)0){
+            $total += $playerMarks['DIF-R-2']['mark'];
+          }
+        }
+        else
+          $total += $playerMarks['DIF-3']['mark'];
+
+        if(isset($playerMarks['DIF-4']['mark'])){
+          if($playerMarks['DIF-4']['mark'] === (float)0){
+            if(isset($playerMarks['DIF-R-1']['mark']) && $playerMarks['DIF-R-1']['mark'] !== (float)0 ){
+              $total += $playerMarks['DIF-R-1']['mark'];
+            }
+            elseif(isset($playerMarks['DIF-R-2']['mark']) && $playerMarks['DIF-R-2']['mark'] !== (float)0){
+              $total += $playerMarks['DIF-R-2']['mark'];
+            }
+          }
+          else
+            $total += $playerMarks['DIF-4']['mark'];
+        }
+
+        if(isset($playerMarks['DIF-5']['mark'])){
+          if($playerMarks['DIF-5']['mark'] === (float)0){
+            if(isset($playerMarks['DIF-R-1']['mark']) && $playerMarks['DIF-R-1']['mark'] !== (float)0 ){
+              $total += $playerMarks['DIF-R-1']['mark'];
+            }
+            elseif(isset($playerMarks['DIF-R-2']['mark']) && $playerMarks['DIF-R-2']['mark'] !== (float)0){
+              $total += $playerMarks['DIF-R-2']['mark'];
+            }
+          }
+          else
+            $total += $playerMarks['DIF-5']['mark'];
+        }
+
+        if($playerMarks['CEN-1']['mark'] === (float)0){
+          if(isset($playerMarks['CEN-R-1']['mark']) && $playerMarks['CEN-R-1']['mark'] !== (float)0 ){
+            $total += $playerMarks['CEN-R-1']['mark'];
+          }
+          elseif(isset($playerMarks['CEN-R-2']['mark']) && $playerMarks['CEN-R-2']['mark'] !== (float)0){
+            $total += $playerMarks['CEN-R-2']['mark'];
+          }
+        }
+        else
+          $total += $playerMarks['CEN-1']['mark'];
+
+        if($playerMarks['CEN-2']['mark'] === (float)0){
+          if(isset($playerMarks['CEN-R-1']['mark']) && $playerMarks['CEN-R-1']['mark'] !== (float)0 ){
+            $total += $playerMarks['CEN-R-1']['mark'];
+          }
+          elseif(isset($playerMarks['CEN-R-2']['mark']) && $playerMarks['CEN-R-2']['mark'] !== (float)0){
+            $total += $playerMarks['CEN-R-2']['mark'];
+          }
+        }
+        else
+          $total += $playerMarks['CEN-2']['mark'];
+
+        if($playerMarks['CEN-3']['mark'] === (float)0){
+          if(isset($playerMarks['CEN-R-1']['mark']) && $playerMarks['CEN-R-1']['mark'] !== (float)0 ){
+            $total += $playerMarks['CEN-R-1']['mark'];
+          }
+          elseif(isset($playerMarks['CEN-R-2']['mark']) && $playerMarks['CEN-R-2']['mark'] !== (float)0){
+            $total += $playerMarks['CEN-R-2']['mark'];
+          }
+        }
+        else
+          $total += $playerMarks['CEN-3']['mark'];
+
+        if(isset($playerMarks['CEN-4']['mark'])){
+          if($playerMarks['CEN-4']['mark'] === (float)0){
+            if(isset($playerMarks['CEN-R-1']['mark']) && $playerMarks['CEN-R-1']['mark'] !== (float)0 ){
+              $total += $playerMarks['CEN-R-1']['mark'];
+            }
+            elseif(isset($playerMarks['CEN-R-2']['mark']) && $playerMarks['CEN-R-2']['mark'] !== (float)0){
+              $total += $playerMarks['CEN-R-2']['mark'];
+            }
+          }
+          else
+            $total += $playerMarks['CEN-4']['mark'];
+        }
+
+        if(isset($playerMarks['CEN-5']['mark'])){
+          if($playerMarks['CEN-5']['mark'] === (float)0){
+            if(isset($playerMarks['CEN-R-1']['mark']) && $playerMarks['CEN-R-1']['mark'] !== (float)0 ){
+              $total += $playerMarks['CEN-R-1']['mark'];
+            }
+            elseif(isset($playerMarks['CEN-R-2']['mark']) && $playerMarks['CEN-R-2']['mark'] !== (float)0){
+              $total += $playerMarks['CEN-R-2']['mark'];
+            }
+          }
+          else
+            $total += $playerMarks['CEN-5']['mark'];
+        }
+
+        if($playerMarks['ATT-1']['mark'] === (float)0){
+          if(isset($playerMarks['ATT-R-1']['mark']) && $playerMarks['ATT-R-1']['mark'] !== (float)0 ){
+            $total += $playerMarks['ATT-R-1']['mark'];
+          }
+          elseif(isset($playerMarks['ATT-R-2']['mark']) && $playerMarks['ATT-R-2']['mark'] !== (float)0){
+            $total += $playerMarks['ATT-R-2']['mark'];
+          }
+        }
+        else
+          $total += $playerMarks['ATT-1']['mark'];
+
+        if(isset($playerMarks['ATT-2']['mark'])){
+          if($playerMarks['ATT-2']['mark'] === (float)0){
+            if(isset($playerMarks['ATT-R-1']['mark']) && $playerMarks['ATT-R-1']['mark'] !== (float)0 ){
+              $total += $playerMarks['ATT-R-1']['mark'];
+            }
+            elseif(isset($playerMarks['ATT-R-2']['mark']) && $playerMarks['ATT-R-2']['mark'] !== (float)0){
+              $total += $playerMarks['ATT-R-2']['mark'];
+            }
+          }
+          else
+            $total += $playerMarks['ATT-2']['mark'];
+        }
+
+        if(isset($playerMarks['ATT-3']['mark'])){
+          if($playerMarks['ATT-3']['mark'] === (float)0){
+            if(isset($playerMarks['ATT-R-1']['mark']) && $playerMarks['ATT-R-1']['mark'] !== (float)0 ){
+              $total += $playerMarks['ATT-R-1']['mark'];
+            }
+            elseif(isset($playerMarks['ATT-R-2']['mark']) && $playerMarks['ATT-R-2']['mark'] !== (float)0){
+              $total += $playerMarks['ATT-R-2']['mark'];
+            }
+          }
+          else
+            $total += $playerMarks['ATT-3']['mark'];
+        }
       }//EOF if isset($marks)
     } //End if isset($formation)
 
@@ -230,9 +391,9 @@
     if(!isset($formation)) //If true, user has no formation
       $twigParameters = getTwigParameters('Voti Giornata '.$day,$app['siteName'],'marks',$app['userMoney'],array('warning'=>'Non hai schierato la formazione, non ci sono voti da mostrare..','currentMid' =>$day,'playedDays' => $playedDays));
     elseif(!isset($marks)) //If true, user has no marks
-      $twigParameters = getTwigParameters('Voti Giornata '.$day,$app['siteName'],'marks',$app['userMoney'],array('currentMid' =>$day,'playedDays' => $playedDays,'playerMarks'=>array('POR' => '')));
+      $twigParameters = getTwigParameters('Voti Giornata '.$day,$app['siteName'],'marks',$app['userMoney'],array('currentMid' =>$day,'playedDays' => $playedDays,'playerMarks'=>array('POR' => ''),'total'=>0.0));
     else //User has formation and marks
-      $twigParameters = getTwigParameters('Voti Giornata '.$day,$app['siteName'],'marks',$app['userMoney'],array('currentMid' =>$day,'playedDays' => $playedDays,'playerMarks'=>$playerMarks));
+      $twigParameters = getTwigParameters('Voti Giornata '.$day,$app['siteName'],'marks',$app['userMoney'],array('currentMid' =>$day,'playedDays' => $playedDays,'playerMarks'=>$playerMarks,'total'=>$total));
     return $app['twig']->render('index.twig',$twigParameters);
   })->assert('day','[1-9]|[1-2][0-9]|3[0-8]');
 ?>
