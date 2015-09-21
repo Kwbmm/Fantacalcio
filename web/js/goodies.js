@@ -275,8 +275,8 @@ function formationPage(){
 }
 
 function marksPage(){
-  //Add to any '.unavailable' a 'return false;' on click
-  $('.unavailable').click(function(){
+  //Add to any '.unavailable a' a 'return false;' on click
+  $('.unavailable a').click(function(){
     return false;
   });
 }
