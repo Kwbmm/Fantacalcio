@@ -83,28 +83,23 @@
   $notInDB = array_diff_key($updatedPlayers, $dbPlayers);
   $toUpdate = array_intersect_key($updatedPlayers, $dbPlayers);
   $toRemoveFromDB = array_diff_key($dbPlayers, $updatedPlayers);
-  echo "notInDB\n";
-  print_r($notInDB);
-  echo "toUpdate\n";
-  print_r($toUpdate);
-  echo "toRemoveFromDB\n";
-  print_r($toRemoveFromDB);
 
 //  mysqli_query($conn,"START TRANSACTION");
-//  //First remove the players that are not present anymore
-//  foreach ($toRemoveFromDB as $key => $name) {
-//    $query = "SELECT Cost as cost, user_roster.UID as UID
-//              FROM user_roster, soccer_player
-//              WHERE user_roster.SPID = '$key'
-//              AND user_roster.SPID = soccer_player.SPID
-//              FOR UPDATE";
-//    $result = mysqli_query($conn,$query);
-//    if($result === false){
-//      mysqli_rollback($conn);
-//      echo mysqli_error($conn);
-//      return -1;
-//    }
-//    $row = mysqli_fetch_assoc($result);
+  //First remove the players that are not present anymore
+  foreach ($toRemoveFromDB as $key => $name) {
+    $query = "SELECT Cost as cost, user_roster.UID as UID
+              FROM user_roster, soccer_player
+              WHERE user_roster.SPID = '$key'
+              AND user_roster.SPID = soccer_player.SPID
+              FOR UPDATE";
+    $result = mysqli_query($conn,$query);
+    if($result === false){
+      mysqli_rollback($conn);
+      echo mysqli_error($conn);
+      return -1;
+    }
+    $row = mysqli_fetch_assoc($result);
+    myDump($row);
 //    if(!empty($row)){
 //      $uid = $row['UID'];
 //      $add = $row['cost'];
@@ -134,7 +129,7 @@
 //      echo mysqli_error($conn);
 //      return -1;
 //    }
-//  }
+  }
 //  //Update the players in DB
 //  foreach ($toUpdate as $key => $value) {
 //    $name = $value['name'];
