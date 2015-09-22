@@ -1,10 +1,10 @@
   <div class="small-12 medium-8 medium-offset-2 columns">
     {% set modulo = parameters.formation.DIF.mod ~'-'~ parameters.formation.CEN.mod ~'-'~ parameters.formation.ATT.mod %}
     <form action="confirmForm" method="POST" role="form">
-      <legend>Titolari</legend>    
+      <legend>Titolari</legend>
       <div class="row"> {#POR#}
         <p class="text-center"><small><b>Portiere</b></small></p>
-        <div class="small-12 columns">
+        <div class="small-12 medium-12 columns">
           <select name="POR" id="input-POR" required="required">
             <option value=""></option>
             {% for spid,pl_name in parameters.formation.POR.players %}
@@ -16,64 +16,106 @@
       </div>
       <div class="row">{#DIF#}
         {% if parameters.formation.DIF.mod == 5 %}{#Special Case because 12/5 not integer#}
-          <div class="small-2 columns">
-            <p class="text-center"><small><b>Difesa</b></small></p>
-            <select name="DIF-1" id="input-DIF-1" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.DIF.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
+          <p class="text-center"><small><b>Difesa</b></small></p>
+          <div class="small-12 medium-2 columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">1</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="DIF-1" id="input-DIF-1" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.DIF.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
           </div>                
-          <div class="small-2 columns">
-            <select name="DIF-2" id="input-DIF-2" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.DIF.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
+          <div class="small-12 medium-2 columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">2</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="DIF-2" id="input-DIF-2" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.DIF.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
           </div>                
-          <div class="small-4 columns">
-            <select name="DIF-3" id="input-DIF-3" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.DIF.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
+          <div class="small-12 medium-4 columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">3</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="DIF-3" id="input-DIF-3" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.DIF.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
           </div>                
-          <div class="small-2 columns">
-            <select name="DIF-4" id="input-DIF-4" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.DIF.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
+          <div class="small-12 medium-2 columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">4</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="DIF-4" id="input-DIF-4" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.DIF.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
           </div>                
-          <div class="small-2 columns">
-            <select name="DIF-5" id="input-DIF-5" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.DIF.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
-          </div>                
+          <div class="small-12 medium-2 columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">5</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="DIF-5" id="input-DIF-5" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.DIF.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
+          </div>          
         {% else %}{#END special case 5 - DIF#}
         <p class="text-center"><small><b>Difesa</b></small></p>
         {% set dif = 12/parameters.formation.DIF.mod %}
         {% for i in 1..parameters.formation.DIF.mod %}
-          <div class="small-{{dif}} columns">
-            <select name="DIF-{{loop.index}}" id="input-DIF-{{loop.index}}" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.DIF.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
+          <div class="small-12 medium-{{dif}} columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">{{loop.index}}</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="DIF-{{loop.index}}" id="input-DIF-{{loop.index}}" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.DIF.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
           </div>          
         {% endfor %}      
         {% endif %}
@@ -81,63 +123,105 @@
       <div class="row">{#CEN#}
         {% if parameters.formation.CEN.mod == 5 %}{#Special Case because 12/5 not integer#}
           <p class="text-center"><small><b>Centrocampo</b></small></p>
-          <div class="small-2 columns">
-            <select name="CEN-1" id="input-CEN-1" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.CEN.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
+          <div class="small-12 medium-2 columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">1</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="CEN-1" id="input-CEN-1" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.CEN.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
           </div>                
-          <div class="small-2 columns">
-            <select name="CEN-2" id="input-CEN-2" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.CEN.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
+          <div class="small-12 medium-2 columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">2</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="CEN-2" id="input-CEN-2" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.CEN.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
           </div>                
-          <div class="small-4 columns">
-            <select name="CEN-3" id="input-CEN-3" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.CEN.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
+          <div class="small-12 medium-4 columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">3</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="CEN-3" id="input-CEN-3" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.CEN.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
           </div>                
-          <div class="small-2 columns">
-            <select name="CEN-4" id="input-CEN-4" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.CEN.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
+          <div class="small-12 medium-2 columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">4</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="CEN-4" id="input-CEN-4" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.CEN.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
           </div>                
-          <div class="small-2 columns">
-            <select name="CEN-5" id="input-CEN-5" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.CEN.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
-          </div>                
+          <div class="small-12 medium-2 columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">5</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="CEN-5" id="input-CEN-5" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.CEN.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
+          </div>
         {% else %}{#END special case 5 - CEN#}
         <p class="text-center"><small><b>Centrocampo</b></small></p>
         {% set cen = 12/parameters.formation.CEN.mod %}
         {% for i in 1..parameters.formation.CEN.mod %}
-          <div class="small-{{cen}} columns">
-            <select name="CEN-{{loop.index}}" id="input-CEN-{{loop.index}}" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.CEN.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
+          <div class="small-12 medium-{{cen}} columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">{{loop.index}}</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="CEN-{{loop.index}}" id="input-CEN-{{loop.index}}" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.CEN.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
           </div>          
         {% endfor %}      
         {% endif %}
@@ -147,14 +231,21 @@
         <p class="text-center"><small><b>Attacco</b></small></p>
         {% set att = 12/parameters.formation.ATT.mod %}
         {% for i in 1..parameters.formation.ATT.mod %}
-          <div class="small-{{att}} columns">
-            <select name="ATT-{{loop.index}}" id="input-ATT-{{loop.index}}" required="required">
-              <option value=""></option>
-            {% for spid,pl_name in parameters.formation.ATT.players %}
-              {% set name = pl_name|split(' ', 2) %}
-              <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
-            {% endfor %}
-            </select>
+          <div class="small-12 medium-{{att}} columns">
+            <div class="row collapse">
+              <div class="small-1 columns show-for-small-only">
+                <span class="prefix">{{loop.index}}</span>
+              </div>
+              <div class="small-11 medium-12 columns">
+                <select name="ATT-{{loop.index}}" id="input-ATT-{{loop.index}}" required="required">
+                  <option value=""></option>
+                {% for spid,pl_name in parameters.formation.ATT.players %}
+                  {% set name = pl_name|split(' ', 2) %}
+                  <option value="{{spid}}">{% if name[1] is defined %} {{name[1]}} {% else %} {{name[0]}}{% endif %}</option>
+                {% endfor %}
+                </select>                
+              </div>
+            </div>
           </div>          
         {% endfor %}      
       </div>        
