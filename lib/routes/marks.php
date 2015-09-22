@@ -55,27 +55,27 @@
         $notPlayed = array_diff_key($formation,$marks);
 
         //This is done just to enforce the order when the output is shown
-        $playerMarks = array( 'POR'=>'',
-                              'DIF-1'=>'',
-                              'DIF-2'=>'',
-                              'DIF-3'=>'',
-                              'DIF-4'=>'',
-                              'DIF-5'=>'',
-                              'CEN-1'=>'',
-                              'CEN-2'=>'',
-                              'CEN-3'=>'',
-                              'CEN-4'=>'',
-                              'CEN-5'=>'',
-                              'ATT-1'=>'',
-                              'ATT-2'=>'',
-                              'ATT-3'=>'',
-                              'POR-R'=>'',
-                              'DIF-R-1'=>'',
-                              'DIF-R-2'=>'',
-                              'CEN-R-1'=>'',
-                              'CEN-R-2'=>'',
-                              'ATT-R-1'=>'',
-                              'ATT-R-2'=>'');
+        $playerMarks = array( 'POR'     =>'',
+                              'DIF-1'   =>'',
+                              'DIF-2'   =>'',
+                              'DIF-3'   =>'',
+                              'DIF-4'   =>'',
+                              'DIF-5'   =>'',
+                              'CEN-1'   =>'',
+                              'CEN-2'   =>'',
+                              'CEN-3'   =>'',
+                              'CEN-4'   =>'',
+                              'CEN-5'   =>'',
+                              'ATT-1'   =>'',
+                              'ATT-2'   =>'',
+                              'ATT-3'   =>'',
+                              'POR-R'   =>'',
+                              'DIF-R-1' =>'',
+                              'DIF-R-2' =>'',
+                              'CEN-R-1' =>'',
+                              'CEN-R-2' =>'',
+                              'ATT-R-1' =>'',
+                              'ATT-R-2' =>'');
         foreach($marks as $role => $name_mark){
           switch ($role) {
             case 'POR':
@@ -215,166 +215,184 @@
               break;
           }
         }
+        unset($marks);
+        $marks = $playerMarks;
+        
         $total = (float)0;
-        if($playerMarks['POR']['mark'] === (float)0 ){
-          $total += $playerMarks['POR-R']['mark'];
+        if($marks['POR']['mark'] === (float)0 ){
+          $total += $marks['POR-R']['mark'];
+          unset($marks['POR-R']['mark']);
         }
         else
-          $total += $playerMarks['POR']['mark'];
-
-        if($playerMarks['DIF-1']['mark'] === (float)0){
-          if(isset($playerMarks['DIF-R-1']['mark']) && $playerMarks['DIF-R-1']['mark'] !== (float)0 ){
-            $total += $playerMarks['DIF-R-1']['mark'];
+          $total += $marks['POR']['mark'];
+        
+        if($marks['DIF-1']['mark'] === (float)0){
+          if(isset($marks['DIF-R-1']['mark']) && $marks['DIF-R-1']['mark'] !== (float)0 ){
+            $total += $marks['DIF-R-1']['mark'];
+            unset($marks['DIF-R-1']['mark']);
           }
-          elseif(isset($playerMarks['DIF-R-2']['mark']) && $playerMarks['DIF-R-2']['mark'] !== (float)0){
-            $total += $playerMarks['DIF-R-2']['mark'];
-          }
-        }
-        else
-          $total += $playerMarks['DIF-1']['mark'];
-
-        if($playerMarks['DIF-2']['mark'] === (float)0){
-          if(isset($playerMarks['DIF-R-1']['mark']) && $playerMarks['DIF-R-1']['mark'] !== (float)0 ){
-            $total += $playerMarks['DIF-R-1']['mark'];
-          }
-          elseif(isset($playerMarks['DIF-R-2']['mark']) && $playerMarks['DIF-R-2']['mark'] !== (float)0){
-            $total += $playerMarks['DIF-R-2']['mark'];
+          elseif(isset($marks['DIF-R-2']['mark']) && $marks['DIF-R-2']['mark'] !== (float)0){
+            $total += $marks['DIF-R-2']['mark'];
+            unset($marks['DIF-R-2']['mark']);
           }
         }
         else
-          $total += $playerMarks['DIF-2']['mark'];
-
-        if($playerMarks['DIF-3']['mark'] === (float)0){
-          if(isset($playerMarks['DIF-R-1']['mark']) && $playerMarks['DIF-R-1']['mark'] !== (float)0 ){
-            $total += $playerMarks['DIF-R-1']['mark'];
+          $total += $marks['DIF-1']['mark'];
+        if($marks['DIF-2']['mark'] === (float)0){
+          if(isset($marks['DIF-R-1']['mark']) && $marks['DIF-R-1']['mark'] !== (float)0 ){
+            $total += $marks['DIF-R-1']['mark'];
+            unset($marks['DIF-R-1']['mark']);
           }
-          elseif(isset($playerMarks['DIF-R-2']['mark']) && $playerMarks['DIF-R-2']['mark'] !== (float)0){
-            $total += $playerMarks['DIF-R-2']['mark'];
+          elseif(isset($marks['DIF-R-2']['mark']) && $marks['DIF-R-2']['mark'] !== (float)0){
+            $total += $marks['DIF-R-2']['mark'];
+            unset($marks['DIF-R-2']['mark']);
           }
         }
         else
-          $total += $playerMarks['DIF-3']['mark'];
-
-        if(isset($playerMarks['DIF-4']['mark'])){
-          if($playerMarks['DIF-4']['mark'] === (float)0){
-            if(isset($playerMarks['DIF-R-1']['mark']) && $playerMarks['DIF-R-1']['mark'] !== (float)0 ){
-              $total += $playerMarks['DIF-R-1']['mark'];
+          $total += $marks['DIF-2']['mark'];
+        if($marks['DIF-3']['mark'] === (float)0){
+          if(isset($marks['DIF-R-1']['mark']) && $marks['DIF-R-1']['mark'] !== (float)0 ){
+            $total += $marks['DIF-R-1']['mark'];
+            unset($marks['DIF-R-1']['mark']);
+          }
+          elseif(isset($marks['DIF-R-2']['mark']) && $marks['DIF-R-2']['mark'] !== (float)0){
+            $total += $marks['DIF-R-2']['mark'];
+            unset($marks['DIF-R-2']['mark']);
+          }
+        }
+        else
+          $total += $marks['DIF-3']['mark'];
+        if(isset($marks['DIF-4']['mark'])){
+          if($marks['DIF-4']['mark'] === (float)0){
+            if(isset($marks['DIF-R-1']['mark']) && $marks['DIF-R-1']['mark'] !== (float)0 ){
+              $total += $marks['DIF-R-1']['mark'];
+              unset($marks['DIF-R-1']['mark']);
             }
-            elseif(isset($playerMarks['DIF-R-2']['mark']) && $playerMarks['DIF-R-2']['mark'] !== (float)0){
-              $total += $playerMarks['DIF-R-2']['mark'];
+            elseif(isset($marks['DIF-R-2']['mark']) && $marks['DIF-R-2']['mark'] !== (float)0){
+              $total += $marks['DIF-R-2']['mark'];
+              unset($marks['DIF-R-2']['mark']);
             }
           }
           else
-            $total += $playerMarks['DIF-4']['mark'];
+            $total += $marks['DIF-4']['mark'];
         }
-
-        if(isset($playerMarks['DIF-5']['mark'])){
-          if($playerMarks['DIF-5']['mark'] === (float)0){
-            if(isset($playerMarks['DIF-R-1']['mark']) && $playerMarks['DIF-R-1']['mark'] !== (float)0 ){
-              $total += $playerMarks['DIF-R-1']['mark'];
+        if(isset($marks['DIF-5']['mark'])){
+          if($marks['DIF-5']['mark'] === (float)0){
+            if(isset($marks['DIF-R-1']['mark']) && $marks['DIF-R-1']['mark'] !== (float)0 ){
+              $total += $marks['DIF-R-1']['mark'];
+              unset($marks['DIF-R-1']['mark']);
             }
-            elseif(isset($playerMarks['DIF-R-2']['mark']) && $playerMarks['DIF-R-2']['mark'] !== (float)0){
-              $total += $playerMarks['DIF-R-2']['mark'];
+            elseif(isset($marks['DIF-R-2']['mark']) && $marks['DIF-R-2']['mark'] !== (float)0){
+              $total += $marks['DIF-R-2']['mark'];
+              unset($marks['DIF-R-2']['mark']);
             }
           }
           else
-            $total += $playerMarks['DIF-5']['mark'];
+            $total += $marks['DIF-5']['mark'];
         }
-
-        if($playerMarks['CEN-1']['mark'] === (float)0){
-          if(isset($playerMarks['CEN-R-1']['mark']) && $playerMarks['CEN-R-1']['mark'] !== (float)0 ){
-            $total += $playerMarks['CEN-R-1']['mark'];
+        if($marks['CEN-1']['mark'] === (float)0){
+          if(isset($marks['CEN-R-1']['mark']) && $marks['CEN-R-1']['mark'] !== (float)0 ){
+            $total += $marks['CEN-R-1']['mark'];
+            unset($marks['CEN-R-1']['mark']);
           }
-          elseif(isset($playerMarks['CEN-R-2']['mark']) && $playerMarks['CEN-R-2']['mark'] !== (float)0){
-            $total += $playerMarks['CEN-R-2']['mark'];
+          elseif(isset($marks['CEN-R-2']['mark']) && $marks['CEN-R-2']['mark'] !== (float)0){
+            $total += $marks['CEN-R-2']['mark'];
+            unset($marks['CEN-R-2']['mark']);
           }
         }
         else
-          $total += $playerMarks['CEN-1']['mark'];
-
-        if($playerMarks['CEN-2']['mark'] === (float)0){
-          if(isset($playerMarks['CEN-R-1']['mark']) && $playerMarks['CEN-R-1']['mark'] !== (float)0 ){
-            $total += $playerMarks['CEN-R-1']['mark'];
+          $total += $marks['CEN-1']['mark'];
+        if($marks['CEN-2']['mark'] === (float)0){
+          if(isset($marks['CEN-R-1']['mark']) && $marks['CEN-R-1']['mark'] !== (float)0 ){
+            $total += $marks['CEN-R-1']['mark'];
+            unset($marks['CEN-R-1']['mark']);
           }
-          elseif(isset($playerMarks['CEN-R-2']['mark']) && $playerMarks['CEN-R-2']['mark'] !== (float)0){
-            $total += $playerMarks['CEN-R-2']['mark'];
-          }
-        }
-        else
-          $total += $playerMarks['CEN-2']['mark'];
-
-        if($playerMarks['CEN-3']['mark'] === (float)0){
-          if(isset($playerMarks['CEN-R-1']['mark']) && $playerMarks['CEN-R-1']['mark'] !== (float)0 ){
-            $total += $playerMarks['CEN-R-1']['mark'];
-          }
-          elseif(isset($playerMarks['CEN-R-2']['mark']) && $playerMarks['CEN-R-2']['mark'] !== (float)0){
-            $total += $playerMarks['CEN-R-2']['mark'];
+          elseif(isset($marks['CEN-R-2']['mark']) && $marks['CEN-R-2']['mark'] !== (float)0){
+            $total += $marks['CEN-R-2']['mark'];
+            unset($marks['CEN-R-2']['mark']);
           }
         }
         else
-          $total += $playerMarks['CEN-3']['mark'];
-
-        if(isset($playerMarks['CEN-4']['mark'])){
-          if($playerMarks['CEN-4']['mark'] === (float)0){
-            if(isset($playerMarks['CEN-R-1']['mark']) && $playerMarks['CEN-R-1']['mark'] !== (float)0 ){
-              $total += $playerMarks['CEN-R-1']['mark'];
-            }
-            elseif(isset($playerMarks['CEN-R-2']['mark']) && $playerMarks['CEN-R-2']['mark'] !== (float)0){
-              $total += $playerMarks['CEN-R-2']['mark'];
-            }
+          $total += $marks['CEN-2']['mark'];
+        if($marks['CEN-3']['mark'] === (float)0){
+          if(isset($marks['CEN-R-1']['mark']) && $marks['CEN-R-1']['mark'] !== (float)0 ){
+            $total += $marks['CEN-R-1']['mark'];
+            unset($marks['CEN-R-1']['mark']);
           }
-          else
-            $total += $playerMarks['CEN-4']['mark'];
-        }
-
-        if(isset($playerMarks['CEN-5']['mark'])){
-          if($playerMarks['CEN-5']['mark'] === (float)0){
-            if(isset($playerMarks['CEN-R-1']['mark']) && $playerMarks['CEN-R-1']['mark'] !== (float)0 ){
-              $total += $playerMarks['CEN-R-1']['mark'];
-            }
-            elseif(isset($playerMarks['CEN-R-2']['mark']) && $playerMarks['CEN-R-2']['mark'] !== (float)0){
-              $total += $playerMarks['CEN-R-2']['mark'];
-            }
-          }
-          else
-            $total += $playerMarks['CEN-5']['mark'];
-        }
-
-        if($playerMarks['ATT-1']['mark'] === (float)0){
-          if(isset($playerMarks['ATT-R-1']['mark']) && $playerMarks['ATT-R-1']['mark'] !== (float)0 ){
-            $total += $playerMarks['ATT-R-1']['mark'];
-          }
-          elseif(isset($playerMarks['ATT-R-2']['mark']) && $playerMarks['ATT-R-2']['mark'] !== (float)0){
-            $total += $playerMarks['ATT-R-2']['mark'];
+          elseif(isset($marks['CEN-R-2']['mark']) && $marks['CEN-R-2']['mark'] !== (float)0){
+            $total += $marks['CEN-R-2']['mark'];
+            unset($marks['CEN-R-2']['mark']);
           }
         }
         else
-          $total += $playerMarks['ATT-1']['mark'];
-
-        if(isset($playerMarks['ATT-2']['mark'])){
-          if($playerMarks['ATT-2']['mark'] === (float)0){
-            if(isset($playerMarks['ATT-R-1']['mark']) && $playerMarks['ATT-R-1']['mark'] !== (float)0 ){
-              $total += $playerMarks['ATT-R-1']['mark'];
+          $total += $marks['CEN-3']['mark'];
+        if(isset($marks['CEN-4']['mark'])){
+          if($marks['CEN-4']['mark'] === (float)0){
+            if(isset($marks['CEN-R-1']['mark']) && $marks['CEN-R-1']['mark'] !== (float)0 ){
+              $total += $marks['CEN-R-1']['mark'];
+              unset($marks['CEN-R-1']['mark']);
             }
-            elseif(isset($playerMarks['ATT-R-2']['mark']) && $playerMarks['ATT-R-2']['mark'] !== (float)0){
-              $total += $playerMarks['ATT-R-2']['mark'];
+            elseif(isset($marks['CEN-R-2']['mark']) && $marks['CEN-R-2']['mark'] !== (float)0){
+              $total += $marks['CEN-R-2']['mark'];
+              unset($marks['CEN-R-2']['mark']);
             }
           }
           else
-            $total += $playerMarks['ATT-2']['mark'];
+            $total += $marks['CEN-4']['mark'];
         }
-
-        if(isset($playerMarks['ATT-3']['mark'])){
-          if($playerMarks['ATT-3']['mark'] === (float)0){
-            if(isset($playerMarks['ATT-R-1']['mark']) && $playerMarks['ATT-R-1']['mark'] !== (float)0 ){
-              $total += $playerMarks['ATT-R-1']['mark'];
+        if(isset($marks['CEN-5']['mark'])){
+          if($marks['CEN-5']['mark'] === (float)0){
+            if(isset($marks['CEN-R-1']['mark']) && $marks['CEN-R-1']['mark'] !== (float)0 ){
+              $total += $marks['CEN-R-1']['mark'];
+              unset($marks['CEN-R-1']['mark']);
             }
-            elseif(isset($playerMarks['ATT-R-2']['mark']) && $playerMarks['ATT-R-2']['mark'] !== (float)0){
-              $total += $playerMarks['ATT-R-2']['mark'];
+            elseif(isset($marks['CEN-R-2']['mark']) && $marks['CEN-R-2']['mark'] !== (float)0){
+              $total += $marks['CEN-R-2']['mark'];
+              unset($marks['CEN-R-2']['mark']);
             }
           }
           else
-            $total += $playerMarks['ATT-3']['mark'];
+            $total += $marks['CEN-5']['mark'];
+        }
+        if($marks['ATT-1']['mark'] === (float)0){
+          if(isset($marks['ATT-R-1']['mark']) && $marks['ATT-R-1']['mark'] !== (float)0 ){
+            $total += $marks['ATT-R-1']['mark'];
+            unset($marks['ATT-R-1']['mark']);
+          }
+          elseif(isset($marks['ATT-R-2']['mark']) && $marks['ATT-R-2']['mark'] !== (float)0){
+            $total += $marks['ATT-R-2']['mark'];
+            unset($marks['ATT-R-2']['mark']);
+          }
+        }
+        else
+          $total += $marks['ATT-1']['mark'];
+        if(isset($marks['ATT-2']['mark'])){
+          if($marks['ATT-2']['mark'] === (float)0){
+            if(isset($marks['ATT-R-1']['mark']) && $marks['ATT-R-1']['mark'] !== (float)0 ){
+              $total += $marks['ATT-R-1']['mark'];
+              unset($marks['ATT-R-1']['mark']);
+            }
+            elseif(isset($marks['ATT-R-2']['mark']) && $marks['ATT-R-2']['mark'] !== (float)0){
+              $total += $marks['ATT-R-2']['mark'];
+              unset($marks['ATT-R-2']['mark']);
+            }
+          }
+          else
+            $total += $marks['ATT-2']['mark'];
+        }
+        if(isset($marks['ATT-3']['mark'])){
+          if($marks['ATT-3']['mark'] === (float)0){
+            if(isset($marks['ATT-R-1']['mark']) && $marks['ATT-R-1']['mark'] !== (float)0 ){
+              $total += $marks['ATT-R-1']['mark'];
+              unset($marks['ATT-R-1']['mark']);
+            }
+            elseif(isset($marks['ATT-R-2']['mark']) && $marks['ATT-R-2']['mark'] !== (float)0){
+              $total += $marks['ATT-R-2']['mark'];
+              unset($marks['ATT-R-2']['mark']);
+            }
+          }
+          else
+            $total += $marks['ATT-3']['mark'];
         }
       }//EOF if isset($marks)
     } //End if isset($formation)
