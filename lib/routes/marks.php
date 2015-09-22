@@ -34,7 +34,7 @@
       $app->abort(452,__FILE__." (".__LINE__.")");
 
     while (($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) !== null)
-      $formation[$row['role']] = array($row['name'],0);
+      $formation[$row['role']] = array($row['name'],(float)0);
     if(isset($formation)){
       //Select the player marks of the requested MID, for the user
       $query = "SELECT disposition as role, Name as name, mark
@@ -217,7 +217,6 @@
         }
         unset($marks);
         $marks = $playerMarks;
-        
         $total = (float)0;
         if($marks['POR']['mark'] === (float)0 ){
           $total += $marks['POR-R']['mark'];
