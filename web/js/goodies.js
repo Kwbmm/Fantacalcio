@@ -173,104 +173,57 @@ function rosterPage(){
 }
 
 function formationPage(){
+
   //Input POR 
-  $('select#input-POR').change(function(){
-    var pID = $(this).val(); //Player ID
-    if(pID !== ''){ //Run only if it's not the empty option
-      var pID2=$('select#input-POR-R option:selected').attr('value');
-      if(parseInt(pID) === parseInt(pID2))
-        $('select#input-POR-R').val('');
+  $('select[id^="input-POR"]').change(function(){
+    var prevId = $(this).data('prev');
+    //Remove disabled from every "prev" element among ALL select
+    $('select[id^="input-POR"]').children('option[value="'+prevId+'"]').prop('disabled',false);
+    if(this.value !== ''){
+      var newId = this.value;
+      //Set disabled the new selected element for ALL the select
+      $('select[id^="input-POR"]').children('option[value="'+newId+'"]').prop('disabled',true);
     }
-  });
-  //Input POR-R
-  $('select#input-POR-R').change(function(){
-    var pID = $(this).val(); //Player ID
-    if(pID !== ''){ //Run only if it's not the empty option
-      var pID2=$('select#input-POR option:selected').attr('value');
-      if(parseInt(pID) === parseInt(pID2))
-        $('select#input-POR').val('');
-    }
+    $(this).data('prev',newId);
   });
 
-  //Input DIF-{1..5}
-  $('select[id^="input-DIF-"]').not('select[id^="input-DIF-R"]').change(function(){
-    var pID = $(this).val(); //Player ID
-    var myID = $(this).attr('id');
-    if(pID !== ''){ //Run only if it's not the empty option
-      $('select[id^="input-DIF-"] option:selected').not('select#'+myID+' option:selected').each(function(index,element){
-        var thisPID = $(this).attr('value');
-        if(parseInt(thisPID) === parseInt(pID)){
-          $(this).parent('select').val('');
-        }
-      });
+  //Input DIF 
+  $('select[id^="input-DIF"]').change(function(){
+    var prevId = $(this).data('prev');
+    //Remove disabled from every "prev" element among ALL select
+    $('select[id^="input-DIF"]').children('option[value="'+prevId+'"]').prop('disabled',false);
+    if(this.value !== ''){
+      var newId = this.value;
+      //Set disabled the new selected element for ALL the select
+      $('select[id^="input-DIF"]').children('option[value="'+newId+'"]').prop('disabled',true);
     }
-  });
-  //Input DIF-R-{1..2}
-  $('select[id^="input-DIF-R"]').change(function(){
-    var pID = $(this).val(); //Player ID
-    var myID = $(this).attr('id');
-    if(pID !== ''){ //Run only if it's not the empty option
-      $('select[id^="input-DIF-"] option:selected').not('select#'+myID+' option:selected').each(function(index,element){
-        var thisPID = $(this).attr('value');
-        if(parseInt(thisPID) === parseInt(pID)){
-          $(this).parent('select').val('');
-        }
-      });
-    }
+    $(this).data('prev',newId);
   });
 
-  //Input CEN-{1..5}
-  $('select[id^="input-CEN-"]').not('select[id^="input-CEN-R"]').change(function(){
-    var pID = $(this).val(); //Player ID
-    var myID = $(this).attr('id');
-    if(pID !== ''){ //Run only if it's not the empty option
-      $('select[id^="input-CEN-"] option:selected').not('select#'+myID+' option:selected').each(function(index,element){
-        var thisPID = $(this).attr('value');
-        if(parseInt(thisPID) === parseInt(pID)){
-          $(this).parent('select').val('');
-        }
-      });
+  //Input CEN
+  $('select[id^="input-CEN"]').change(function(){
+    var prevId = $(this).data('prev');
+    //Remove disabled from every "prev" element among ALL select
+    $('select[id^="input-CEN"]').children('option[value="'+prevId+'"]').prop('disabled',false);
+    if(this.value !== ''){
+      var newId = this.value;
+      //Set disabled the new selected element for ALL the select
+      $('select[id^="input-CEN"]').children('option[value="'+newId+'"]').prop('disabled',true);
     }
-  });
-  //Input CEN-R-{1..2}
-  $('select[id^="input-CEN-R"]').change(function(){
-    var pID = $(this).val(); //Player ID
-    var myID = $(this).attr('id');
-    if(pID !== ''){ //Run only if it's not the empty option
-      $('select[id^="input-CEN-"] option:selected').not('select#'+myID+' option:selected').each(function(index,element){
-        var thisPID = $(this).attr('value');
-        if(parseInt(thisPID) === parseInt(pID)){
-          $(this).parent('select').val('');
-        }
-      });
-    }
+    $(this).data('prev',newId);
   });
 
-  //Input ATT-{1..5}
-  $('select[id^="input-ATT-"]').not('select[id^="input-ATT-R"]').change(function(){
-    var pID = $(this).val(); //Player ID
-    var myID = $(this).attr('id');
-    if(pID !== ''){ //Run only if it's not the empty option
-      $('select[id^="input-ATT-"] option:selected').not('select#'+myID+' option:selected').each(function(index,element){
-        var thisPID = $(this).attr('value');
-        if(parseInt(thisPID) === parseInt(pID)){
-          $(this).parent('select').val('');
-        }
-      });
+  //Input ATT
+  $('select[id^="input-ATT"]').change(function(){
+    var prevId = $(this).data('prev');
+    //Remove disabled from every "prev" element among ALL select
+    $('select[id^="input-ATT"]').children('option[value="'+prevId+'"]').prop('disabled',false);
+    if(this.value !== ''){
+      var newId = this.value;
+      //Set disabled the new selected element for ALL the select
+      $('select[id^="input-ATT"]').children('option[value="'+newId+'"]').prop('disabled',true);
     }
-  });
-  //Input ATT-R-{1..2}
-  $('select[id^="input-ATT-R"]').change(function(){
-    var pID = $(this).val(); //Player ID
-    var myID = $(this).attr('id');
-    if(pID !== ''){ //Run only if it's not the empty option
-      $('select[id^="input-ATT-"] option:selected').not('select#'+myID+' option:selected').each(function(index,element){
-        var thisPID = $(this).attr('value');
-        if(parseInt(thisPID) === parseInt(pID)){
-          $(this).parent('select').val('');
-        }
-      });
-    }
+    $(this).data('prev',newId);
   });
 }
 
