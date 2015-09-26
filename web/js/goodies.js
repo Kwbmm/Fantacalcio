@@ -174,6 +174,14 @@ function rosterPage(){
 
 function formationPage(){
 
+  $('form').submit(function(){
+    /*
+      Needed to pass the parameters through POST.
+      Inputs with disabled state are not passed to POST.
+      So upon submission, we remove the property
+    */
+    $('option').prop('disabled',false);
+  });
   //Input POR 
   $('select[id^="input-POR"]').change(function(){
     var prevId = $(this).data('prev');

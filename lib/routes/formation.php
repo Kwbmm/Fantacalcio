@@ -245,7 +245,6 @@
       $app->abort($rv->getCode(),$rv->getMessage());
 
     $uid = getUID($app['conn'],$_SESSION['user']);
-
     //Check if the formation for this match day is already made, if so reset!
     $now = time();
     $query = "SELECT * FROM user_formation, match_day
