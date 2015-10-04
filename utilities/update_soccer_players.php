@@ -1,6 +1,6 @@
 #!/usr/bin/php5.5-cli
 <?php
-  require_once '../vendor/phpQuery/phpQuery-onefile.php';  
+  require_once __DIR__.'/../vendor/phpQuery/phpQuery-onefile.php';  
 
   $dbhost = 'db591003352.db.1and1.com'; //Name of the db host
   $dbname = 'db591003352'; //Name of the db
