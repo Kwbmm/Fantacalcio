@@ -11,6 +11,7 @@
   + Implement Log System (Monolog plugin maybe?)
   + Review ´utilities/generate.php`: split for modularity, check correctness
   + Add profile views
+  + Implement "buy-session" mechanism to avoid duplicate POST requests
 
 ##Frontend
 
