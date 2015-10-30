@@ -1,3 +1,4 @@
+#!/usr/bin/php5.5-cli
 <?php
   require_once '../vendor/phpQuery/phpQuery-onefile.php';
   require '../vendor/autoload.php';
