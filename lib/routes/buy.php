@@ -5,14 +5,16 @@
     if(!isset($_SESSION['user']))
       return $app->redirect('//'.$app['request']->getHttpHost().'/login');
     $now = time();
+    $closeStart = date_create_from_format("U",$app['closeTime']);
+    $closeStart->setTimezone(new DateTimeZone("Europe/Rome"));
     if($now >= $app['closeTime'] && $now < $app['openTime']){ //Market is closed!
-      $closeStart = date('d-m-y H:i',$app['closeTime']);
-      $closeEnd = date('d-m-y H:i',$app['openTime']);
-      $extra = array('warning' => 'Il mercato è chiuso dal '.$closeStart." al ".$closeEnd);
+      $closeEnd = date_create_from_format("U",$app['openTime']);
+      $closeEnd->setTimezone(new DateTimeZone("Europe/Rome"));
+      $extra = array('warning' => 'Il mercato è chiuso dal '.$closeStart->format('d-m-y H:i')." al ".$closeEnd->format('d-m-y H:i'));
       $twigParameters = getTwigParameters('Acquista',$app['siteName'],'buy',$app['userMoney'],$extra);
     }
     else
-      $twigParameters = getTwigParameters('Acquista',$app['siteName'],'buy',$app['userMoney'],array('closeTime'=>date('d-m-y H:i',$app['closeTime'])));      
+      $twigParameters = getTwigParameters('Acquista',$app['siteName'],'buy',$app['userMoney'],array('closeTime'=>$closeStart->format('d-m-y H:i')));      
     return $app['twig']->render('index.twig',$twigParameters);
   });
 
