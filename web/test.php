@@ -1,7 +1,6 @@
 <?php 
-  echo time(),"\n";
-  echo date_default_timezone_get(),"\n";
-  echo "Set timezone to rome", date_default_timezone_set("Europe/Rome"),"\n";
-  echo date_default_timezone_get(),"\n";
-  echo time(),"\n";
+  $date = new DateTime("2015-11-01T18:00:00Z");
+  $date->setTimezone(new DateTimeZone("Europe/Rome"));
+  echo $date->getTimestamp(),"\n";
+  echo $date->format("U");
 ?>
