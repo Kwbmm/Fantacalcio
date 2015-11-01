@@ -51,10 +51,12 @@
       }
     }
     $now = time();
+    $closeStart = date_create_from_format("U",$app['closeTime']);
+    $closeStart->setTimezone(new DateTimeZone("Europe/Rome"));
     if($now >= $app['closeTime'] && $now < $app['openTime']){ //Market is closed!
-      $closeStart = date('d-m-y H:i',$app['closeTime']);
-      $closeEnd = date('d-m-y H:i',$app['openTime']);
-      $twigParameters = getTwigParameters('Rosa',$app['siteName'],'roster',$app['userMoney'],array('userPlayers'=>$userPlayers,'rosterStatus' => $rosterStatus,'warning' => 'Il mercato è chiuso dal '.$closeStart." al ".$closeEnd));      
+      $closeEnd = date_create_from_format("U",$app['openTime']);
+      $closeEnd->setTimezone(new DateTimeZone("Europe/Rome"));
+      $twigParameters = getTwigParameters('Rosa',$app['siteName'],'roster',$app['userMoney'],array('userPlayers'=>$userPlayers,'rosterStatus' => $rosterStatus,'warning' => 'Il mercato è chiuso dal '.$closeStart->format('d-m-y H:i')." al ".$closeEnd->format('d-m-y H:i')));      
     }
     else
       $twigParameters = getTwigParameters('Rosa',$app['siteName'],'roster',$app['userMoney'],array('userPlayers' => $userPlayers,'rosterStatus' => $rosterStatus));

@@ -12,9 +12,11 @@
     if(!isset($_SESSION['user']))
       return $app->redirect('//'.$app['request']->getHttpHost().'/login');
     $now = time();
+    $closeStart = date_create_from_format("U",$app['closeTime']);
+    $closeStart->setTimezone(new DateTimeZone("Europe/Rome"));
     if($now >= $app['closeTime'] && $now < $app['openTime']){ //Market is closed!
-      $closeStart = date('d-m-y H:i',$app['closeTime']);
-      $closeEnd = date('d-m-y H:i',$app['openTime']);
+      $closeEnd = date_create_from_format("U",$app['openTime']);
+      $closeEnd->setTimezone(new DateTimeZone("Europe/Rome"));
     }
     $uid = getUID($app['conn'],$_SESSION['user']);
     $query = "SELECT COUNT(*) FROM user_roster WHERE UID = '$uid'";
@@ -154,15 +156,15 @@
       }
       if($filled){
         if(isset($closeStart) && isset($closeEnd)) //If market is closed
-          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('playingPlayers'=>$playingPlayers,'warning' => 'Questa pagina è bloccata dal '.$closeStart.' al '.$closeEnd));        
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('playingPlayers'=>$playingPlayers,'warning' => 'Questa pagina è bloccata dal '.$closeStart->format('d-m-y H:i')." al ".$closeEnd->format('d-m-y H:i')));        
         else
-          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('playingPlayers'=>$playingPlayers,'closeTime'=>date('d-m-y H:i',$app['closeTime'])));
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('playingPlayers'=>$playingPlayers,'closeTime'=>$closeStart->format('d-m-y H:i')));
       }
       else{
         if(isset($closeStart) && isset($closeEnd)) //If market is closed
-          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('warning' => 'Questa pagina è bloccata dal '.$closeStart.' al '.$closeEnd));
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('warning' => 'Questa pagina è bloccata dal '.$closeStart->format('d-m-y H:i')." al ".$closeEnd->format('d-m-y H:i')));
         else
-          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('closeTime'=>date('d-m-y H:i',$app['closeTime'])));
+          $twigParameters = getTwigParameters('Formazione',$app['siteName'],'modulo',$app['userMoney'],array('closeTime'=>$closeStart->format('d-m-y H:i')));
       }
     }
     return $app['twig']->render('index.twig',$twigParameters);
