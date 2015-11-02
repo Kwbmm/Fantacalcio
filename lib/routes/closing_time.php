@@ -6,12 +6,18 @@
     */ 
     if((!isset($app['closeTime']) && !isset($app['openTime'])) || $app['openTime'] <= time()){
       $now = time();
+      /*
+        If you don't add end+60*15 you end up selecting the next MID immediately after
+        the match (theoretically) ends.
+        We want a 15 minutes padding, so we have to add it both to openTime and to
+        the query..
+      */
       $query = "SELECT start, end 
                 FROM match_day
                 WHERE MID = (
                   SELECT MIN(MID)
                   FROM match_day 
-                  WHERE end >= '$now')";
+                  WHERE (end+(60*15)) >= '$now')";
       $result = getResult($app['conn'],$query);
       if($result === false)
         $app->abort(452,__FILE__." (".__LINE__.")");
