@@ -28,7 +28,7 @@
     $start = -1;
     $end = -1;
     for ($j=0; $j < $matchday['count']; $j++) { 
-      $date=new DateTime($matchday['fixtures'][$j]['date'],new DateTimeZone('Europe/Rome'));
+      $date=date_create_from_format('d/m/Y G:i',$matchday['fixtures'][$j]['date'],new DateTimeZone('Europe/Rome'));
       // $date->setTimezone(new DateTimeZone('Europe/Rome'));
       if($start === -1 || $start >= $date->getTimestamp())
         $start = $date->getTimestamp();
