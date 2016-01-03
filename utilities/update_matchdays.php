@@ -29,7 +29,6 @@
     $end = -1;
     for ($j=0; $j < $matchday['count']; $j++) { 
       $date=date_create_from_format('d/m/Y G:i',$matchday['fixtures'][$j]['date'],new DateTimeZone('Europe/Rome'));
-      // $date->setTimezone(new DateTimeZone('Europe/Rome'));
       if($start === -1 || $start >= $date->getTimestamp())
         $start = $date->getTimestamp();
       //Last match + 90 minutes + 15 minutes (pause)
@@ -65,7 +64,7 @@
     $htmlPage = file_get_contents($link);
     $doc = phpQuery::newDocument($htmlPage);
     $matchday['count'] = pq($doc['section.risultati div.box-partita.col-xs-12.col-sm-4.col-md-3'])->size();
-    foreach (pq($doc['section.risultati div.box-partita.col-xs-12.col-sm-4.col-md-3 div.datipartita p span']) as $date) {
+    foreach (pq($doc['section.risultati div.box-partita.col-xs-12.col-sm-4.col-md-3 div.datipartita p span:first-child']) as $date) {
       array_push($matchday['fixtures'], array('date'=>pq($date)->text()));
     }
     return $matchday;
