@@ -2,8 +2,9 @@
 <?php
   require_once '../vendor/phpQuery/phpQuery-onefile.php';
   require '../vendor/autoload.php';
-  use GuzzleHttp\Client;
 
+//  use GuzzleHttp\Client;
+//
   $dbhost = 'db591003352.db.1and1.com'; //Name of the db host
   $dbname = 'db591003352'; //Name of the db
   $dbusername = 'dbo591003352'; //Name of the db username
@@ -22,7 +23,8 @@
   }
   while(($row=mysqli_fetch_array($result,MYSQLI_ASSOC)) !== null){
     $mid = $row['MID'];
-    $matchday = getSoccerData('soccerseasons/401/fixtures?matchday='.$mid);
+    // $matchday = getSoccerData('soccerseasons/401/fixtures?matchday='.$mid);
+    $matchday = getLegaSerieA($mid);
     $start = -1;
     $end = -1;
     for ($j=0; $j < $matchday['count']; $j++) { 
@@ -54,6 +56,19 @@
     $header = array('headers' => array('X-Auth-Token' => $key));
     $response = $client->get($uri, $header);          
     return json_decode($response->getBody(),true);  
+  }
+
+  function getLegaSerieA($mid){
+    $link = 'http://www.legaseriea.it/it/serie-a-tim/calendario-e-risultati/2015-16/UNICO/UNI/'.$mid;
+    $matchday['fixtures'] = array();
+    ini_set("user_agent", "Descriptive user agent string");
+    $htmlPage = file_get_contents($link);
+    $doc = phpQuery::newDocument($htmlPage);
+    $matchday['count'] = pq($doc['section.risultati div.box-partita.col-xs-12.col-sm-4.col-md-3'])->size();
+    foreach (pq($doc['section.risultati div.box-partita.col-xs-12.col-sm-4.col-md-3 div.datipartita p span']) as $date) {
+      array_push($matchday['fixtures'], array('date'=>pq($date)->text()));
+    }
+    return $matchday;
   }
 
 
