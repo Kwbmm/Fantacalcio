@@ -1,7 +1,7 @@
 #!/usr/bin/php5.5-cli
 <?php
-  require_once '../vendor/phpQuery/phpQuery-onefile.php';
-  require '../vendor/autoload.php';
+  require_once __DIR__.'/../vendor/phpQuery/phpQuery-onefile.php';  
+//  require '../vendor/autoload.php';
 
 //  use GuzzleHttp\Client;
 //
