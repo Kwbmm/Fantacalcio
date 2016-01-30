@@ -2,6 +2,7 @@
 
 ##Backend
 
+  + Switch to object oriented programming, see [Object Oriented Programming page](OOP.md)
   + Correct lay_formation: not taking into account the fact the previous formations may have players that user sold or players not anymore in this championship.
   + Switch queries from `mysqli_real_escape` to parametrized queries.
      
