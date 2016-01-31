@@ -5,11 +5,17 @@
     <ul class="pagination">
       {#Prev arrow, enable only if index != 1#}
       <li {{parameters.currentMid == 1 ? 'class="arrow unavailable"' : 'class="arrow"'}}><a href="//{{app.request.getHttpHost()}}/marks/day-1">&laquo;</a></li>
-      {% for day in range(parameters.currentMid-2,parameters.currentMid-1,-1) if day > 0 %} {#Print the 2 previous currentMids#}
+      {% for day in range(parameters.currentMid-2,parameters.currentMid-1,-1) if day > 0 and parameters.playedDays != parameters.currentMid %} {#Print the 2 previous currentMids#}
+        <li><a href="//{{app.request.getHttpHost()}}/marks/day-{{day}}">{{day}}</a></li>
+      {% endfor %}
+      {% for day in range(parameters.currentMid-4,parameters.currentMid-1,-1) if day > 0 and parameters.playedDays == parameters.currentMid %} {#Print the 4 previous currentMids if currentDay == playedDays#}
         <li><a href="//{{app.request.getHttpHost()}}/marks/day-{{day}}">{{day}}</a></li>
       {% endfor %}
       <li class="current"><a href="#">{{parameters.currentMid}}</a></li>
-      {% for day in range(parameters.currentMid+1,parameters.currentMid+2,1) if day <= parameters.playedDays %} {#Print the 2 next currentMids#}
+      {% for day in range(parameters.currentMid+1,parameters.currentMid+4,1) if parameters.currentMid == 1 %} {#Print the next 5 mids if currentDay == 1#}
+        <li><a href="//{{app.request.getHttpHost()}}/marks/day-{{day}}">{{day}}</a></li>
+      {% endfor %}
+      {% for day in range(parameters.currentMid+1,parameters.currentMid+2,1) if day <= parameters.playedDays and parameters.currentMid != 1 %} {#Print the 2 next currentMids#}
         <li><a href="//{{app.request.getHttpHost()}}/marks/day-{{day}}">{{day}}</a></li>
       {% endfor %}
       <li {{parameters.currentMid == parameters.playedDays ? 'class="arrow unavailable"' : 'class="arrow"'}}><a href="//{{app.request.getHttpHost()}}/marks/day-{{parameters.playedDays}}">&raquo;</a></li>
