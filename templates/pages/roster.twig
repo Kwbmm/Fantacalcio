@@ -33,7 +33,9 @@
                 <th class="text-center">Ruolo</th>
                 <th class="text-center">Nome</th>
                 <th class="text-center">Prezzo</th>
+                {% if parameters.warning is empty %}{# Print only if market is open #}
                 <th class="text-center">Cedi</th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -47,13 +49,13 @@
                   <td class="text-center"><span class="name">{{name[0]}}</span><br /><small>{{player.team|raw}}</small></td>                
                 {% endif %}
                 <td class="price text-center">{{player.cost}}</td>
+                {% if parameters.warning is empty %}{# Print only if market is open #}
                 <td class="text-center">
-                  {% if parameters.warning is empty %}{# Print only if market is open #}
                   <a class="text-danger"><i class="fi-trash" aria-hidden="true" player-id="{{player.SPID}}"></i></a>
                   <a class="text-muted"><i class="fi-x hide" aria-hidden="true" player-id="{{player.SPID}}"></i></a>
                   <input type="hidden" value="" name="">
-                  {% endif %}                
                 </td>
+                {% endif %}                
               </tr>
             {% endfor %}
             </tbody>
