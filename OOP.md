@@ -1,6 +1,22 @@
 #Introduction
 Here is a list of the object that need to be created. Each new chapter represents an object.
 
+**In case of data that needs to be fetched from DB, for getter methods, do something like this:**
+
+    getValue(){
+      if(this.value == null){
+        this.setValue();
+        return this.value;
+      }
+      else
+        return this.value;
+    }
+    setValue(){
+      this.value = mysqli_query("SELECT value from WHATEVER");
+    }
+
+In this way we do a "lazy" initialization of data.
+
 #User
 Vars:
 
