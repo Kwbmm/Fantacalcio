@@ -1,27 +1,7 @@
 <?php
-    /**
-     * Vars:
-     *
-     *  + Username (string)
-     *  + Userid (int)
-     *  + Roster (Roster)
-     *  + Points (float)
-     *  + Formations (array<Formation>)
-     *  + Money (int)
-     *
-     * Methods:
-     *
-     *  + getUsername
-     *  + getUserID
-     *  + getRoster
-     *  + getPoints
-     *  + getFormation
-     *  + setFormation
-     *  + getMoney
-     */
-    class User
-    {
-        private $name=null,$id=null,$roster=null,$points=null,$formations=null,$money==null;
+    
+    class User {
+        private $name=null,$id=null,$roster=null,$points=null,$formations=null,$money=null;
 
         public function getUsername(){
             if($this->name == null)
