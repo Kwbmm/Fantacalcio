@@ -1,7 +1,15 @@
 <?php
-    
+    require_once 'dbClass.php';
     class User {
         private $name=null,$id=null,$roster=null,$points=null,$formations=null,$money=null;
+        private $db = null;
+
+        function __construct($UID){
+            $this->id = $UID;
+            // $dbCls = new DB;
+            $dbCls = new DB('root','','fantacalcio','localhost');
+            $this->db = $dbCls->getDB();
+        }
 
         public function getUsername(){
             if($this->name == null)
@@ -9,8 +17,6 @@
             return $this->name;
         }
         public function getUserID(){
-            if($this->id==null)
-                $this->setUserID();
             return $this->id;
         }
 
@@ -47,11 +53,13 @@
         }
 
         private function setUsername(){
-            //Make query
-        }
-
-        private function setUserID(){
-            //Make query
+            $stmt = $this->db->prepare("SELECT username FROM user WHERE UID=:id");
+            $stmt->bindValue(':id',$this->id,PDO::PARAM_INT);
+            $stmt->execute();
+            if($stmt->rowCount() !== 1)
+                throw new PDOException("setUsername failed, more than one record", 1);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->name = $result['username'];
         }
 
         private function setRoster(){

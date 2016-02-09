@@ -4,29 +4,32 @@
 	 * Class uses PDO.
 	 * 
 	 * @author Marco Ardizzone
-	 * @link //twitter.com/marcoardiz
+	 * @link twitter.com/marcoardiz
 	 */
 	class DB{
-		const SETUP_FILEPATH = "../settings.json";
+		const SETUP_FILEPATH = null;
 		private $db = null;
 
 		/**
-		 * Default Constructor
+		 * Default Constructor: if no parameter is passed, credentials are read from
+		 * settings.json file, otherwise the passed parameters are used to connect
+		 * to the DB.
+		 * 
 		 * @param string $user     username of DB
 		 * @param string $password password of DB
 		 * @param string $dbName   name of DB
 		 * @param string $host     host of DB
 		 * @param string $charset  charset used by DB
 		 */
-		function __construct($user=null,$password=null,$dbName=null,$host=null,$charset='utf8'){
+		function __construct($user=null,$password=null,$dbname=null,$host=null,$charset='utf8'){
+			$this->SETUP_FILEPATH = __DIR__."/../settings.json";
 			if($user == null && $password == null && $dbname == null && $host == null){
-				$config=json_decode(file_get_contents(self::SETUP_FILEPATH),true);
+				$config=json_decode(file_get_contents($this->SETUP_FILEPATH),true);
 				$user = $config['dbUser'];
 				$password = $config['dbPsw'];
 				$dbname = $config['dbName'];
-				$host = $config['dbhost'];
+				$host = $config['dbHost'];
 			}
-			
 			$this->db = new PDO('mysql:
 				dbname='.$dbname.';
 				host='.$host.';
