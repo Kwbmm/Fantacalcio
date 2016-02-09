@@ -12,9 +12,9 @@
   $conn = mysqli_connect($dbhost, $dbusername, $dbpsw, $dbname) or die(mysqli_error());
 
   mysqli_query($conn,"START TRANSACTION");
-  //Update the matchdays from now untill the end
+  //Update the next matchday
   $now = time();
-  $query = "SELECT MID, start, end FROM match_day WHERE start > '$now' FOR UPDATE";
+  $query = "SELECT MIN(MID), start, end FROM match_day WHERE start > '$now' FOR UPDATE";
   $result = mysqli_query($conn,$query);
   if($result === false){
     mysqli_rollback($conn);
@@ -37,8 +37,8 @@
     }
     $query = "UPDATE match_day SET start = '$start', end='$end'
               WHERE MID = '$mid'";
-    $innserResult = mysqli_query($conn,$query);
-    if($innserResult === false){
+    $innerResult = mysqli_query($conn,$query);
+    if($innerResult === false){
       mysqli_rollback($conn);
       echo mysqli_error($conn);
       return -1;
