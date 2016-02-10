@@ -9,6 +9,7 @@
      */
 
     require_once 'dbClass.php';
+    require_once 'formationClass.php';
 
     class User {
         private $name=null,$id=null,$roster=null,$points=null,$formations=null,$money=null;
@@ -16,11 +17,15 @@
 
         /**
          * Default constructor for initializing the User object.
-         * @param int $UID User ID of the user
+         * @param int $UID      User ID of the user
+         * @param DB  $customDB Use a custom DB object for this User
          */
-        function __construct($UID){
+        function __construct($UID,$customDB=null){
             $this->id = $UID;
-            $dbCls = new DB;
+            if($customDB === null)
+                $dbCls = new DB;
+            else
+                $dbCls = $customDB;
             $this->db = $dbCls->getDB();
         }
 
@@ -71,12 +76,12 @@
         }
 
         private function setUsername(){
-            $stmt = $this->db->prepare("SELECT username FROM user WHERE UID=:id");
-            $stmt->bindValue(':id',$this->id,PDO::PARAM_INT);
-            $stmt->execute();
-            if($stmt->rowCount() !== 1)
+            $s = $this->db->prepare("SELECT username FROM user WHERE UID=:id");
+            $s->bindValue(':id',$this->id,PDO::PARAM_INT);
+            $s->execute();
+            if($s->rowCount() !== 1)
                 throw new PDOException("setUsername failed, more than one record", 1);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $s->fetch(PDO::FETCH_ASSOC);
             $this->name = $result['username'];
         }
 
@@ -85,26 +90,35 @@
         }
 
         private function setPoints(){
-            $stmt = $this->db->prepare("SELECT points FROM scores WHERE UID=:id");
-            $stmt->bindValue(':id',$this->id,PDO::PARAM_INT);
-            $stmt->execute();
-            if($stmt->rowCount() !== 1)
+            $s = $this->db->prepare("SELECT points FROM scores WHERE UID=:id");
+            $s->bindValue(':id',$this->id,PDO::PARAM_INT);
+            $s->execute();
+            if($s->rowCount() !== 1)
                 throw new PDOException("setPoints failed, more than one record",3);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $s->fetch(PDO::FETCH_ASSOC);
             $this->points = $result['points'];
         }
 
         private function setFormations(){
-            //Make query
+            $this->formations = array();
+            $s = $this->db->prepare("
+                SELECT MID, SPID, disposition
+                FROM user_formation
+                WHERE UID=:id");
+            $s->bindValue(':id',$this->id,PDO::PARAM_INT);
+            $s->execute();
+            $results = $s->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
+            foreach ($results as $mid => $players)
+                array_push($this->formations, new Formation($mid,$players));
         }
 
         private function setMoney(){
-            $stmt = $this->db->prepare("SELECT money FROM user WHERE UID=:id");
-            $stmt->bindValue(':id',$this->id,PDO::PARAM_INT);
-            $stmt->execute();
-            if($stmt->rowCount() !== 1)
+            $s = $this->db->prepare("SELECT money FROM user WHERE UID=:id");
+            $s->bindValue(':id',$this->id,PDO::PARAM_INT);
+            $s->execute();
+            if($s->rowCount() !== 1)
                 throw new PDOException("setPoints failed, more than one record",3);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $s->fetch(PDO::FETCH_ASSOC);
             $this->points = $result['money'];
         }
 

@@ -1,8 +1,11 @@
 <?php 
-
+  require_once __DIR__."/../includes/userClass.php";
+  require_once __DIR__."/../includes/dbClass.php";
   $app->get('/home',function() use($app){
     $now = time();
     $i=0;
+    $user = new User(1,new DB('root','','fantacalcio','localhost'));
+    myDump($user->getFormations());
     do{
       $query =  "SELECT scores.MID as MID, username, points FROM user, scores
                 WHERE user.UID = scores.UID
