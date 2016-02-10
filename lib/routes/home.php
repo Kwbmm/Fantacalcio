@@ -1,8 +1,6 @@
 <?php 
 
   $app->get('/home',function() use($app){
-    $asd = new User(1);
-    var_dump($asd->getUsername());
     $now = time();
     $i=0;
     do{

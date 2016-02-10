@@ -30,10 +30,11 @@
 				$dbname = $config['dbName'];
 				$host = $config['dbHost'];
 			}
-			$this->db = new PDO('mysql:
-				dbname='.$dbname.';
-				host='.$host.';
-				charset='.$charset,
+			$this->db = new PDO(
+				'mysql:'.
+				'host='.$host.';'.
+				'dbname='.$dbname.';'.
+				'charset='.$charset,
 				$user,
 				$password);
 			// Activate parametrized queries
