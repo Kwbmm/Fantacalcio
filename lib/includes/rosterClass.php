@@ -30,7 +30,7 @@
             $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             foreach ($results as $result) {
-            	array_push($soccerPlayers, new SoccerPlayer(
+            	array_push($soccerPlayers, SoccerPlayer::consFromFull(
             		$result['SPID'],
             		$result['Name'],
             		$result['Position'],

@@ -22,11 +22,11 @@
          */
         function __construct($UID,$customDB=null){
             $this->id = $UID;
-            if($customDB === null)
-                $dbCls = new DB;
+            if(!isset($customDB))
+                $this->db = DB::getInstance();
             else
-                $dbCls = $customDB;
-            $this->db = $dbCls->getDB();
+                $this->db = $customDB;
+            var_dump($this->db);
         }
 
         public function getUsername(){
@@ -107,6 +107,7 @@
                 WHERE UID=:id");
             $s->bindValue(':id',$this->id,PDO::PARAM_INT);
             $s->execute();
+            //Group the results by MID
             $results = $s->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
             foreach ($results as $mid => $players)
                 array_push($this->formations, new Formation($mid,$players));

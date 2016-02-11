@@ -5,16 +5,26 @@
 	 * @author Marco Ardizzone
 	 * @link twitter.com/marcoardiz
 	 */
+	require_once 'dbClass.php';
 
 	class SoccerPlayer {
 		private $spid=null, $name=null, $pos=null, $team=null, $cost=null;		
 		
-		function __construct($spid,$name,$pos,$team,$cost) {
+		//Constructors
+
+		public static function consFromFull($spid,$name,$pos,$team,$cost){
 			$this->spid = $spid;
 			$this->name = $name;
 			$this->pos = $pos;
 			$this->team = $team;
 			$this->cost = $cost;
+
+		}
+
+		public static function consFromSPID($spid){
+			$dbCls = new DB('root','','fantacalcio','localhost');
+			
+
 		}
 
 		public function getSPID() {

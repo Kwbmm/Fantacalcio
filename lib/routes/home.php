@@ -4,7 +4,7 @@
   $app->get('/home',function() use($app){
     $now = time();
     $i=0;
-    $user = new User(1,new DB('root','','fantacalcio','localhost'));
+    $user = new User(1,DB::getInstance('root','','fantacalcio','localhost'));
     myDump($user->getFormations());
     do{
       $query =  "SELECT scores.MID as MID, username, points FROM user, scores

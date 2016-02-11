@@ -4,10 +4,10 @@
 	*/
 	class Formation	{		
 		private $mid = null;
-		private $players = null;
+		private $players = array();
 		function __construct($mid,$players) {
 			foreach ($players as $pIndex => $values) {
-				# code...
+				$players[$values['disposition']] = $values[''];
 			}
 			echo $mid."<br />";
 			var_dump($players);

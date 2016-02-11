@@ -7,8 +7,11 @@
 	 * @link twitter.com/marcoardiz
 	 */
 	class DB{
-		const SETUP_FILEPATH = null;
-		private $db = null;
+		private static $SETUP_FILEPATH = null;
+
+		private static $user=null,$password=null,$dbname=null,$host=null,$charset='utf8';
+		private static $db = null;
+		private static $instance = null;
 
 		/**
 		 * Default Constructor: if no parameter is passed, credentials are read from
@@ -21,22 +24,34 @@
 		 * @param string $host     host of DB
 		 * @param string $charset  charset used by DB
 		 */
-		function __construct($user=null,$password=null,$dbname=null,$host=null,$charset='utf8'){
-			$this->SETUP_FILEPATH = __DIR__."/../settings.json";
-			if($user == null && $password == null && $dbname == null && $host == null){
-				$config=json_decode(file_get_contents($this->SETUP_FILEPATH),true);
-				$user = $config['dbUser'];
-				$password = $config['dbPsw'];
-				$dbname = $config['dbName'];
-				$host = $config['dbHost'];
+		public static function getInstance($user=null,$password=null,$dbname=null,$host=null,$charset='utf8'){
+			self::$SETUP_FILEPATH = __DIR__."/../settings.json";
+			if(!isset($user) && !isset($password) && !isset($dbname) && !isset($host)){
+				$config=json_decode(file_get_contents(self::$SETUP_FILEPATH),true);
+				self::$user = $config['dbUser'];
+				self::$password = $config['dbPsw'];
+				self::$dbname = $config['dbName'];
+				self::$host = $config['dbHost'];
 			}
+			else{
+				self::$user = $user;
+				self::$password = $password;
+				self::$dbname = $dbname;
+				self::$host = $host;				
+			}
+			self::$instance = new DB;
+			return self::$db;
+
+		}
+
+		private function __construct(){
 			$this->db = new PDO(
 				'mysql:'.
-				'host='.$host.';'.
-				'dbname='.$dbname.';'.
-				'charset='.$charset,
-				$user,
-				$password);
+				'host='.self::$host.';'.
+				'dbname='.self::$dbname.';'.
+				'charset='.self::$charset,
+				self::$user,
+				self::$password);
 			// Activate parametrized queries
 			$this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 			// Setting error code in this way allows exception catching
