@@ -40,7 +40,7 @@
 				self::$host = $host;				
 			}
 			self::$instance = new DB;
-			return self::$db;
+			return self::$instance->db;
 
 		}
 
