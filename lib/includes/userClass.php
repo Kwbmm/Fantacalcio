@@ -26,7 +26,6 @@
                 $this->db = DB::getInstance();
             else
                 $this->db = $customDB;
-            var_dump($this->db);
         }
 
         public function getUsername(){
@@ -44,9 +43,9 @@
             return $this->roster;
         }
 
-        public function getPoints(){
+        public function getScore(){
             if($this->points == null)
-                $this->setPoints();
+                $this->setScore();
             return $this->points;
         }
 
@@ -62,6 +61,8 @@
          * @return Formation    The requested formation or null if not found.
          */
         public function getFormation($mid){
+            if(!isset($formations))
+                $this->setFormations();
             foreach ($this->formations as $formation) {
                 if($formation->getMID() == $mid)
                     return $formation;
@@ -70,7 +71,7 @@
         }
 
         public function getMoney(){
-            if($this->money == null)
+            if($this->money === null)
                 $this->setMoney();
             return $this->money;
         }
@@ -89,7 +90,7 @@
             $this->roster = new Roster($this->id);
         }
 
-        private function setPoints(){
+        private function setScore(){
             $s = $this->db->prepare("SELECT points FROM scores WHERE UID=:id");
             $s->bindValue(':id',$this->id,PDO::PARAM_INT);
             $s->execute();
@@ -120,7 +121,7 @@
             if($s->rowCount() !== 1)
                 throw new PDOException("setPoints failed, more than one record",3);
             $result = $s->fetch(PDO::FETCH_ASSOC);
-            $this->points = $result['money'];
+            $this->money = $result['money'];
         }
 
     }
