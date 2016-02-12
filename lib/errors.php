@@ -10,7 +10,6 @@
     }
     else
       $twigParameters = getTwigParameters(ucfirst($page),$app['siteName'],$page,$app['startMoney'],$extra);      
-    myDump($twigParameters);
     switch ($code) {
       //Custom error codes can start from 452 (https://it.wikipedia.org/wiki/Codici_di_stato_HTTP#4xx_Client_Error)
       /*

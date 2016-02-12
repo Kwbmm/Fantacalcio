@@ -57,10 +57,6 @@
 			// Setting error code in this way allows exception catching
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		}
-
-		public function getDB(){
-			return $this->db;
-		}
 	}
 
  ?>

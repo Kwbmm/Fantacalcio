@@ -94,7 +94,7 @@
             $s->bindValue(':id',$this->id,PDO::PARAM_INT);
             $s->execute();
             if($s->rowCount() !== 1)
-                throw new PDOException("setPoints failed, more than one record",3);
+                throw new PDOException("Expected row (1), got row (".$s->rowCount().")",3);
             $result = $s->fetch(PDO::FETCH_ASSOC);
             $this->points = $result['points'];
         }
@@ -110,7 +110,7 @@
             //Group the results by MID
             $results = $s->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC);
             foreach ($results as $mid => $players)
-                array_push($this->formations, new Formation($mid,$players));
+                array_push($this->formations, Formation::consFromUser($mid,$players,$this->db));
         }
 
         private function setMoney(){

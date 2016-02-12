@@ -19,8 +19,7 @@
 		 * @param int $UID The user ID, required to perform queries.
 		 */
 		function __construct($UID){
-			$dbCls = new DB;
-			$db=$dbCls->getDB();
+			$db=DB::getInstance();
             $stmt = $db->prepare("
             	SELECT sp.SPID,Name,Position,Team,Cost
             	FROM user_roster ur, soccer_player sp
