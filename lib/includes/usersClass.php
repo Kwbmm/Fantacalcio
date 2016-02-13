@@ -5,6 +5,7 @@
 
 	require_once 'dbClass.php';
 	require_once 'userClass.php';
+	require_once __DIR__.'/exceptions/SortException.php';
 
 	class Users{
 		private $users = array();
@@ -21,6 +22,28 @@
 
 		public function getUsers(){
 			return $this->users;
+		}
+
+		public function getUsersByScore($asc=false){
+			$cloned = $this->users;
+			if($asc && !uasort($cloned,array($this,'sortByScoreAsc')))
+				throw new SortException("Error sorting users by score");
+			if(!$asc && !uasort($cloned,array($this,'sortByScoreDesc')))
+				throw new SortException("Error sorting users by score");
+			return $cloned;
+		}
+
+		private function sortByScoreAsc($a,$b){
+			if($a->getScore() === $b->getScore())
+				return 0;
+			return ($a->getScore() < $b->getScore()) ? -1 : 1;
+
+		}
+		private function sortByScoreDesc($a,$b){
+			if($a->getScore() === $b->getScore())
+				return 0;
+			return ($a->getScore() > $b->getScore()) ? -1 : 1;
+
 		}
 
 		public function getUserByUID($UID){

@@ -7,9 +7,9 @@
     $users = new Users(DB::getInstance('root','','fantacalcio','localhost'));
     
     $sequence = array();
-    foreach ($users->getUsers() as $user) {
+    foreach ($users->getUsersByScore() as $user)
       array_push($sequence, array('username'=>$user->getUsername(),'points'=>$user->getScore()));
-    }
+
     $twigParameters = getTwigParameters('Home',$app['siteName'],'home',$app['userMoney'],array('sequence'=>$sequence));
     return $app['twig']->render('index.twig',$twigParameters);
   });
