@@ -5,7 +5,7 @@
     $now = time();
     $i=0;
     $users = new Users(DB::getInstance('root','','fantacalcio','localhost'));
-    
+    var_dump($users->getUserByUID(1)->getRoster()->getPlayer('Buffon')->getScore('3'));
     $sequence = array();
     foreach ($users->getUsersByScore() as $user)
       array_push($sequence, array('username'=>$user->getUsername(),'points'=>$user->getScore()));

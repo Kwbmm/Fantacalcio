@@ -10,6 +10,7 @@
 
     require_once 'dbClass.php';
     require_once 'formationClass.php';
+    require_once 'rosterClass.php';
 
     class User {
         private $name=null,$id=null,$roster=null,$points=null,$formations=null,$money=null;
@@ -87,7 +88,7 @@
         }
 
         private function setRoster(){
-            $this->roster = new Roster($this->id);
+            $this->roster = new Roster($this->id,$this->db);
         }
 
         private function setScore(){

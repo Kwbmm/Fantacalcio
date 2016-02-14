@@ -9,7 +9,10 @@
 	require_once __DIR__.'/exceptions/SoccerPlayerException.php';
 
 	class SoccerPlayer {
-		private $spid=null, $name=null, $pos=null, $team=null, $cost=null;		
+		private $spid=null, $name=null, $pos=null, $team=null, $cost=null;
+		private $db=null;
+		private $scores = array();
+		private static $instance=null;	
 		
 		private function __construct($spid,$name,$pos,$team,$cost){
 			$this->spid = $spid;
@@ -28,11 +31,14 @@
 		 * @param  int $cost Soccer Player Cost
 		 * @return SoccerPlayer       The created Soccer Player Object
 		 */
-		public static function consFromFull($spid=null,$name=null,$pos=null,$team=null,$cost=null){
+		public static function consFromFull($spid=null,$name=null,$pos=null,$team=null,$cost=null,$db=null){
+			if(!isset($db))
+				$db = DB::getInstance();
 			if(!isset($spid) || !isset($name) || !isset($name) || !isset($pos) || !isset($team) || !isset($cost))
 				throw new SoccerPlayerException("Some parameter is null");
-
-			return new SoccerPlayer($spid,$name,$pos,$team,$cost);
+			self::$instance = new SoccerPlayer($spid,$name,$pos,$team,$cost); 
+			self::$instance->db = $db;
+			return self::$instance;
 		}
 
 		/**
@@ -52,7 +58,9 @@
 			if($s->rowCount() !== 1)
 				throw new PDOException("Expected row (1), got row (".$s->rowCount().")");
 			$result = $s->fetch(PDO::FETCH_ASSOC);
-			return new SoccerPlayer($spid,$result['Name'],$result['Position'],$result['Team'],$result['Cost']);
+			self::$instance = new SoccerPlayer($spid,$result['Name'],$result['Position'],$result['Team'],$result['Cost']);
+			self::$instance->db = $db;
+			return self::$instance;
 		}
 
 		public function getSPID() {
@@ -73,6 +81,27 @@
 
 		public function getCost(){
 			return $this->cost;
+		}
+
+		public function getScores(){
+			if(empty($this->scores))
+				$this->setScores();
+			return $this->scores;
+		}
+
+		public function getScore($mid){
+			if(empty($this->scores))
+				$this->setScores();
+			return $this->scores[$mid];
+		}
+
+		private function setScores(){
+			$s = $this->db->prepare("SELECT mid, mark FROM player_mark WHERE spid=:spid");
+			$s->bindValue(':spid',$this->spid, PDO::PARAM_INT);
+			$s->execute();
+			$results = $s->fetchAll(PDO::FETCH_ASSOC);
+			foreach ($results as $row)
+				$this->scores[$row['mid']] = $row['mark'];
 		}
 	}
 ?>

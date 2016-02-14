@@ -11,6 +11,7 @@
 
 	class Roster {
 		private $soccerPlayers=array();
+		private $db = null;
 
 		/**
 		 * Default constructor used to initialize the Roster object.
@@ -18,23 +19,26 @@
 		 * 
 		 * @param int $UID The user ID, required to perform queries.
 		 */
-		function __construct($UID){
-			$db=DB::getInstance();
-            $stmt = $db->prepare("
+		function __construct($UID,$db=null){
+			if(!isset($db))
+				$this->db = DB::getInstance();
+			else
+				$this->db = $db;
+            $stmt = $this->db->prepare("
             	SELECT sp.SPID,Name,Position,Team,Cost
             	FROM user_roster ur, soccer_player sp
             	WHERE UID=:uid
             	AND sp.SPID = ur.SPID");
-            $stmt->bindValue(':uid',$UDI,PDO::PARAM_INT);
+            $stmt->bindValue(':uid',$UID,PDO::PARAM_INT);
             $stmt->execute();
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             foreach ($results as $result) {
-            	array_push($soccerPlayers, SoccerPlayer::consFromFull(
+            	array_push($this->soccerPlayers, SoccerPlayer::consFromFull(
             		$result['SPID'],
             		$result['Name'],
             		$result['Position'],
             		$result['Team'],
-            		$result['Cost']));
+            		$result['Cost'],$this->db));
             }
 		}
 
@@ -49,7 +53,7 @@
 		 */
 		public function getPlayer($pName){
 			foreach ($this->soccerPlayers as $playerObj) {
-				if($playerObj->getName === $pName)
+				if(strpos($playerObj->getName(),$pName) !== false)
 					return $playerObj;
 			}
 			return null; //Player not found
