@@ -14,6 +14,7 @@ return array(
     'Silex\\' => array($vendorDir . '/silex/silex/src/Silex'),
     'SilexGuzzle\\' => array($vendorDir . '/rebangm/silex-guzzlehttp-provider/src/SilexGuzzle'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
+    'Knp\\Menu\\' => array($vendorDir . '/knplabs/knp-menu/src/Knp/Menu'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),

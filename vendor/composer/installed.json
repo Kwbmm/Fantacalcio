@@ -308,12 +308,12 @@
         "version_normalized": "2.7.4.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/Routing.git",
+            "url": "https://github.com/symfony/routing.git",
             "reference": "20b1378cb6efffb77ea0608232f18c8f0dd25109"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/Routing/zipball/20b1378cb6efffb77ea0608232f18c8f0dd25109",
+            "url": "https://api.github.com/repos/symfony/routing/zipball/20b1378cb6efffb77ea0608232f18c8f0dd25109",
             "reference": "20b1378cb6efffb77ea0608232f18c8f0dd25109",
             "shasum": ""
         },
@@ -381,12 +381,12 @@
         "version_normalized": "2.7.4.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/HttpFoundation.git",
+            "url": "https://github.com/symfony/http-foundation.git",
             "reference": "7253c2041652353e71560bbd300d6256d170ddaf"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/7253c2041652353e71560bbd300d6256d170ddaf",
+            "url": "https://api.github.com/repos/symfony/http-foundation/zipball/7253c2041652353e71560bbd300d6256d170ddaf",
             "reference": "7253c2041652353e71560bbd300d6256d170ddaf",
             "shasum": ""
         },
@@ -436,12 +436,12 @@
         "version_normalized": "2.7.4.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/EventDispatcher.git",
+            "url": "https://github.com/symfony/event-dispatcher.git",
             "reference": "b58c916f1db03a611b72dd702564f30ad8fe83fa"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/b58c916f1db03a611b72dd702564f30ad8fe83fa",
+            "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/b58c916f1db03a611b72dd702564f30ad8fe83fa",
             "reference": "b58c916f1db03a611b72dd702564f30ad8fe83fa",
             "shasum": ""
         },
@@ -496,12 +496,12 @@
         "version_normalized": "2.7.4.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/Debug.git",
+            "url": "https://github.com/symfony/debug.git",
             "reference": "726bf9651d29f53243281d0b6418cfaa5e318281"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/Debug/zipball/726bf9651d29f53243281d0b6418cfaa5e318281",
+            "url": "https://api.github.com/repos/symfony/debug/zipball/726bf9651d29f53243281d0b6418cfaa5e318281",
             "reference": "726bf9651d29f53243281d0b6418cfaa5e318281",
             "shasum": ""
         },
@@ -553,12 +553,12 @@
         "version_normalized": "2.7.4.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/HttpKernel.git",
+            "url": "https://github.com/symfony/http-kernel.git",
             "reference": "fd9c7af92c9e3ade1327cc3af10b17731eebc4a7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/HttpKernel/zipball/fd9c7af92c9e3ade1327cc3af10b17731eebc4a7",
+            "url": "https://api.github.com/repos/symfony/http-kernel/zipball/fd9c7af92c9e3ade1327cc3af10b17731eebc4a7",
             "reference": "fd9c7af92c9e3ade1327cc3af10b17731eebc4a7",
             "shasum": ""
         },
@@ -833,6 +833,74 @@
         "homepage": "http://twig.sensiolabs.org",
         "keywords": [
             "templating"
+        ]
+    },
+    {
+        "name": "knplabs/knp-menu",
+        "version": "v2.1.1",
+        "version_normalized": "2.1.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/KnpLabs/KnpMenu.git",
+            "reference": "9917b999a3c3d3901386d60c4888b07679291031"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/KnpLabs/KnpMenu/zipball/9917b999a3c3d3901386d60c4888b07679291031",
+            "reference": "9917b999a3c3d3901386d60c4888b07679291031",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "pimple/pimple": "~1.0",
+            "silex/silex": "~1.0",
+            "symfony/phpunit-bridge": "~2.7|~3.0",
+            "symfony/routing": "~2.3|~3.0",
+            "twig/twig": "~1.16|~2.0"
+        },
+        "suggest": {
+            "pimple/pimple": "for the built-in implementations of the menu provider and renderer provider",
+            "silex/silex": "for the integration with your silex application",
+            "twig/twig": "for the TwigRenderer and the integration with your templates"
+        },
+        "time": "2016-01-08 15:42:54",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.1-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Knp\\Menu\\": "src/Knp/Menu"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Christophe Coevoet",
+                "email": "stof@notk.org"
+            },
+            {
+                "name": "KnpLabs",
+                "homepage": "http://knplabs.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://github.com/KnpLabs/KnpMenu/contributors"
+            }
+        ],
+        "description": "An object oriented menu library",
+        "homepage": "http://knplabs.com",
+        "keywords": [
+            "menu",
+            "tree"
         ]
     }
 ]

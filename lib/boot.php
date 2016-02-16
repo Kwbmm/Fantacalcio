@@ -25,6 +25,9 @@
   
   $app->register(new Silex\Provider\TwigServiceProvider(), array('twig.path' => __DIR__.'/../templates'));
   $app->register(new SilexGuzzle\GuzzleServiceProvider());
+
+  $app->register(new \Knp\Menu\Integration\Silex\KnpMenuServiceProvider());
+
   /*
   **  config.json maybe will be used in the future for storing other start data
   **  which do not fit inside the DB.
