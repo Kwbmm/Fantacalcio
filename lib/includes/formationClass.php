@@ -1,6 +1,9 @@
 <?php
 	/**
-	* 
+	 * Class managing the formation of a user of a particular match day
+	 * 
+	 * @author Marco Ardizzone
+	 * @link twitter.com/marcoardiz
 	*/
 	require_once 'soccerPlayerClass.php';
 	class Formation	{		

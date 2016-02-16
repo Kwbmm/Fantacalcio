@@ -19,7 +19,7 @@
         /**
          * Default constructor for initializing the User object.
          * @param int $UID      User ID of the user
-         * @param DB  $customDB Use a custom DB object for this User
+         * @param PDO::Database  $customDB Use a custom DB object for this User
          */
         function __construct($UID,$customDB=null){
             $this->id = $UID;

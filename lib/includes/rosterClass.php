@@ -18,6 +18,7 @@
 		 * Each roster contains an array of SoccerPlayer objects.
 		 * 
 		 * @param int $UID The user ID, required to perform queries.
+		 * @param DB $db An optional database, otherwise default setting for DB are used
 		 */
 		function __construct($UID,$db=null){
 			if(!isset($db))

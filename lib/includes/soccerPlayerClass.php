@@ -29,6 +29,7 @@
 		 * @param  string $pos  Soccer Player Position
 		 * @param  string $team Soccer Player Team
 		 * @param  int $cost Soccer Player Cost
+		 * @param  PDO::Database $db An optional database, otherwise default DB settings are used
 		 * @return SoccerPlayer       The created Soccer Player Object
 		 */
 		public static function consFromFull($spid=null,$name=null,$pos=null,$team=null,$cost=null,$db=null){

@@ -1,8 +1,10 @@
 <?php
 	/**
-	* 
+	 * Class managing collecting all users
+	 * 
+	 * @author Marco Ardizzone
+	 * @link twitter.com/marcoardiz
 	*/
-
 	require_once 'dbClass.php';
 	require_once 'userClass.php';
 	require_once __DIR__.'/exceptions/SortException.php';
@@ -24,6 +26,11 @@
 			return $this->users;
 		}
 
+		/**
+		 * Returns the users sorted by score in ascending or descending order
+		 * @param  boolean $asc false for sorting in descending order, true otherwise
+		 * @return array       Array of User objects
+		 */
 		public function getUsersByScore($asc=false){
 			$cloned = $this->users;
 			if($asc && !uasort($cloned,array($this,'sortByScoreAsc')))
@@ -33,12 +40,25 @@
 			return $cloned;
 		}
 
+		/**
+		 * Used by uasort() to sort the values
+		 * @param  User $a A user object
+		 * @param  User $b A user object
+		 * @return int    -1 if $a < $b, 0 if $a === $b, 1 otherwise
+		 */
 		private function sortByScoreAsc($a,$b){
 			if($a->getScore() === $b->getScore())
 				return 0;
 			return ($a->getScore() < $b->getScore()) ? -1 : 1;
 
 		}
+
+		/**
+		 * Used by uasort() to sort the values
+		 * @param  User $a A user object
+		 * @param  User $b A user object
+		 * @return int    -1 if $a > $b, 0 if $a === $b, 1 otherwise
+		 */
 		private function sortByScoreDesc($a,$b){
 			if($a->getScore() === $b->getScore())
 				return 0;
