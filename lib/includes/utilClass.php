@@ -22,10 +22,10 @@
 
 		/**
 		 * Closes the session and destroys cookies
-		 * @param  Silex\Application $app The Silex application
+		 * 
 		 * @return void
 		 */
-		public function closeSession($app){
+		public function closeSession(){
 			if(isset($_COOKIE['token'])){ //Destroy the token
 				$cookie_array = explode(":",$_COOKIE['token']);
 				$selector = $cookie_array[0];
