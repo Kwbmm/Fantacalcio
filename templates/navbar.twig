@@ -1,103 +1,38 @@
 <div class="off-canvas-wrap" data-offcanvas>
-  <div class="inner-wrap"> {#EVERYTHING goes inside this div#}
-    <div class="fixed">
-      <nav class="tab-bar show-for-small">
-        <section class="left-small">
-          <a class="left-off-canvas-toggle menu-icon" href="#"><span></span></a>
-        </section>
-        <section class="middle tab-bar-section">
-          <h1 class="title">{{siteName}}</h1>
-        </section>
-      </nav>
-    </div>
-    <div class="fixed">
-      <nav class="top-bar hide-for-small" data-topbar role="navigation">
-        <ul class="title-area">
-          <li class="name">
-            <h1><a href="#">{{siteName}}</a></h1>
-          </li>
-           <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-          <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-        </ul>
+	<div class="inner-wrap"> {#EVERYTHING goes inside this div#}
+		<div class="fixed"> {#Mobile navbar#}
+			<nav class="tab-bar show-for-small">
+				<section class="left-small">
+					<a class="left-off-canvas-toggle menu-icon" href="#"><span></span></a>
+				</section>
+				<section class="middle tab-bar-section">
+					<h1 class="title">{{siteName}}</h1>
+				</section>
+			</nav>
+		</div>
+		<div class="fixed">{#Desktop navbar#}
+			<nav class="top-bar hide-for-small" data-topbar role="navigation">
+				<ul class="title-area">
+					<li class="name">
+						<h1><a href="#">{{siteName}}</a></h1>
+					</li>
+					 {#Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone#}
+					<li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+				</ul>
 
-        <section class="top-bar-section">
-          <!-- Right Nav Section -->
-          {% if userMoney is defined and username is defined and userMoney >= 0 %}
-          <ul class="right show-for-large-up">
-            <li><span>Bentornato {{username}}</span></li>
-            <li><span>Hai {{userMoney}} crediti</span></li>
-          </ul>
-          {% endif %}
+				<section class="top-bar-section">
+					{#Right nav section, shows welcome message and user money - ONLY IF LOGGED IN#}
+					{% if userMoney is defined and username is defined and userMoney >= 0 %}
+						{{ knp_menu_render('rightDesktopSection') }}					
+					{% endif %}
 
-          <!-- Left Nav Section -->
-          <ul class="left">
-            {% for displayedName,options in menu %}
-              {#  options is:
-                    - 0: link to the page
-                    - 1: add active class? yes/no
-                    - 2: display page? yes/no
-                  OR another array as options
-              #}
-                {% if options[0] is not defined %} {# It's an associative array! Iterate again! #}
-                  {% set elem = options|first %}
-                  {% if elem[2] %}
-                    <li class="has-dropdown">
-                    <a href="#">{{displayedName}}</a>  
-                    <ul class="dropdown">
-                  {% endif %}
-                  {% for dd_displayedName,dd_options in options %}
-                      {% if dd_options[2] %}{#Display page?#}
-                        <li {% if dd_options[1] %}class="active"{% endif %}><a href="//{{app.request.getHttpHost()}}/{{dd_options[0]}}">{{dd_displayedName}}</a></li> 
-                      {% endif %}                    
-                  {% endfor %}
-                  {% if elem[2] %}
-                    </ul>
-                    </li>
-                  {% endif %}
-                {% elseif options[2] %} {#Display page?#}
-                  <li {% if options[1] %}class="active"{% endif %}><a href="//{{app.request.getHttpHost()}}/{{options[0]}}">{{displayedName}}</a></li>                
-                {% endif %}
-            {% endfor %}
-          </ul>
-        </section>
-      </nav>
-    </div>
-    <aside class="left-off-canvas-menu" aria-hidden="true">
-      <ul class="off-canvas-list">
-      {% if userMoney is defined and username is defined and userMoney >= 0 %}
-        <li class="text-center"><label>{{username}} | {{userMoney}}</label></li>
-      {% else %}
-        <li class="text-center"><label>Menu Principale</label></li>
-      {% endif %}
-        {% for displayedName,options in menu %}
-          {#  options is:
-                - 0: link to the page
-                - 1: add active class? yes/no
-                - 2: display page? yes/no
-              OR another array as options
-          #}
-            {% if options[0] is not defined %} {# It's an associative array! Iterate again! #}
-              {% set elem = options|first %}
-              {% if elem[2] %}
-                <li class="has-submenu">
-                <a href="#">{{displayedName}}</a>  
-                <ul class="left-submenu">
-                  <li class="back"><a href="#">Indietro</a></li>
-              {% endif %}
-              {% for dd_displayedName,dd_options in options %}
-                  {% if dd_options[2] %}{#Display page?#}
-                    <li {% if dd_options[1] %}class="active"{% endif %}><a href="//{{app.request.getHttpHost()}}/{{dd_options[0]}}">{{dd_displayedName}}</a></li> 
-                  {% endif %}                    
-              {% endfor %}
-              {% if elem[2] %}
-                </ul>
-                </li>
-              {% endif %}
-            {% elseif options[2] %} {#Display page?#}
-              <li {% if options[1] %}class="active"{% endif %}><a href="//{{app.request.getHttpHost()}}/{{options[0]}}">{{displayedName}}</a></li>                
-            {% endif %}
-        {% endfor %}
-      </ul>
-    </aside>
-    <a class="exit-off-canvas"></a>
+					{#Left nav section, shows links#}
+					{{ knp_menu_render('desktop') }}
+				</section>
+			</nav>
+		</div>
+		<aside class="left-off-canvas-menu" aria-hidden="true">
+			{{ knp_menu_render('mobile')}}
+		</aside>
+		<a class="exit-off-canvas"></a>	
 {# Closing tags in body.twig #}

@@ -68,19 +68,36 @@
 		 * Initialized the menu bar that will be displayed through twig renderer.
 		 * Note that the returned object must be assigned to a variable inside the $app object:
 		 *
-		 * 	$app['mainMenu'] = $util->initMenu($app);
+		 * 	$app['mainMenu'] = $util->initNavbar($app);
 		 * 	$app['knp_menu.menus'] = array('main'=>'mainMenu');
 		 * 	
 		 * @param  Silex\Application $app The silex application
 		 * @return KnpMenu      The initialized KnpMenu
 		 */
-		public function initMenu($app){
-		    $menu = $app['knp_menu.factory']->createItem('MainMenu');
+		public function initNavbar($app){
+			$app['desktopMenu']=$this->generateDesktopNavbar($app);
+			if(isset($_SESSION['user']))
+				$app['rightSectionMenu']=$this->generateRightSectionNavbar($app);
+			$app['mobileMenu']=$this->generateMobileNavbar($app);
+			$app['knp_menu.menus'] = array(
+					'desktop'=>'desktopMenu',
+					'rightDesktopSection'=>'rightSectionMenu',
+					'mobile'=>'mobileMenu');
+		}
+
+		private function generateDesktopNavbar($app){
+		    $menu = $app['knp_menu.factory']->createItem('DesktopMenu');
+		    $menu->setChildrenAttribute('class','left');
 		    $menu->addChild('Home',array('uri' => '/home'));
-		    $menu->addChild('Profilo',array());
+		    $menu->addChild('Profilo',array('uri'=>'#'));
+		    $menu['Profilo']->setAttribute('class','has-dropdown');
+		    $menu['Profilo']->setChildrenAttribute('class','dropdown');
 			    $menu['Profilo']->addChild('Rosa',array('uri'=>'/roster'));
 			    $menu['Profilo']->addChild('Formazione',array('uri'=>'/formation'));
-		    $menu->addChild('Mercato',array());
+
+		    $menu->addChild('Mercato',array('uri'=>'#','class'=>'has-dropdown'));
+		    $menu['Mercato']->setAttribute('class','has-dropdown');
+		    $menu['Mercato']->setChildrenAttribute('class','dropdown');
 				$menu['Mercato']->addChild('Cerca',array('uri'=>'/buy'));
 				$menu['Mercato']->addChild('Carrello',array('uri'=>'/checkout'));	
 		    $menu->addChild('Voti',array('uri' => '/marks' ));
@@ -102,6 +119,63 @@
 		    	$menu['Logout']->setDisplay(false);
 		    }
 		    return $menu;
+		}
+
+		private function generateMobileNavbar($app){
+			$menu = $app['knp_menu.factory']->createItem('MobileMenu');
+			$menu->setChildrenAttribute('class','off-canvas-list');
+			/**
+			 * knp-fix class added to 'Menu Principale' item is a workaround to this issue:
+			 * 	https://github.com/KnpLabs/KnpMenu/issues/238
+			 */
+			$menu->addChild('Menu Principale')->setAttribute('class','text-center knp-fix');
+		    $menu->addChild('Home',array('uri' => '/home'));
+		    $menu->addChild('Profilo',array('uri'=>'#'));
+		    $menu['Profilo']->setAttribute('class','has-submenu');
+		    $menu['Profilo']->setChildrenAttribute('class','left-submenu');
+		    	$menu['Profilo']->addChild('Indietro',array('uri'=>'#'));
+		    	$menu['Profilo']['Indietro']->setAttribute('class','back');
+			    $menu['Profilo']->addChild('Rosa',array('uri'=>'/roster'));
+			    $menu['Profilo']->addChild('Formazione',array('uri'=>'/formation'));
+
+		    $menu->addChild('Mercato',array('uri'=>'#'));
+		    $menu['Mercato']->setAttribute('class','has-submenu');
+		    $menu['Mercato']->setChildrenAttribute('class','left-submenu');
+		    	$menu['Mercato']->addChild('Indietro',array('uri'=>'#'));
+		    	$menu['Mercato']['Indietro']->setAttribute('class','back');
+				$menu['Mercato']->addChild('Cerca',array('uri'=>'/buy'));
+				$menu['Mercato']->addChild('Carrello',array('uri'=>'/checkout'));	
+		    $menu->addChild('Voti',array('uri' => '/marks' ));
+		    $menu->addChild('Registrati',array('uri' =>'/register'));
+		    $menu->addChild('Login',array('uri'=>'/login'));
+		    $menu->addChild('Regolamento',array('uri'=>'/rules'));
+		    $menu->addChild('Logout',array('uri'=>'/logout'));
+
+		    //Hide the pages if logged in 
+		    if(isset($_SESSION['user']) && !empty($_SESSION['user'])){
+		    	$menu['Login']->setDisplay(false);
+		    	$menu['Registrati']->setDisplay(false);
+		    }
+		    //Hide the pages if logged out
+		    if(!isset($_SESSION['user'])){
+		    	$menu['Profilo']->setDisplay(false);
+		    	$menu['Mercato']->setDisplay(false);
+		    	$menu['Voti']->setDisplay(false);
+		    	$menu['Logout']->setDisplay(false);
+		    }
+		    return $menu;
+		}
+
+		private function generateRightSectionNavbar($app){
+			$menu = $app['knp_menu.factory']->createItem('RightSection');
+			$menu->setChildrenAttribute('class','right show-for-large-up');
+			$menu->addChild('Bentornato '.$_SESSION['user']);
+			$menu->addChild('Hai crediti');
+			return $menu;
+		}
+
+		public function getTwigParam(){
+			
 		}
 
 	}

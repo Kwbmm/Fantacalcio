@@ -149,10 +149,8 @@
   }
 
   function getTwigParameters($pageName,$siteName,$pageMenuRender,$userMoney,$extra=array()){
-    $menu = renderMenu($pageMenuRender);
     $paramArray = array(  'pageName'      =>  $pageName,
                           'siteName'      =>  $siteName,
-                          'menu'          =>  $menu,
                           'twigTemplate'  =>  $pageMenuRender,
                           'userMoney'     =>  $userMoney,
                           'parameters'    =>  array_merge(array('error'=>'','success' =>'','warning'=>''),$extra)
@@ -161,42 +159,6 @@
       $paramArray['username'] = $_SESSION['user'];
     }
     return $paramArray;
-  }
-
-  function renderMenu($page,$pages=null){
-    //Here fill the array with all the pages
-    //Elements can be either direct links or dropdown elements
-    //(displayedName => (linkName,activeCSSclass,display))
-    $loggedInPages = array('buy','checkout','roster','formation','logout','marks'); //Pages to display ONLY when logged in
-    $loggedOutPages = array('register','login'); //Pages to display ONLY when logged out
-    if($pages === null){
-      $pages = array( 'Home'        => array('home',false,true),
-                      'Profilo'     => array('Rosa' => array('roster',false,true), 'Formazione' => array('formation',false,true)),
-                      'Mercato'     => array('Cerca'=> array('buy',false,true),'Carrello' => array('checkout',false,true)),                      
-                      'Voti'        => array('marks',false,true),
-                      'Registrati'  => array('register',false,true),
-                      'Login'       => array('login',false,true),
-                      'Regolamento' => array('rules',false,true),
-                      'Logout'      => array('logout',false,true)
-                  );
-    }
-    foreach ($pages as $displayedName => &$options) {
-      if(is_assoc($options)){
-        $options = renderMenu($page,$options); //Return value is discarded
-      }
-      else{
-        if($options[0] === $page) //Is $options[0] equal to the current page?
-          $options[1] = true; //Put .active class
-        //Hide pages when logged in/out
-        if(in_array($options[0], $loggedInPages) && !isset($_SESSION['user'])){
-          $options[2] = false;
-        }
-        elseif (in_array($options[0],$loggedOutPages) && isset($_SESSION['user']) && !empty($_SESSION['user'])){
-          $options[2] = false;
-        }
-      }
-    }
-    return $pages;
   }
 
 /*

@@ -5,6 +5,8 @@
     if(isset($_SESSION['user']) && !empty($_SESSION['user']))
       return $app->redirect('//'.$app['request']->getHttpHost().'/home');
 
+    $cmn = new Utils(DB::getInstance('root','','fantacalcio','localhost'));
+    $cmn->initNavbar($app);
     $twigParameters = getTwigParameters('Login',$app['siteName'],'login',$app['userMoney']);
     return $app['twig']->render('index.twig',$twigParameters);
   });
@@ -51,6 +53,9 @@
 
     $_SESSION['user'] = $username;
     $extra = array('success' => 'Schiera la tua formazione o compra giocatori da aggiungere alla tua rosa!');
+
+    $cmn = new Utils(DB::getInstance('root','','fantacalcio','localhost'));
+    $cmn->initNavbar($app);
     $twigParameters = getTwigParameters('Login',$app['siteName'],'login',$app['userMoney'],$extra);
     return $app['twig']->render('index.twig',$twigParameters);
   });
