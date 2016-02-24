@@ -14,10 +14,11 @@
 		 * Default constructor
 		 * @param PDO::Database $db Optional parameter to initialize class with custom database settings.
 		 */
-		function __construct($db=null) {
+		function __construct($db=null,$app) {
 			if(!isset($db))
 				$db = DB::getInstance();
 			$this->db = $db;
+			$this->initNavbar($app);
 		}
 
 		/**
@@ -74,7 +75,7 @@
 		 * @param  Silex\Application $app The silex application
 		 * @return KnpMenu      The initialized KnpMenu
 		 */
-		public function initNavbar($app){
+		private function initNavbar($app){
 			$app['desktopMenu']=$this->generateDesktopNavbar($app);
 			if(isset($_SESSION['user']))
 				$app['rightSectionMenu']=$this->generateRightSectionNavbar($app);
@@ -171,11 +172,25 @@
 			$menu->setChildrenAttribute('class','right show-for-large-up');
 			$menu->addChild('Bentornato '.$_SESSION['user']);
 			$menu->addChild('Hai crediti');
+			if(!isset($_SESSION['user'])){
+				foreach ($menu as $child)
+					$child->setDisplay(false);
+			}
 			return $menu;
 		}
 
-		public function getTwigParam(){
-			
+		public function getTwigParam($pageName,$siteName,$pageMenuRender,$userMoney,$extra=array()){
+			$paramArray = array(  
+				'pageName'      =>  $pageName,
+				'siteName'      =>  $siteName,
+				'twigTemplate'  =>  $pageMenuRender,
+				'userMoney'     =>  $userMoney,
+				'parameters'    =>  array_merge(array('error'=>'','success' =>'','warning'=>''),$extra)
+				);
+			if(isset($_SESSION['user']) && !empty($_SESSION['user'])){
+				$paramArray['username'] = $_SESSION['user'];
+			}
+			return $paramArray;
 		}
 
 	}

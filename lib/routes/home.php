@@ -10,9 +10,8 @@
 		$sequence = array();
 		foreach ($users->getUsersByScore() as $user)
 			array_push($sequence, array('username'=>$user->getUsername(),'points'=>$user->getScore()));
-		$twigParameters = getTwigParameters('Home',$app['siteName'],'home',$app['userMoney'],array('sequence'=>$sequence));
-		$cmn = new Utils(DB::getInstance('root','','fantacalcio','localhost'));
-		$cmn->initNavbar($app);
+		$cmn = new Utils(DB::getInstance('root','','fantacalcio','localhost'),$app);
+		$twigParameters = $cmn->getTwigParam('Home',$app['siteName'],'home',$app['userMoney'],array('sequence'=>$sequence));
 		return $app['twig']->render('index.twig',$twigParameters);
 	});
 

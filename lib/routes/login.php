@@ -5,9 +5,8 @@
     if(isset($_SESSION['user']) && !empty($_SESSION['user']))
       return $app->redirect('//'.$app['request']->getHttpHost().'/home');
 
-    $cmn = new Utils(DB::getInstance('root','','fantacalcio','localhost'));
-    $cmn->initNavbar($app);
-    $twigParameters = getTwigParameters('Login',$app['siteName'],'login',$app['userMoney']);
+    $cmn = new Utils(DB::getInstance('root','','fantacalcio','localhost'),$app);
+    $twigParameters = $cmn->getTwigParam('Login',$app['siteName'],'login',$app['userMoney']);
     return $app['twig']->render('index.twig',$twigParameters);
   });
 
