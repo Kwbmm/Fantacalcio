@@ -2,33 +2,6 @@
   include_once '../vendor/phpQuery/phpQuery-onefile.php';
 /*
 ** ===================================================
-**|                 Session Functions                 |
-** ===================================================
-*/
-  function closeSession($app){
-    if(isset($_COOKIE['token'])){ //Destroy the token
-      $cookie_array = explode(":",$_COOKIE['token']);
-      $selector = $cookie_array[0];
-      $query = "SELECT * FROM auth_token WHERE selector='$selector' FOR UPDATE";
-      $result = getResult($app['conn'],$query);
-      if($result === false){
-        $app->abort(452,__FILE__." (".__LINE__.")");
-      }
-      $query = "DELETE FROM auth_token WHERE selector='$selector'";
-      $result = getResult($app['conn'],$query);
-      if($result === false){
-        $app->abort(452,__FILE__." (".__LINE__.")");        
-      }
-      setcookie('token','',time()-3600);
-    }
-    session_unset();
-    if(session_id() != "" || isset($_COOKIE[session_name()]))
-      setcookie(session_name(), '', time()-3600, '/');
-    session_destroy();
-  }
-
-/*
-** ===================================================
 **|                   MySQL Functions                 |
 ** ===================================================
 */
