@@ -28,10 +28,18 @@
 			self::$SETUP_FILEPATH = __DIR__."/../settings.json";
 			if(!isset($user) && !isset($password) && !isset($dbname) && !isset($host)){
 				$config=json_decode(file_get_contents(self::$SETUP_FILEPATH),true);
-				self::$user = $config['dbUser'];
-				self::$password = $config['dbPsw'];
-				self::$dbname = $config['dbName'];
-				self::$host = $config['dbHost'];
+				if($config['useLocal']){
+					self::$user = $config['dbLocalUser'];
+					self::$password = $config['dbLocalPsw'];
+					self::$dbname = $config['dbLocalName'];
+					self::$host = $config['dbLocalHost'];					
+				}
+				else{
+					self::$user = $config['dbUser'];
+					self::$password = $config['dbPsw'];
+					self::$dbname = $config['dbName'];
+					self::$host = $config['dbHost'];					
+				}
 			}
 			else{
 				self::$user = $user;

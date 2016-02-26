@@ -1,6 +1,11 @@
 {
+	"useLocal": true,
 	"dbUser":"dbo591003352",
 	"dbPsw":"FArdzmrc90IO",
 	"dbHost":"db591003352.db.1and1.com",
-	"dbName":"db591003352"
+	"dbName":"db591003352",
+	"dbLocalUser":"root",
+	"dbLocalPsw":"",
+	"dbLocalHost":"localhost",
+	"dbLocalName":"fantacalcio"
 }
