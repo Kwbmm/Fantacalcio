@@ -76,7 +76,7 @@
 		/**
 		 * Fetch one or more users by their name
 		 * @param  string $username Input username
-		 * @return array           Returns an array containing the matched users.
+		 * @return User           Returns an array containing the matched users or User if array size == 1
 		 */
 		public function getUserByUsername($username){
 			$result = array();
@@ -84,7 +84,7 @@
 				if($user->getUsername() === $username)
 					array_push($result,$user);
 			}
-			return $result;
+			return $result[0];
 		}
 	}
 ?>
