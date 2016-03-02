@@ -6,7 +6,7 @@
 	$app->get('/home',function() use($app){
 		$now = time();
 		$i=0;
-		$users = new Users(DB::getInstance());
+		$users = new Users;
 		$sequence = array();
 		foreach ($users->getUsersByScore() as $user)
 			array_push($sequence, array('username'=>$user->getUsername(),'points'=>$user->getScore()));
