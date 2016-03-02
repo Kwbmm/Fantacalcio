@@ -38,6 +38,10 @@
             return $this->id;
         }
 
+        /**
+         * Returns roster
+         * @return Roster Roster object
+         */
         public function getRoster(){
             if($this->roster==null)
                 $this->setRoster();

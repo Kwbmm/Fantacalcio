@@ -43,6 +43,10 @@
             }
 		}
 
+		/**
+		 * Returns all soccer players
+		 * @return array Array of SoccerPlayer objects
+		 */
 		public function getPlayers(){
 			return $this->soccerPlayers;
 		}
