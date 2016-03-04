@@ -14,7 +14,7 @@
   mysqli_query($conn,"START TRANSACTION");
   //Update the next matchday
   $now = time();
-  $query = "SELECT MIN(MID), start, end FROM match_day WHERE start > '$now' FOR UPDATE";
+  $query = "SELECT MIN(MID) as MID, start, end FROM match_day WHERE start > '$now' FOR UPDATE";
   $result = mysqli_query($conn,$query);
   if($result === false){
     mysqli_rollback($conn);
@@ -25,7 +25,6 @@
     $mid = $row['MID'];
     // $matchday = getSoccerData('soccerseasons/401/fixtures?matchday='.$mid);
     $matchday = getLegaSerieA($mid);
-    var_dump($match_day);
     $start = -1;
     $end = -1;
     for ($j=0; $j < $matchday['count']; $j++) { 
@@ -38,7 +37,7 @@
     }
     $query = "UPDATE match_day SET start = '$start', end='$end'
               WHERE MID = '$mid'";
-    echo "Updating ".$mid." to start: ".$start." and end: ".$end;
+    echo "Updating ".$mid." to start: ".$start." and end: ".$end."\n";
     $innerResult = mysqli_query($conn,$query);
     if($innerResult === false){
       mysqli_rollback($conn);
@@ -48,7 +47,7 @@
   }
   mysqli_commit($conn);
 
-  echo "Dates updated";
+  echo "\nDates updated\n";
 
   function getSoccerData($link){
     $client = new Client();
