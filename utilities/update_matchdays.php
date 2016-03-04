@@ -37,6 +37,7 @@
     }
     $query = "UPDATE match_day SET start = '$start', end='$end'
               WHERE MID = '$mid'";
+    echo "Updating ".$mid." to start: ".$start." and end: ".$end;
     $innerResult = mysqli_query($conn,$query);
     if($innerResult === false){
       mysqli_rollback($conn);
