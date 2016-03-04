@@ -25,6 +25,7 @@
     $mid = $row['MID'];
     // $matchday = getSoccerData('soccerseasons/401/fixtures?matchday='.$mid);
     $matchday = getLegaSerieA($mid);
+    var_dump($match_day);
     $start = -1;
     $end = -1;
     for ($j=0; $j < $matchday['count']; $j++) { 
